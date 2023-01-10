@@ -1,10 +1,23 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { ClassSerializerInterceptor, Module } from '@nestjs/common';
+
+import { ValidationPipe } from './pipe/validation/validation.pipe';
+import { ExaminationModule } from './modules/examination/examination.module';
 
 @Module({
-    imports: [],
-    controllers: [AppController],
-    providers: [AppService],
+    imports: [ConfigModule.forRoot({ isGlobal: true }), ExaminationModule],
+    controllers: [],
+    providers: [
+        // 全局使用管道(数据校验)
+        {
+            provide: APP_PIPE,
+            useClass: ValidationPipe,
+        },
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: ClassSerializerInterceptor,
+        },
+    ],
 })
 export class AppModule {}
