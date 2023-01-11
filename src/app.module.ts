@@ -4,9 +4,10 @@ import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 
 import { ValidationPipe } from './pipe/validation/validation.pipe';
 import { ExaminationModule } from './modules/examination/examination.module';
+import { TaskModule } from './modules/task/task.module';
 
 @Module({
-    imports: [ConfigModule.forRoot({ isGlobal: true }), ExaminationModule],
+    imports: [ConfigModule.forRoot({ isGlobal: true }), ExaminationModule, TaskModule],
     controllers: [],
     providers: [
         // 全局使用管道(数据校验)

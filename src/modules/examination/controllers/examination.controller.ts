@@ -16,14 +16,11 @@ import { ApiOperation, ApiTags, ApiBearerAuth, ApiOkResponse } from '@nestjs/swa
 
 import { ExaminationService } from '../services/examination.service';
 
-@Controller()
+@Controller('examination')
 export class ExaminationController {
     constructor(private readonly examinationService: ExaminationService) {}
 
-    @ApiOperation({
-        summary: '创建账号',
-        description: '创建账号',
-    })
+    @ApiOperation({ summary: '创建账号' })
     @ApiOkResponse({
         type: String,
         description: '创建账号返回值',
@@ -32,10 +29,5 @@ export class ExaminationController {
     @Post()
     async test1(): Promise<string> {
         return await this.examinationService.test1();
-    }
-
-    @Get('/a')
-    getHello(): string {
-        return this.examinationService.getHello();
     }
 }

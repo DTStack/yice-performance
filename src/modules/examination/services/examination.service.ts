@@ -6,8 +6,4 @@ export class ExaminationService {
     async test1(): Promise<string> {
         return '1234';
     }
-
-    getHello(): string {
-        return '222';
-    }
 }
