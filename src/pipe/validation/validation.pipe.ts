@@ -14,7 +14,6 @@ import { values } from 'lodash';
 export class ValidationPipe implements PipeTransform<any> {
     async transform(value: any, metadata: ArgumentMetadata) {
         const { metatype } = metadata;
-        console.log(1111, metatype);
         // 如果没有传入验证规则，则不验证，直接返回数据
         if (!metatype || !this.toValidate(metatype)) {
             return value;
@@ -22,8 +21,8 @@ export class ValidationPipe implements PipeTransform<any> {
         // 将对象转换为 Class 来验证
         const object = plainToClass(metatype, value);
         const errors = await validate(object);
-        Logger.log(errors, 'validation.pipe处理');
-        if (errors.length > 0) {
+        if (errors.length) {
+            Logger.log(errors, 'validation.pipe处理发现错误');
             // 遍历全部的错误信息,返回给前端
             // const errorMessage = errors.map(item => {
             //   return {
@@ -34,7 +33,7 @@ export class ValidationPipe implements PipeTransform<any> {
             //获取第一个错误并且返回
             const msg = values(errors[0].constraints)[0];
             // 统一抛出异常
-            throw new HttpException({ message: msg }, HttpStatus.OK);
+            throw new HttpException({ code: HttpStatus.BAD_REQUEST, message: msg }, HttpStatus.OK);
         }
         return value;
     }

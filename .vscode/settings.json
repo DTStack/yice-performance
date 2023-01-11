@@ -27,5 +27,9 @@
     "stylelint.stylelintPath": "node_modules/.pnpm/stylelint@14.11.0/node_modules/stylelint",
     "[nginx]": {
         "editor.defaultFormatter": "ahmadalli.vscode-nginx-conf"
-    }
+    },
+    "cSpell.words": [
+        "Kbps",
+        "KHTML"
+    ]
 }

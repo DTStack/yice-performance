@@ -17,12 +17,11 @@ async function bootstrap() {
     const options = new DocumentBuilder()
         .setTitle('权限系统管理  api文档')
         .setDescription('权限系统管理  api接口文档')
-        .setBasePath(API_PREFIX)
         .setVersion(packageJson?.version)
         .build();
 
     const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup(`${API_PREFIX}/docs`, app, document);
+    SwaggerModule.setup(`docs`, app, document);
 
     await app.listen(APP_PORT, () => {
         console.log(`app is running: http://localhost:${APP_PORT}`);
