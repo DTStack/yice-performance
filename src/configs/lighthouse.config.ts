@@ -1,5 +1,21 @@
 // https://github.com/GoogleChrome/lighthouse/blob/main/core/config/desktop-config.js
-module.exports = {
+
+const chromeLauncherOptions = {
+    chromeFlags: process.env.NODE_ENV === 'production' ? ['--headless'] : [], // --headless 表示不打开窗口
+    logLevel: 'error',
+};
+
+const getLhOptions = (PORT: number) => {
+    return {
+        port: PORT,
+        logLevel: 'error',
+        output: 'html',
+        onlyCategories: ['performance'], // 仅采集 performance 数据
+        disableStorageReset: true, // 禁止在运行前清除浏览器缓存和其他存储 API
+    };
+};
+
+const lhConfig = {
     extends: 'lighthouse:default',
     settings: {
         onlyCategories: ['performance'],
@@ -24,3 +40,5 @@ module.exports = {
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4695.0 Safari/537.36 Chrome-Lighthouse',
     },
 };
+
+export { chromeLauncherOptions, getLhOptions, lhConfig };

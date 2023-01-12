@@ -16,7 +16,7 @@ export class ExaminationController {
     })
     @HttpCode(HttpStatus.OK)
     @Post('run')
-    async run(@Body() urlDto: UrlDto): Promise<string> {
+    async run(@Body() urlDto: UrlDto): Promise<object> {
         return await this.examinationService.run(urlDto);
     }
 }

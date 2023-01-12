@@ -25,7 +25,7 @@ async function bootstrap() {
 
     await app.listen(APP_PORT, () => {
         console.log(`app is running: http://localhost:${APP_PORT}`);
-        console.log(`api docs: http://localhost:${APP_PORT}/${API_PREFIX}/docs`);
+        console.log(`api docs: http://localhost:${APP_PORT}/docs`);
     });
 }
 bootstrap();
