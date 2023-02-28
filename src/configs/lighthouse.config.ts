@@ -31,8 +31,8 @@ const lhConfig = {
         },
         screenEmulation: {
             mobile: false,
-            width: 1350,
-            height: 940,
+            width: 1440,
+            height: 960,
             deviceScaleFactor: 1,
             disabled: false,
         },

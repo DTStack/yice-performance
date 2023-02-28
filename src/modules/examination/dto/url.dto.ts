@@ -2,13 +2,16 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsUrl } from 'class-validator';
 
 export class UrlDto {
-    @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: '页面地址无效' })
-    @IsNotEmpty({ message: '页面地址不能为空' })
-    @ApiPropertyOptional({ description: '页面地址' })
+    @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: '检测地址无效' })
+    @IsNotEmpty({ message: '检测地址不能为空' })
+    @ApiPropertyOptional({ description: '检测地址' })
     url: string;
 
     @IsOptional()
-    @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: '页面地址无效' })
+    @IsUrl(
+        { protocols: ['http', 'https'], require_protocol: true },
+        { message: '登录页面地址无效' }
+    )
     @ApiPropertyOptional({ description: '登录页面地址，可选' })
     loginUrl: string;
 

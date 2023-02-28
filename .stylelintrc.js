@@ -2,7 +2,7 @@ module.exports = {
     files: ['**/*.css', '**/*.scss'],
     customSyntax: require.resolve('postcss-scss'),
     extends: 'stylelint-config-standard',
-    plugins: ['stylelint-order', 'stylelint-scss'],
+    plugins: ['stylelint-order'],
     rules: {
         // null 为关闭规则
         indentation: 4, // 缩进4格

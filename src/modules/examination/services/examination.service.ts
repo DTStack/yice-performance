@@ -14,7 +14,7 @@ const PORT = 8041;
 @Injectable()
 export class ExaminationService {
     // 登录
-    async login(page, urlDto: UrlDto) {
+    async toLogin(page, urlDto: UrlDto) {
         const { loginUrl, username, password } = urlDto;
         await page.goto(loginUrl);
         // 等待指定的选择器匹配元素出现在页面中
@@ -26,13 +26,16 @@ export class ExaminationService {
         const passwordInput = await page.$('#password');
         await passwordInput.type(password);
         const codeInput = await page.$('.c-login__container__form__code__input');
-        await codeInput.type('假验证码');
+        await codeInput.type('bz4x');
 
         // 登录按钮
         await page.click('.c-login__container__form__btn');
         // await page.waitForNavigation();
         await sleep(process.env.RESPONSE_SLEEP);
 
+        /**
+         * TODO 开了验证码，账号密码错误，不弹出选择租户
+         */
         // 若跳转之后仍在登录页，说明登录出错
         const currentUrl = await page.url();
         if (currentUrl.includes('login')) {
@@ -77,7 +80,7 @@ export class ExaminationService {
         let runResult;
         try {
             // 登录
-            await this.login(page, urlDto);
+            await this.toLogin(page, urlDto);
             // 选择租户
             await this.changeTenant(page);
 
@@ -118,6 +121,7 @@ export class ExaminationService {
         const start = new Date().getTime();
         try {
             const { url, loginUrl } = urlDto;
+            // 依据是否包含 devops 来判断是否需要登录
             const needLogin = url.includes('devops') || loginUrl;
             console.log(`本次检测${needLogin ? '' : '不'}需要登录`, url);
 
@@ -127,21 +131,39 @@ export class ExaminationService {
 
             // 保存检测结果文件，便于预览
             const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\//g, '');
-            fs.writeFileSync(`./static/${urlStr}-report.html`, runResult?.report);
+            const resultPath = `./static/${urlStr}-report.html`;
+            fs.writeFileSync(resultPath, runResult?.report);
 
             // 性能数据
-            const performance = runResult?.lhr?.categories?.performance || {};
+            const audits = runResult?.lhr?.audits || {};
+            const auditRefs =
+                runResult?.lhr?.categories?.performance?.auditRefs?.filter((item) => item.weight) ||
+                [];
+            const { score = 0 } = runResult?.lhr?.categories?.performance || {};
+            const duration = (new Date().getTime() - start).toFixed(2);
             const data = {
-                ...performance,
-                auditRefs: performance?.auditRefs?.filter((item) => item.weight),
+                score,
+                duration,
+                resultPath,
+                performance: [],
             };
-            // console.log(data);
-            console.log(`本次耗时：${((new Date().getTime() - start) / 1000).toFixed(2)}s`);
+            for (const auditRef of auditRefs) {
+                const { weight, acronym } = auditRef;
+                const { score, numericValue } = audits[auditRef.id] || {};
+                data.performance.push({
+                    weight,
+                    name: acronym,
+                    score,
+                    time: Math.round(numericValue * 100) / 100,
+                });
+            }
+
+            console.log(data);
+            console.log(`本次检测耗时：${duration}ms`);
 
             return {
                 code: 200,
                 data,
-                message: `耗时：${((new Date().getTime() - start) / 1000).toFixed(2)}s`,
             };
         } catch (error) {
             return {
