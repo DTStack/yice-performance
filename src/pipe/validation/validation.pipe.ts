@@ -30,7 +30,7 @@ export class ValidationPipe implements PipeTransform<any> {
             //     [item.property]: _.values(item.constraints)[0],
             //   };
             // });
-            //获取第一个错误并且返回
+            // 获取第一个错误并且返回
             const msg = values(errors[0].constraints)[0];
             // 统一抛出异常
             throw new HttpException({ code: HttpStatus.BAD_REQUEST, message: msg }, HttpStatus.OK);

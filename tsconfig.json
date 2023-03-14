@@ -18,7 +18,8 @@
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
         "paths": {
-            /*定义别名*/ "@/*": ["src/*"]
+            "@/*": ["src/*"],
+            "@/src/*": ["src/*"]
         }
     }
 }

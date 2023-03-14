@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 
 import { AppModule } from './app.module';
 const packageJson = require('../package.json');
@@ -15,13 +16,16 @@ async function bootstrap() {
 
     // 配置api文档信息
     const options = new DocumentBuilder()
-        .setTitle('权限系统管理  api文档')
-        .setDescription('权限系统管理  api接口文档')
+        .setTitle('性能检测系统管理  api文档')
+        .setDescription('性能检测系统管理  api接口文档')
         .setVersion(packageJson?.version)
         .build();
 
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup(`docs`, app, document);
+
+    // 全局注册错误的过滤器(错误异常)
+    app.useGlobalFilters(new HttpExceptionFilter());
 
     await app.listen(APP_PORT, () => {
         console.log(`app is running: http://localhost:${APP_PORT}`);

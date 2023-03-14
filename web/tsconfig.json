@@ -13,6 +13,7 @@
         "moduleResolution": "Node",
         "resolveJsonModule": true,
         "isolatedModules": true,
+        "suppressImplicitAnyIndexErrors": true,
         "noEmit": true,
         "jsx": "react-jsx"
     },

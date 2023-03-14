@@ -1,39 +1,50 @@
 import { useState } from 'react';
 import { Input, message } from 'antd';
 import Projects from './components/projects';
+import TaskTable from './components/taskTable';
+import { httpPattern } from '../../utils';
+import API from '../../utils/api';
 import './style.less';
 
 const { Search } = Input;
 
 function Home() {
-    const [examining, setExamining] = useState(false);
+    const [running, setRunning] = useState<boolean>(false);
+    // 最后一次点击开始检测的时间戳
+    const [runTime, setRunTime] = useState<number>(0);
 
     /** 点击了检测按钮 */
-    const handleExamine = (url: string) => {
-        const pattern =
-            /^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/g;
-        if (!pattern.test(url)) {
-            message.warning('请输入以 http(s) 开头的检测网址');
+    const handleRun = (url: string) => {
+        if (!httpPattern.test(url)) {
+            message.warning('请输入以 http(s) 开头的检测地址');
             return;
         }
 
-        setExamining(true);
-        console.log(1111, url);
+        setRunning(true);
+        API.createTask({ url })
+            .then(() => {
+                message.success('成功，请在任务列表查看');
+                setRunTime(new Date().getTime());
+            })
+            .finally(() => {
+                setRunning(false);
+            });
     };
 
     return (
         <div className="home-content">
             <Search
-                className="examine-input"
-                placeholder="请输入待检测的网址，以 http(s) 开头"
+                className="run-input"
+                placeholder="请输入待检测的地址，以 http(s) 开头"
                 enterButton="开始检测"
                 autoFocus
-                loading={examining}
-                onSearch={handleExamine}
-                onPressEnter={(e) => !examining && handleExamine((e?.target as any)?.value)}
+                loading={running}
+                onSearch={handleRun}
+                onPressEnter={(e) => !running && handleRun((e?.target as any)?.value)}
             />
 
-            <Projects />
+            <Projects onSetRunTime={(time) => setRunTime(time)} />
+            <TaskTable runTime={runTime} />
         </div>
     );
 }
