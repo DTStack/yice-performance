@@ -36,8 +36,8 @@ function Projects(props: IProps) {
 
     // 点击检测
     const handleRun = (item: ProjectInfo) => {
-        const { projectId, name: projectName } = item;
-        API.createTask({ projectId, projectName }).then(() => {
+        const { projectId } = item;
+        API.createTask({ projectId }).then(() => {
             message.success('成功，请在任务列表查看');
             onSetRunTime(new Date().getTime());
         });

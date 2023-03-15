@@ -16,8 +16,8 @@ CREATE TABLE `project` (
   `username` varchar(256) NULL COMMENT '登录用户名',
   `password` varchar(256) NULL COMMENT '登录密码',
   `sleep` int NULL DEFAULT 5000 COMMENT '请求后延迟多少毫秒进行下一步',
-  `createAt` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updateAt` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `createAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updateAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`projectId`) USING BTREE
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '项目表';
 
@@ -42,8 +42,8 @@ CREATE TABLE `task` (
   `isUseful` tinyint(1) NOT NULL DEFAULT 1 COMMENT '任务是否有效 0 无效, 1 有效',
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '检测任务的状态 0 等待中, 1 检测中, 2 检测失败, 3 检测成功, 4 手动置失败',
   `failReason` varchar(10240) NULL COMMENT '检测失败报错信息',
-  `createAt` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updateAt` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `createAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updateAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`taskId`) USING BTREE
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '检测任务表';
 
@@ -60,8 +60,8 @@ CREATE TABLE `performance` (
   `name` varchar(64) NULL COMMENT '单项名称',
   `score` varchar(64) NULL COMMENT '单项得分',
   `time` varchar(64) NULL COMMENT '单项耗时',
-  `createAt` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updateAt` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `createAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updateAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`performanceId`) USING BTREE
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '检测记录性能详情表';
 

@@ -31,4 +31,9 @@ export default {
     updateProject(data: any) {
         return instance.post('/project/updateProject', data);
     },
+
+    // 性能指标相关
+    getPerformancesByTaskId(params: any) {
+        return instance.get('/performance/getPerformancesByTaskId', { params });
+    },
 };

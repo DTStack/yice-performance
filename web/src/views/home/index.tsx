@@ -33,6 +33,7 @@ function Home() {
 
     return (
         <div className="home-content">
+            <div className="top-bg"></div>
             <Search
                 className="run-input"
                 placeholder="请输入待检测的地址，以 http(s) 开头"

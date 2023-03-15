@@ -102,6 +102,15 @@ export class TaskService {
         const runningList = await this.taskRepository.find({
             where: [{ status: TASK_STATUS.RUNNING }],
         });
+        const { projectId } = taskDto;
+
+        if (projectId) {
+            const { name: projectName, url } = await this.projectRepository.findOneBy({
+                projectId,
+            });
+            taskDto.projectName = projectName;
+            taskDto.url = url;
+        }
         taskDto.status = runningList.length ? TASK_STATUS.WAITING : TASK_STATUS.RUNNING;
 
         const task = this.taskRepository.create(taskDto);
@@ -139,6 +148,7 @@ export class TaskService {
                     duration,
                     reportUrl,
                     status: TASK_STATUS.SUCCESS,
+                    failReason: '',
                 });
                 completeCallback();
             } catch (error) {

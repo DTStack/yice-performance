@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export default class BaseContent {
     @Column({
@@ -11,15 +11,15 @@ export default class BaseContent {
     isDelete: number;
 
     @CreateDateColumn({
-        type: 'datetime',
+        type: 'timestamp',
         nullable: false,
         name: 'createAt',
         comment: '创建时间',
     })
     createAt: Date;
 
-    @CreateDateColumn({
-        type: 'datetime',
+    @UpdateDateColumn({
+        type: 'timestamp',
         nullable: false,
         name: 'updateAt',
         comment: '创建时间',

@@ -1,17 +1,29 @@
-.run-input {
-    width: 820px;
-    margin: 18vh auto 0;
-    display: block;
-    .ant-input-group {
-        .ant-input {
-            height: 50px;
-        }
-        .ant-btn {
-            width: 140px;
-            height: 50px;
-        }
-        .ant-input:focus, .ant-input-focused {
-            box-shadow: none;
+.home-content {
+    .top-bg {
+        width: 100%;
+        height: calc(28vh + 10px);
+        background-image: url('../../assets/top-bg.png');
+        background-position: top;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .run-input {
+        width: 820px;
+        margin: 0 auto;
+        padding-top: 18vh;
+        display: block;
+        .ant-input-group {
+            .ant-input {
+                height: 50px;
+            }
+            .ant-btn {
+                width: 140px;
+                height: 50px;
+            }
+            .ant-input:focus, .ant-input-focused {
+                box-shadow: none;
+            }
         }
     }
 }

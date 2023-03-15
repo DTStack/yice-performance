@@ -7,13 +7,13 @@ export class PerformanceController {
     constructor(private readonly performanceService: PerformanceService) {}
 
     @ApiOperation({
-        summary: '检测任务性能详情',
-        description: '检测任务性能详情',
+        summary: '检测任务的性能指标列表',
+        description: '检测任务的性能指标列表',
     })
-    @ApiQuery({ name: 'performanceId', required: true })
+    @ApiQuery({ name: 'taskId', required: true })
     @HttpCode(HttpStatus.OK)
-    @Get('getPerformance')
-    async getPerformance(@Query() query) {
-        return await this.performanceService.findOne(query?.performanceId);
+    @Get('getPerformancesByTaskId')
+    async getPerformancesByTaskId(@Query() { taskId }) {
+        return await this.performanceService.findByTaskId(taskId);
     }
 }

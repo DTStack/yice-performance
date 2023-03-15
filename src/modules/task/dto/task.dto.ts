@@ -11,13 +11,13 @@ export class TaskDto {
 
     @IsOptional()
     @ApiPropertyOptional({ description: '项目名称' })
-    readonly projectName?: string;
+    projectName?: string;
 
     @IsOptional()
     @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: '检测地址无效' })
     @MaxLength(1024, { message: '最大长度为1024' })
     @ApiPropertyOptional({ description: '检测地址' })
-    readonly url?: string;
+    url?: string;
 
     @IsOptional()
     @ApiPropertyOptional({ description: '检测得分' })

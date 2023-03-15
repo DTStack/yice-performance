@@ -5,6 +5,7 @@ import { chromeLauncherOptions, getLhOptions, lhConfig } from '@/configs/lightho
 import { getPuppeteerConfig } from '@/configs/puppeteer.config';
 import { sleep } from './sleep';
 const fs = require('fs');
+const moment = require('moment');
 const lighthouse = require('lighthouse');
 const puppeteer = require('puppeteer');
 const chromeLauncher = require('chrome-launcher');
@@ -144,8 +145,9 @@ export const taskRun = async (runInfo: IRunInfo, successCallback?, failCallback?
 
         // 保存检测结果文件，便于预览
         const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|#/g, '');
-        const filePath = `./static/${taskId}-${urlStr}.html`;
-        const reportUrl = `/report/${taskId}-${urlStr}.html`;
+        const fileName = `${moment().format('YYYY-MM-DD')}-${taskId}-${urlStr}`;
+        const filePath = `./static/${fileName}.html`;
+        const reportUrl = `/report/${fileName}.html`;
         fs.writeFileSync(filePath, runResult?.report);
 
         // 性能数据
@@ -167,7 +169,7 @@ export const taskRun = async (runInfo: IRunInfo, successCallback?, failCallback?
         }
         const duration = Number((new Date().getTime() - start).toFixed(2));
         const result = {
-            score: score * 100,
+            score: Math.floor(score * 100),
             duration,
             reportUrl,
             performance,

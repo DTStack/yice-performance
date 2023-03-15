@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Tag, Divider, Popconfirm, Tooltip, message } from 'antd';
+import moment from 'moment';
 import type { ColumnsType } from 'antd/es/table';
 import API from '../../../../utils/api';
-import { TASK_STATUS, TASK_STATUS_TEXT } from '../../../../const';
+import { getScoreColor, TASK_STATUS, TASK_STATUS_TEXT } from '../../../../const';
 import { SyncOutlined } from '@ant-design/icons';
+import ReportModal from '../reportModal';
 import './style.less';
 
 interface IPros {
@@ -17,6 +19,8 @@ function TaskTable(props: IPros) {
     const [current, setCurrent] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
     const [status, setStatus] = useState<number[] | undefined>(undefined);
+    const [taskInfo, setTaskInfo] = useState<any>({});
+    const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
     const pageSize = 10;
 
     useEffect(() => {
@@ -70,6 +74,17 @@ function TaskTable(props: IPros) {
         });
     };
 
+    // 查看报告
+    const handleReport = (item: any) => {
+        setTaskInfo(item);
+        setReportModalOpen(true);
+    };
+
+    const getScoreDiv = (score: string | number) => {
+        const className = getScoreColor(score);
+        return <div className={className}></div>;
+    };
+
     const columns: ColumnsType<object> = [
         {
             title: '关联项目',
@@ -82,33 +97,51 @@ function TaskTable(props: IPros) {
             title: '检测地址',
             dataIndex: 'url',
             key: 'url',
-            render: (text) => text || '-',
+            width: 280,
+            ellipsis: {
+                showTitle: false,
+            },
+            render: (text) => (
+                <Tooltip placement="topLeft" title={text}>
+                    {text}
+                </Tooltip>
+            ),
         },
         {
             title: '检测得分',
             dataIndex: 'score',
             key: 'score',
             width: 140,
-            render: (text) => text || '-',
+            render: (text) => {
+                return text ? (
+                    <div className="color-content">
+                        {getScoreDiv(text)}
+                        {text} 分
+                    </div>
+                ) : (
+                    '-'
+                );
+            },
         },
         {
-            title: '检测时长(ms)',
+            title: '检测时长',
             dataIndex: 'duration',
             key: 'duration',
-            width: 180,
-            render: (text) => text || '-',
+            width: 140,
+            render: (text) => (text ? `${text} ms` : '-'),
         },
         {
             title: '创建时间',
             dataIndex: 'createAt',
             key: 'createAt',
             width: 220,
+            render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
         },
         {
             title: '任务状态',
             dataIndex: 'status',
             key: 'status',
-            width: 140,
+            width: 120,
             filters: TASK_STATUS_TEXT,
             render: (status) => {
                 let color = '';
@@ -149,7 +182,7 @@ function TaskTable(props: IPros) {
             key: 'action',
             width: 240,
             render: (_text, record: any) => {
-                const { status, reportUrl, failReason } = record;
+                const { status, failReason } = record;
                 if (status === TASK_STATUS.WAITING) {
                     return (
                         <Popconfirm
@@ -186,19 +219,13 @@ function TaskTable(props: IPros) {
                 } else if (status === TASK_STATUS.SUCCESS) {
                     return (
                         <div>
-                            <a
-                                target="_blank"
-                                href={`http://127.0.0.1:4000${reportUrl}`}
-                                rel="noreferrer"
-                            >
-                                查看报告
-                            </a>
+                            <a onClick={() => handleReport(record)}>查看报告</a>
                             <Divider type="vertical" />
                             <Popconfirm
-                                title="重试该任务将重新检测，确认重试？"
+                                title="再次检测将重新运行该任务，确认？"
                                 onConfirm={() => handleRetry(record)}
                             >
-                                <a>重试</a>
+                                <a>再次检测</a>
                             </Popconfirm>
                         </div>
                     );
@@ -224,15 +251,23 @@ function TaskTable(props: IPros) {
     };
 
     return (
-        <Table
-            className="task-table"
-            rowKey="taskId"
-            loading={loading}
-            columns={columns}
-            dataSource={taskList}
-            pagination={pagination}
-            onChange={handleTableChange}
-        />
+        <React.Fragment>
+            <Table
+                className="task-table"
+                rowKey="taskId"
+                loading={loading}
+                columns={columns}
+                dataSource={taskList}
+                pagination={pagination}
+                onChange={handleTableChange}
+            />
+
+            <ReportModal
+                open={reportModalOpen}
+                taskInfo={taskInfo}
+                onCancel={() => setReportModalOpen(false)}
+            />
+        </React.Fragment>
     );
 }
 
