@@ -3,8 +3,8 @@ const fs = require('fs');
 const version = '5.3.x';
 const username = 'admin@dtstack.com';
 const password = 'DrpEco_2020';
-const url = 'http://portalfront-default-ui50-v60x-shuzhan.base60.devops.dtstack.cn';
-const loginUrl = 'http://uicfront-default-ui50-v60x-shuzhan.base60.devops.dtstack.cn';
+const url = 'http://portalfront-default-yice-53x-shuzhan.base53.devops.dtstack.cn';
+const loginUrl = 'http://uicfront-default-yice-53x-shuzhan.base53.devops.dtstack.cn';
 
 const apps = [
     { key: 'batch', name: '离线' },

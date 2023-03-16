@@ -144,25 +144,31 @@ export class TaskService {
     private async runWithFirstWait(task) {
         const successCallback = async (taskId, result) => {
             try {
-                const { score, duration, reportUrl, performance } = result;
-                await this.performanceRepository
-                    .createQueryBuilder()
-                    .insert()
-                    .into(Performance)
-                    .values(
-                        performance.map((item) => {
-                            return { ...item, taskId };
-                        })
-                    )
-                    .printSql()
-                    .execute();
-                await this.update(taskId, {
-                    score,
-                    duration,
-                    reportUrl,
-                    status: TASK_STATUS.SUCCESS,
-                    failReason: '',
-                });
+                const { status } = await this.findOne(taskId);
+                // 只有任务是进行中才保存检测结果
+                if (status === TASK_STATUS.RUNNING) {
+                    const { score, duration, reportUrl, performance } = result;
+                    await this.performanceRepository
+                        .createQueryBuilder()
+                        .insert()
+                        .into(Performance)
+                        .values(
+                            performance.map((item) => {
+                                return { ...item, taskId };
+                            })
+                        )
+                        .printSql()
+                        .execute();
+                    await this.update(taskId, {
+                        score,
+                        duration,
+                        reportUrl,
+                        status: TASK_STATUS.SUCCESS,
+                        failReason: '',
+                    });
+                } else {
+                    console.log(`taskId: ${taskId}, 本次检测结果不做记录, taskStatus: ${status}`);
+                }
                 completeCallback();
             } catch (error) {
                 console.log('successCallback error', error);
@@ -190,6 +196,7 @@ export class TaskService {
             status: TASK_STATUS.RUNNING,
             url: runInfo.url,
         });
+
         taskRun(runInfo, successCallback, failCallback);
     }
 }
