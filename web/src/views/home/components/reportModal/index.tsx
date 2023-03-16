@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Modal, Descriptions, Button } from 'antd';
+import { Modal, Descriptions, Button, Tooltip } from 'antd';
 import API from '../../../../utils/api';
 import { getScoreColor } from '../../../../const';
 import './style.less';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 interface IProps {
     open: boolean;
@@ -15,12 +16,16 @@ function ReportModal(props: IProps) {
     const { taskId, score, duration, reportUrl } = taskInfo;
     const [performances, setPerformances] = useState<any[]>([]);
     const list = [
-        { key: 'FCP', label: '首次内容渲染时长' },
-        { key: 'SI', label: '首次展现平均值' },
-        { key: 'LCP', label: '最大内容绘制时间' },
-        { key: 'TTI', label: '可交互时间' },
-        { key: 'TBT', label: '总阻塞时间' },
-        { key: 'CLS', label: '累计布局样式偏移' },
+        { key: 'FCP', label: '首次内容渲染时长', desc: '页面最新出现的内容渲染时长' },
+        { key: 'SI', label: '首次展现平均值', desc: '页面内容可见填充的速度' },
+        {
+            key: 'LCP',
+            label: '最大内容绘制时间',
+            desc: '页面核心内容呈现时间，不采用 loading 状态的数据',
+        },
+        { key: 'TTI', label: '可交互时间', desc: '用户是否会体验到卡顿' },
+        { key: 'TBT', label: '总阻塞时间', desc: '主线程被阻塞的时间，无法作出输入响应' },
+        { key: 'CLS', label: '累计布局样式偏移', desc: '到加载完成布局的偏移量' },
     ];
 
     useEffect(() => {
@@ -49,9 +54,9 @@ function ReportModal(props: IProps) {
                 </Button>,
             ]}
             destroyOnClose
-            width={800}
+            width={900}
         >
-            <Descriptions bordered column={2} labelStyle={{ width: 180 }}>
+            <Descriptions bordered column={2} labelStyle={{ width: 220 }}>
                 <Descriptions.Item label="检测得分">
                     {score ? (
                         <div className="color-content">
@@ -68,7 +73,20 @@ function ReportModal(props: IProps) {
 
                 {list.map((item) => {
                     return (
-                        <Descriptions.Item key={item.key} label={item.label}>
+                        <Descriptions.Item
+                            key={item.key}
+                            label={
+                                <div className="descriptions-item-label">
+                                    <div>
+                                        <span>{item.label}</span>
+                                        <span>&nbsp;({item.key})&nbsp;</span>
+                                    </div>
+                                    <Tooltip title={item.desc}>
+                                        <QuestionCircleOutlined />
+                                    </Tooltip>
+                                </div>
+                            }
+                        >
                             {`${
                                 performances.find(
                                     (performance: any) => performance.name === item.key
