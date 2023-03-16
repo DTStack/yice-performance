@@ -1,7 +1,7 @@
 // https://github.com/GoogleChrome/lighthouse/blob/main/core/config/desktop-config.js
 
 const chromeLauncherOptions = {
-    chromeFlags: process.env.USE_HEADLESS !== 'yes' ? ['--headless'] : [], // --headless 表示不打开窗口
+    chromeFlags: process.env.USE_HEADLESS !== 'yes' ? ['--headless', '--no-sandbox'] : [], // --headless 表示不打开窗口
     logLevel: 'error',
 };
 
