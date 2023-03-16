@@ -6,7 +6,7 @@ import { AppModule } from './app.module';
 const packageJson = require('../package.json');
 
 const APP_PORT = process.env.APP_PORT || 4000;
-const API_PREFIX = process.env.API_PREFIX || '';
+const API_PREFIX = process.env.API_PREFIX || 'api/v1';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
