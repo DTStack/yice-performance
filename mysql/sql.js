@@ -26,7 +26,7 @@ for (const app of apps) {
 }
 
 try {
-    fs.writeFileSync(`./generate/addApps-${version}.sql`, sql);
+    fs.writeFileSync(`./mysql/addApps-${version}.sql`, sql);
     console.log('sql 生成成功！');
 } catch (error) {
     console.log('sql 生成失败！');
