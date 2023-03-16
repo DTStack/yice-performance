@@ -3,7 +3,7 @@ import { message } from 'antd';
 
 // 创建 axios 实例
 const instance = axios.create({
-    baseURL: 'http://localhost:4000/api/v1',
+    baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:4000/api/v1' : '/api/v1',
     timeout: 30_000,
 });
 
