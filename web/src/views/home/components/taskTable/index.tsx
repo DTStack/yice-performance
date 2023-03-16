@@ -54,30 +54,33 @@ function TaskTable(props: IPros) {
         });
     };
 
-    // 置失败
-    const handleSetFail = (item: any) => {
+    // 取消检测
+    const handleCancel = (item: any) => {
         API.updateTask({
             taskId: item.taskId,
-            status: TASK_STATUS.FAIL,
-            failReason: '手动置失败',
-        }).then(() => {
-            message.success('操作成功！');
-            fetchData();
-        });
-    };
-
-    // 重试
-    const handleRetry = (item: any) => {
-        API.retryTask({ taskId: item.taskId }).then(() => {
-            message.success('操作成功！');
-            fetchData();
-        });
+            status: TASK_STATUS.CANCEL,
+            failReason: '手动取消检测',
+        })
+            .then(() => {
+                message.success('操作成功！');
+            })
+            .finally(() => {
+                fetchData();
+            });
     };
 
     // 查看报告
     const handleReport = (item: any) => {
         setTaskInfo(item);
         setReportModalOpen(true);
+    };
+
+    // 再次检测
+    const handleTryAgain = (item: any) => {
+        API.tryTaskAgain({ taskId: item.taskId }).then(() => {
+            message.success('操作成功！');
+            fetchData();
+        });
     };
 
     const getScoreDiv = (score: string | number) => {
@@ -158,7 +161,7 @@ function TaskTable(props: IPros) {
                     case TASK_STATUS.SUCCESS:
                         color = 'green';
                         break;
-                    case TASK_STATUS.SET_FAIL:
+                    case TASK_STATUS.CANCEL:
                         color = 'red';
                         break;
                 }
@@ -183,10 +186,19 @@ function TaskTable(props: IPros) {
             width: 240,
             render: (_text, record: any) => {
                 const { status, failReason } = record;
+                const tryAgainBtn = (
+                    <Popconfirm
+                        title="再次检测将新建检测任务，是否继续？"
+                        onConfirm={() => handleTryAgain(record)}
+                    >
+                        <a>再次检测</a>
+                    </Popconfirm>
+                );
+
                 if (status === TASK_STATUS.WAITING) {
                     return (
                         <Popconfirm
-                            title="尝试运行该任务将重新加入任务队列，是否尝试运行？"
+                            title="尝试运行将会把该任务重新加入任务队列，是否继续？"
                             onConfirm={() => handleTryRun(record)}
                         >
                             <a>尝试运行</a>
@@ -195,10 +207,15 @@ function TaskTable(props: IPros) {
                 } else if (status === TASK_STATUS.RUNNING) {
                     return (
                         <Popconfirm
-                            title="由于系统原因该任务可能已经失效，置失败后可以重试"
-                            onConfirm={() => handleSetFail(record)}
+                            title={
+                                <div>
+                                    <div>由于系统原因可能导致该任务已经失效，</div>
+                                    <div>取消检测后可以再次检测，是否继续？</div>
+                                </div>
+                            }
+                            onConfirm={() => handleCancel(record)}
                         >
-                            <a>置失败</a>
+                            <a>取消检测</a>
                         </Popconfirm>
                     );
                 } else if (status === TASK_STATUS.FAIL) {
@@ -208,12 +225,7 @@ function TaskTable(props: IPros) {
                                 <a>报错信息</a>
                             </Tooltip>
                             <Divider type="vertical" />
-                            <Popconfirm
-                                title="重试该任务将重新检测，确认重试？"
-                                onConfirm={() => handleRetry(record)}
-                            >
-                                <a>重试</a>
-                            </Popconfirm>
+                            {tryAgainBtn}
                         </div>
                     );
                 } else if (status === TASK_STATUS.SUCCESS) {
@@ -221,23 +233,11 @@ function TaskTable(props: IPros) {
                         <div>
                             <a onClick={() => handleReport(record)}>查看报告</a>
                             <Divider type="vertical" />
-                            <Popconfirm
-                                title="再次检测将重新运行该任务，确认？"
-                                onConfirm={() => handleRetry(record)}
-                            >
-                                <a>再次检测</a>
-                            </Popconfirm>
+                            {tryAgainBtn}
                         </div>
                     );
-                } else if (status === TASK_STATUS.SET_FAIL) {
-                    return (
-                        <Popconfirm
-                            title="重试该任务将重新检测，确认重试？"
-                            onConfirm={() => handleRetry(record)}
-                        >
-                            <a>重试</a>
-                        </Popconfirm>
-                    );
+                } else if (status === TASK_STATUS.CANCEL) {
+                    return tryAgainBtn;
                 } else {
                     return '--';
                 }

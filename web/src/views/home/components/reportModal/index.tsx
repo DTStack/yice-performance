@@ -51,8 +51,8 @@ function ReportModal(props: IProps) {
             destroyOnClose
             width={800}
         >
-            <Descriptions bordered labelStyle={{ width: 180 }}>
-                <Descriptions.Item label="检测得分" span={2}>
+            <Descriptions bordered column={2} labelStyle={{ width: 180 }}>
+                <Descriptions.Item label="检测得分">
                     {score ? (
                         <div className="color-content">
                             {getScoreDiv(score)}
@@ -62,13 +62,13 @@ function ReportModal(props: IProps) {
                         '-'
                     )}
                 </Descriptions.Item>
-                <Descriptions.Item label="检测时长" span={2}>
+                <Descriptions.Item label="检测时长">
                     <div className="color-content">{duration} ms</div>
                 </Descriptions.Item>
 
                 {list.map((item) => {
                     return (
-                        <Descriptions.Item key={item.key} label={item.label} span={2}>
+                        <Descriptions.Item key={item.key} label={item.label}>
                             {`${
                                 performances.find(
                                     (performance: any) => performance.name === item.key
@@ -78,7 +78,7 @@ function ReportModal(props: IProps) {
                     );
                 })}
 
-                <Descriptions.Item label="查看报告原件" span={3}>
+                <Descriptions.Item label="查看报告原件" span={2}>
                     <a target="_blank" href={reportUrl} rel="noreferrer">
                         {`${location.origin}${reportUrl}`}
                     </a>

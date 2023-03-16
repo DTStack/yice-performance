@@ -60,14 +60,14 @@ export class TaskController {
         return await this.taskService.update(taskId, taskDto);
     }
 
-    @ApiOperation({ summary: '重试任务', description: '重试任务' })
+    @ApiOperation({ summary: '再次检测', description: '再次检测' })
     @HttpCode(HttpStatus.OK)
-    @Post('retryTask')
-    async retryTask(@Body() { taskId }) {
+    @Post('tryTaskAgain')
+    async tryTaskAgain(@Body() { taskId }) {
         if (!taskId) {
             throw new HttpException('请传入任务id', HttpStatus.OK);
         }
-        return await this.taskService.retry(taskId);
+        return await this.taskService.tryAgain(taskId);
     }
 
     @ApiOperation({ summary: '尝试运行任务', description: '尝试运行任务' })

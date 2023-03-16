@@ -14,8 +14,8 @@ export default {
     updateTask(data: any) {
         return instance.post('/task/updateTask', data);
     },
-    retryTask(data: any) {
-        return instance.post('/task/retryTask', data);
+    tryTaskAgain(data: any) {
+        return instance.post('/task/tryTaskAgain', data);
     },
     tryRunTask(data: any) {
         return instance.post('/task/tryRunTask', data);

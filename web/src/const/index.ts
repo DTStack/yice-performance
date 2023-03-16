@@ -3,7 +3,7 @@ export enum TASK_STATUS {
     RUNNING,
     FAIL,
     SUCCESS,
-    SET_FAIL,
+    CANCEL,
 }
 
 export const TASK_STATUS_TEXT = [
@@ -11,7 +11,7 @@ export const TASK_STATUS_TEXT = [
     { text: '检测中', value: TASK_STATUS.RUNNING },
     { text: '检测失败', value: TASK_STATUS.FAIL },
     { text: '检测成功', value: TASK_STATUS.SUCCESS },
-    { text: '手动置失败', value: TASK_STATUS.SET_FAIL },
+    { text: '取消检测', value: TASK_STATUS.CANCEL },
 ];
 
 /**

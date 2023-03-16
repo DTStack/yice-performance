@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TaskDto } from '../dto/task.dto';
@@ -30,7 +30,7 @@ export class TaskService {
                     TASK_STATUS.RUNNING,
                     TASK_STATUS.FAIL,
                     TASK_STATUS.SUCCESS,
-                    TASK_STATUS.SET_FAIL,
+                    TASK_STATUS.CANCEL,
                 ],
             } = query;
             const [data, total] = await this.taskRepository
@@ -59,24 +59,37 @@ export class TaskService {
     }
 
     async update(taskId, taskDto: TaskDto): Promise<any> {
+        // 取消检测时判断任务是否还是运行中
+        const { status } = taskDto;
+        const { status: latestStatus } = await this.findOne(taskId);
+        if (status === TASK_STATUS.CANCEL && latestStatus !== TASK_STATUS.RUNNING) {
+            throw new HttpException('当前任务已经结束，不可取消检测', HttpStatus.OK);
+        }
+
         const result = await this.taskRepository.update(taskId, taskDto);
         return result;
     }
 
-    // 重试
-    async retry(taskId): Promise<any> {
-        const task = await this.findOne(taskId);
+    // 再次检测
+    async tryAgain(taskId): Promise<any> {
+        const { projectId, projectName, url } = await this.findOne(taskId);
         const runningList = await this.taskRepository.find({
             where: [{ status: TASK_STATUS.RUNNING }],
         });
+        const task = this.taskRepository.create({
+            projectId,
+            projectName,
+            url,
+            status: runningList.length ? TASK_STATUS.WAITING : TASK_STATUS.RUNNING,
+        });
+        const result = await this.taskRepository.save(task);
+
         // 如果没有等待中的任务，则运行当前任务；如果有等待中的任务，则不进行操作
         if (!runningList.length) {
-            task && this.runWithFirstWait(task);
-        } else if (task.status === TASK_STATUS.FAIL) {
-            await this.update(task.taskId, { status: TASK_STATUS.WAITING, failReason: '' });
+            this.runWithFirstWait(result);
         }
 
-        return task;
+        return result;
     }
 
     // 尝试运行

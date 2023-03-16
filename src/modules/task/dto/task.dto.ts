@@ -37,7 +37,7 @@ export class TaskDto {
 
     @IsOptional()
     @ApiPropertyOptional({
-        description: '检测任务的状态 0 等待中, 1 检测中, 2 检测失败, 3 检测成功, 4 手动置失败',
+        description: '检测任务的状态 0 等待中, 1 检测中, 2 检测失败, 3 检测成功, 4 取消检测',
     })
     status?: number;
 

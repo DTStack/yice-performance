@@ -3,5 +3,5 @@ export enum TASK_STATUS {
     RUNNING,
     FAIL,
     SUCCESS,
-    SET_FAIL,
+    CANCEL,
 }
