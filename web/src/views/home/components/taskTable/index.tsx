@@ -106,7 +106,9 @@ function TaskTable(props: IPros) {
             },
             render: (text) => (
                 <Tooltip placement="topLeft" title={text}>
-                    {text}
+                    <a href={text} target="_blank" rel="noreferrer">
+                        {text}
+                    </a>
                 </Tooltip>
             ),
         },
