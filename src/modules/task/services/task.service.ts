@@ -22,20 +22,23 @@ export class TaskService {
 
     async findAll(query: TaskReqDto): Promise<object> {
         try {
-            const {
-                pageSize = 10,
-                current = 1,
-                status = [
-                    TASK_STATUS.WAITING,
-                    TASK_STATUS.RUNNING,
-                    TASK_STATUS.FAIL,
-                    TASK_STATUS.SUCCESS,
-                    TASK_STATUS.CANCEL,
-                ],
-            } = query;
+            const { pageSize = 10, current = 1, status = [], projectId = [] } = query;
+            let whereSql = '';
+            const whereParams = {};
+
+            if (status?.length) {
+                whereSql += 'status IN (:...status)';
+                Object.assign(whereParams, { status });
+            }
+            if (projectId?.length) {
+                whereSql.length && (whereSql += ' AND ');
+                whereSql += 'projectId IN (:...projectId)';
+                Object.assign(whereParams, { projectId });
+            }
+
             const [data, total] = await this.taskRepository
                 .createQueryBuilder()
-                .where('status IN (:...status)', { status })
+                .where(whereSql, whereParams)
                 .skip((current - 1) * pageSize)
                 .take(pageSize)
                 .orderBy({ taskId: 'DESC' })

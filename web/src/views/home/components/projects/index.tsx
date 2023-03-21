@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import { Button, Divider, message, Popconfirm } from 'antd';
 import { getImgUrl } from '../../../../utils';
@@ -8,25 +8,16 @@ import { ProjectInfo } from 'typing';
 import './style.less';
 
 interface IProps {
+    projectList: any[];
+    getProjects: () => void;
     onSetRunTime: (time: number) => void;
 }
 
 function Projects(props: IProps) {
-    const { onSetRunTime } = props;
+    const { projectList = [], getProjects, onSetRunTime } = props;
     // const navigate = useNavigate();
-    const [projectList, setProjectList] = useState<any[]>([]);
     const [projectInfo, setProjectInfo] = useState<ProjectInfo>({ url: '' });
     const [projectModalOpen, setProjectModalOpen] = useState<boolean>(false);
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = () => {
-        API.getProjects().then((res) => {
-            setProjectList(res.data || []);
-        });
-    };
 
     const handleEdit = (item: any) => {
         // navigate(`/about`, { state: { id: item } });
@@ -74,7 +65,7 @@ function Projects(props: IProps) {
                 open={projectModalOpen}
                 onCancel={(needFetch: boolean) => {
                     setProjectModalOpen(false);
-                    needFetch && fetchData();
+                    needFetch && getProjects();
                 }}
             />
         </React.Fragment>

@@ -33,7 +33,7 @@ CREATE TABLE `task` (
   `url` varchar(1024) NULL COMMENT '待检测地址',
   `isDelete` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0 未删除, 1 已删除',
   `score` varchar(64) NULL COMMENT '检测得分',
-  `duration` int NULL COMMENT '检测时长，毫秒',
+  `duration` int NULL COMMENT '检测耗时，毫秒',
   `reportUrl` varchar(256) NULL COMMENT '检测结果html文件路径',
   `isUseful` tinyint(1) NOT NULL DEFAULT 1 COMMENT '任务是否有效 0 无效, 1 有效',
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '检测任务的状态 0 等待中, 1 检测中, 2 检测失败, 3 检测成功, 4 取消检测',

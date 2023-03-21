@@ -10,26 +10,34 @@ import './style.less';
 
 interface IPros {
     runTime: number;
+    projectList: any[];
 }
 
 function TaskTable(props: IPros) {
-    const { runTime } = props;
+    const { runTime, projectList } = props;
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [current, setCurrent] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
+    const [projectId, setProjectId] = useState<number[] | undefined>(undefined);
     const [status, setStatus] = useState<number[] | undefined>(undefined);
     const [taskInfo, setTaskInfo] = useState<any>({});
     const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
     const pageSize = 10;
+    const projectFilters = projectList.map((item) => {
+        return {
+            text: item.name,
+            value: item.projectId,
+        };
+    });
 
     useEffect(() => {
         fetchData();
-    }, [runTime, current, status]);
+    }, [runTime, current, projectId, status]);
 
     const fetchData = () => {
         setLoading(true);
-        const params = { current, pageSize, status };
+        const params = { current, pageSize, projectId, status };
         API.getTasks(params)
             .then((res) => {
                 const { data, total } = res.data;
@@ -43,6 +51,7 @@ function TaskTable(props: IPros) {
 
     const handleTableChange = (pagination: any, filters: any) => {
         setCurrent(pagination?.current);
+        setProjectId(filters?.projectId);
         setStatus(filters?.status);
     };
 
@@ -88,13 +97,15 @@ function TaskTable(props: IPros) {
         return <div className={className}></div>;
     };
 
-    const columns: ColumnsType<object> = [
+    const columns: ColumnsType<any> = [
         {
             title: '关联项目',
-            dataIndex: 'projectName',
-            key: 'projectName',
+            dataIndex: 'projectId',
+            key: 'projectId',
             width: 160,
-            render: (text) => text || '-',
+            filters: projectFilters,
+            filterSearch: (input, record) => `${record.text}`.includes(input),
+            render: (_text, record) => record?.projectName || '-',
         },
         {
             title: '检测地址',
@@ -129,7 +140,7 @@ function TaskTable(props: IPros) {
             },
         },
         {
-            title: '检测时长',
+            title: '检测耗时',
             dataIndex: 'duration',
             key: 'duration',
             width: 140,

@@ -60,7 +60,7 @@ const toLogin = async (page, runInfo: IRunInfo) => {
             console.log(`taskId: ${taskId}, 登录成功`);
         }
     } catch (error) {
-        console.log(`taskId: ${taskId}, toLogin error`, error);
+        console.log(`taskId: ${taskId}, 登录出错`, error);
         throw error;
     }
 };
@@ -71,19 +71,33 @@ const changeTenant = async (page, taskId) => {
         // 等待指定的选择器匹配元素出现在页面中
         await page.waitForSelector('#change_ten_id', { visible: true });
 
-        // 用户名、密码、验证码
-        await page.click('.ant-select-selection--single');
+        // 租户
+        await page.click('.ant-select');
         const tenantInput = await page.$('input#change_ten_id');
         await tenantInput.type('demo');
 
-        // 搜索到的租户，点击第一条
+        // 搜索到的租户，点击查询到的第一条租户信息
         await sleep(process.env.RESPONSE_SLEEP);
-        await page.click('li.ant-select-dropdown-menu-item');
+        // v5.3.x
+        try {
+            await page.click('li.ant-select-dropdown-menu-item');
+        } catch (error) {
+            console.log(`taskId: ${taskId}, 这不是 v5.3.x 的选择租户`, error?.toString());
+        }
+        // v6.0.x
+        try {
+            await page.click('.ant-select-item-option-content');
+        } catch (error) {
+            console.log(`taskId: ${taskId}, 这不是 v6.0.x 的选择租户`, error?.toString());
+        }
 
-        // 确定按钮
-        await page.click('button.ant-btn-lg');
+        // 确定按钮，等待接口选择租户成功
+        await page.click('button.ant-btn-primary');
+        await sleep(process.env.RESPONSE_SLEEP);
+        console.log(`taskId: ${taskId}, 选择租户成功`);
     } catch (error) {
-        console.log(`taskId: ${taskId}, changeTenant error`, error);
+        console.log(`taskId: ${taskId}, 选择租户出错`, error);
+        throw error;
     }
 };
 
@@ -163,7 +177,7 @@ export const taskRun = async (runInfo: IRunInfo, successCallback?, failCallback?
             performance.push({
                 weight,
                 name: acronym,
-                score,
+                score: Math.floor(score * 100),
                 time: Math.round(numericValue * 100) / 100,
             });
         }

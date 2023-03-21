@@ -11,7 +11,7 @@ declare module 'typing' {
         url?: string;
         /** 检测得分 */
         score?: string;
-        /** 检测时长 */
+        /** 检测耗时 */
         duration?: number;
         /** 检测结果html文件路径 */
         reportUrl?: string;

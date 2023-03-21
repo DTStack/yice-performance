@@ -24,7 +24,7 @@ export class TaskDto {
     readonly score?: string;
 
     @IsOptional()
-    @ApiPropertyOptional({ description: '检测时长，毫秒' })
+    @ApiPropertyOptional({ description: '检测耗时，毫秒' })
     readonly duration?: number;
 
     @IsOptional()

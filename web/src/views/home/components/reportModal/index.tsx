@@ -54,7 +54,7 @@ function ReportModal(props: IProps) {
                 </Button>,
             ]}
             destroyOnClose
-            width={900}
+            width={1000}
         >
             <Descriptions bordered column={2} labelStyle={{ width: 220 }}>
                 <Descriptions.Item label="检测得分">
@@ -67,11 +67,21 @@ function ReportModal(props: IProps) {
                         '-'
                     )}
                 </Descriptions.Item>
-                <Descriptions.Item label="检测时长">
+                <Descriptions.Item label="检测耗时">
                     <div className="color-content">{duration} ms</div>
                 </Descriptions.Item>
 
                 {list.map((item) => {
+                    const performance = performances.find(
+                        (performance: any) => performance.name === item.key
+                    );
+                    const detail = (
+                        <div>
+                            <div>耗时：{performance?.time} ms</div>
+                            <div>得分：{performance?.score} 分</div>
+                            <div>权重：{performance?.weight}%</div>
+                        </div>
+                    );
                     return (
                         <Descriptions.Item
                             key={item.key}
@@ -87,11 +97,9 @@ function ReportModal(props: IProps) {
                                 </div>
                             }
                         >
-                            {`${
-                                performances.find(
-                                    (performance: any) => performance.name === item.key
-                                )?.time
-                            } ms`}
+                            <Tooltip title={detail} placement="right">
+                                {performance?.time} ms
+                            </Tooltip>
                         </Descriptions.Item>
                     );
                 })}

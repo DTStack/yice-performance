@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input, message } from 'antd';
 import Projects from './components/projects';
 import TaskTable from './components/taskTable';
@@ -9,9 +9,20 @@ import './style.less';
 const { Search } = Input;
 
 function Home() {
+    const [projectList, setProjectList] = useState<any[]>([]);
     const [running, setRunning] = useState<boolean>(false);
     // 最后一次点击开始检测的时间戳
     const [runTime, setRunTime] = useState<number>(0);
+
+    useEffect(() => {
+        getProjects();
+    }, []);
+
+    const getProjects = () => {
+        API.getProjects().then((res) => {
+            setProjectList(res.data || []);
+        });
+    };
 
     /** 点击了检测按钮 */
     const handleRun = (url: string) => {
@@ -44,8 +55,12 @@ function Home() {
                 onPressEnter={(e) => !running && handleRun((e?.target as any)?.value)}
             />
 
-            <Projects onSetRunTime={(time) => setRunTime(time)} />
-            <TaskTable runTime={runTime} />
+            <Projects
+                projectList={projectList}
+                getProjects={getProjects}
+                onSetRunTime={(time) => setRunTime(time)}
+            />
+            <TaskTable projectList={projectList} runTime={runTime} />
         </div>
     );
 }
