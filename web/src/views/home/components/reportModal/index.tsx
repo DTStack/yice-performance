@@ -43,6 +43,11 @@ function ReportModal(props: IProps) {
         return <div className={className}></div>;
     };
 
+    const _reportUrl =
+        process.env.NODE_ENV === 'development'
+            ? `http://localhost:4000${reportUrl}`
+            : `${location.origin}${reportUrl}`;
+
     return (
         <Modal
             title="查看报告"
@@ -105,8 +110,8 @@ function ReportModal(props: IProps) {
                 })}
 
                 <Descriptions.Item label="查看报告原件" span={2}>
-                    <a target="_blank" href={reportUrl} rel="noreferrer">
-                        {`${location.origin}${reportUrl}`}
+                    <a target="_blank" href={_reportUrl} rel="noreferrer">
+                        {_reportUrl}
                     </a>
                 </Descriptions.Item>
             </Descriptions>

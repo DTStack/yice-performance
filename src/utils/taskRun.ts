@@ -47,15 +47,8 @@ const toLogin = async (page, runInfo: IRunInfo) => {
          */
         // 若跳转之后仍在登录页，说明登录出错
         const currentUrl = await page.url();
-        if (currentUrl.includes('login')) {
-            await page.waitForSelector('.ant-message-custom-content > span');
-            // 获取错误信息内容
-            const errorText = await page.$eval('.ant-message-custom-content > span', (el) =>
-                el.textContent.trim()
-            );
-            // 抛出错误信息
-            console.log(`taskId: ${taskId}, 登录失败`, errorText);
-            throw errorText;
+        if (currentUrl.includes('login') || currentUrl.includes('uicfront')) {
+            throw new Error('登录失败，仍在登录页面');
         } else {
             console.log(`taskId: ${taskId}, 登录成功`);
         }

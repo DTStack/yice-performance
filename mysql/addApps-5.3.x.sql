@@ -10,6 +10,6 @@ INSERT INTO project (name, logo, url, loginUrl, username, password) values ('por
 INSERT INTO project (name, logo, url, loginUrl, username, password) values ('数据源中心-5.3.x', 'dataSource.png', 'http://portalfront-default-yice-53x-shuzhan.base53.devops.dtstack.cn/publicService/#/public/data-source/list', 'http://uicfront-default-yice-53x-shuzhan.base53.devops.dtstack.cn', 'admin@dtstack.com', 'DrpEco_2020');
 
 
-INSERT INTO project (name, logo, url, loginUrl, username, password) values ('离线-6.0.x-front', 'batch.png', 'http://portalfront-default-60x-front-lixiankaifa.base60.devops.dtstack.cn/batch/#/', 'http://uicfront-default-60x-front-lixiankaifa.base60.devops.dtstack.cn', 'admin@dtstack.com', 'DrpEco_2020');
 
-INSERT INTO project (name, logo, url, loginUrl, username, password) values ('离线-6.0.x', 'batch.png', 'http://portalfront-default-60x-lixiankaifa.base60.devops.dtstack.cn/batch/#/', 'http://uicfront-default-60x-lixiankaifa.base60.devops.dtstack.cn', 'admin@dtstack.com', 'DrpEco_2020');
+INSERT INTO project (name, logo, url, loginUrl, username, password) values ('离线-5.3.x-front', 'batch.png', 'http://portalfront-liantiao-53x-front-lixiankaifa.base53.devops.dtstack.cn/batch/#/', 'http://uicfront-liantiao-53x-front-lixiankaifa.base53.devops.dtstack.cn', 'admin@dtstack.com', 'DrpEco_2020');
+INSERT INTO project (name, logo, url, loginUrl, username, password) values ('离线-5.3.x', 'batch.png', 'http://portalfront-liantiao-53x-lixiankaifa.base53.devops.dtstack.cn/batch/#/', 'http://uicfront-liantiao-53x-lixiankaifa.base53.devops.dtstack.cn', 'admin@dtstack.com', 'DrpEco_2020');

@@ -175,7 +175,7 @@ function TaskTable(props: IPros) {
                         color = 'green';
                         break;
                     case TASK_STATUS.CANCEL:
-                        color = 'red';
+                        color = 'default';
                         break;
                 }
 

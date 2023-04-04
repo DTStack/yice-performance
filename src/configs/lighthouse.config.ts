@@ -1,4 +1,4 @@
-// https://github.com/GoogleChrome/lighthouse/blob/main/core/config/desktop-config.js
+// https://github.com/GoogleChrome/lighthouse/blob/v9.6.8/docs/configuration.md
 
 const chromeLauncherOptions = {
     chromeFlags: process.env.USE_HEADLESS !== 'yes' ? ['--headless', '--no-sandbox'] : [], // --headless 表示不打开窗口
@@ -19,10 +19,10 @@ const lhConfig = {
     extends: 'lighthouse:default',
     settings: {
         onlyCategories: ['performance'],
-        // onlyAudits: ['first-meaningful-paint', 'speed-index', 'interactive'],
+        // onlyAudits: ['first-contentful-paint'],
         formFactor: 'desktop',
         throttling: {
-            rttMs: 80, // 网络延迟，单位 ms
+            rttMs: 0, // 网络延迟，单位 ms
             throughputKbps: 10 * 1024,
             cpuSlowdownMultiplier: 1,
             requestLatencyMs: 0, // 0 means unset
@@ -36,6 +36,7 @@ const lhConfig = {
             deviceScaleFactor: 1,
             disabled: false,
         },
+        skipAudits: ['uses-http2'], // 跳过的检查
         emulatedUserAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4695.0 Safari/537.36 Chrome-Lighthouse',
     },
