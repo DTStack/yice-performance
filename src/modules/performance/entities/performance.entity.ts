@@ -9,15 +9,15 @@ export class Performance extends BaseContent {
     @Column('int')
     taskId: number;
 
-    @Column({ length: 64, comment: '单项所占的权重' })
-    weight: string;
+    @Column('int')
+    weight: number;
 
     @Column({ length: 64, comment: '单项名称' })
-    name: string;
+    name?: string;
 
-    @Column({ length: 64, comment: '单项得分' })
-    score: string;
+    @Column('int')
+    score: number;
 
-    @Column({ length: 64, comment: '单项耗时' })
-    time: string;
+    @Column('int')
+    duration?: number;
 }

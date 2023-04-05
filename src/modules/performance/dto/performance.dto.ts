@@ -5,23 +5,20 @@ export class PerformanceDto {
     @ApiPropertyOptional({ description: '性能记录id' })
     readonly performanceId: number;
 
-    @IsOptional()
     @ApiPropertyOptional({ description: '任务id' })
-    readonly taskId?: number;
+    readonly taskId: number;
 
-    @IsOptional()
     @ApiPropertyOptional({ description: '单项所占的权重' })
-    readonly weight: string;
+    readonly weight: number;
 
     @IsOptional()
     @ApiPropertyOptional({ description: '单项名称' })
-    readonly name: string;
+    readonly name?: string;
 
-    @IsOptional()
     @ApiPropertyOptional({ description: '单项得分' })
-    readonly score: string;
+    readonly score: number;
 
     @IsOptional()
-    @ApiPropertyOptional({ description: '单项耗时' })
-    readonly time: string;
+    @ApiPropertyOptional({ description: '单项耗时，单位毫秒' })
+    readonly duration?: string;
 }

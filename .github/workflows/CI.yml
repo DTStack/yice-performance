@@ -16,8 +16,8 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 14.x
-          cache: pnpm
+          node-version: '14'
+          cache: 'pnpm'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -29,9 +29,6 @@ jobs:
         with:
           path: package-temp-dir
           key: lock-${{ github.sha }}
-
-      - name: Cache pnpm-lock.yaml
-        run: pnpm generate-lock-entry
 
       - name: Hack for single file
         run: |
@@ -48,7 +45,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.node_modules_cache_id.outputs.cache-hit != 'true'
-        run: pnpm i
+        run: pnpm install --frozen-lockfile
 
   prettier:
     needs: [setup]
@@ -91,3 +88,45 @@ jobs:
 
       - name: Run ESlint
         run: pnpm eslint
+
+  stylelint:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Restore cache from pnpm-lock.yaml
+        uses: actions/cache@v2
+        with:
+          path: package-temp-dir
+          key: lock-${{ github.sha }}
+
+      - name: Restore cache from node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('**/package.json') }}-${{ hashFiles('**/package-temp-dir/pnpm-lock.yaml') }}
+
+      - name: Run Stylelint
+        run: pnpm stylelint
+
+  test:
+    needs: [setup, prettier, eslint, stylelint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Restore cache from pnpm-lock.yaml
+        uses: actions/cache@v2
+        with:
+          path: package-temp-dir
+          key: lock-${{ github.sha }}
+
+      - name: Restore cache from node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('**/package.json') }}-${{ hashFiles('**/package-temp-dir/pnpm-lock.yaml') }}
+
+      - name: Run Test
+        run: pnpm test

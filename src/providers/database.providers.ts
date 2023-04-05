@@ -1,7 +1,7 @@
 import path from 'path';
 import { DataSource } from 'typeorm';
 import dbConfig from '@/configs/db.config';
-console.log(1111, process.env.RESPONSE_SLEEP);
+console.log(1111, process.env.RESPONSE_SLEEP, dbConfig);
 
 export const databaseProviders = [
     {

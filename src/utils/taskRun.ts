@@ -13,8 +13,9 @@ const chromeLauncher = require('chrome-launcher');
 // puppeteer 和 lighthouse 公用该端口
 const PORT = 8041;
 
-interface IRunInfo {
-    taskId?: number;
+interface ITask {
+    taskId: number;
+    start: number;
     url: string;
     loginUrl?: string;
     username?: string;
@@ -22,8 +23,8 @@ interface IRunInfo {
 }
 
 // 登录
-const toLogin = async (page, runInfo: IRunInfo) => {
-    const { loginUrl, username, password, taskId } = runInfo;
+const toLogin = async (page, runInfo: ITask) => {
+    const { taskId, loginUrl, username, password } = runInfo;
     try {
         await page.goto(loginUrl);
         // 等待指定的选择器匹配元素出现在页面中
@@ -45,8 +46,8 @@ const toLogin = async (page, runInfo: IRunInfo) => {
         /**
          * TODO 开了验证码，账号密码错误，不弹出选择租户
          */
-        // 若跳转之后仍在登录页，说明登录出错
         const currentUrl = await page.url();
+        // 依据是否包含 login 或 uicfront 来判断是否需要登录，若跳转之后仍在登录页，说明登录出错
         if (currentUrl.includes('login') || currentUrl.includes('uicfront')) {
             throw new Error('登录失败，仍在登录页面');
         } else {
@@ -87,6 +88,7 @@ const changeTenant = async (page, taskId) => {
         // 确定按钮，等待接口选择租户成功
         await page.click('button.ant-btn-primary');
         await sleep(process.env.RESPONSE_SLEEP);
+
         console.log(`taskId: ${taskId}, 选择租户成功`);
     } catch (error) {
         console.log(`taskId: ${taskId}, 选择租户出错`, error);
@@ -94,8 +96,8 @@ const changeTenant = async (page, taskId) => {
     }
 };
 
-const withLogin = async (runInfo: IRunInfo) => {
-    const { url, taskId } = runInfo;
+const withLogin = async (runInfo: ITask) => {
+    const { taskId, url } = runInfo;
     // 创建 puppeteer 无头浏览器
     const browser = await puppeteer.launch(getPuppeteerConfig(PORT));
     const page = await browser.newPage();
@@ -107,11 +109,11 @@ const withLogin = async (runInfo: IRunInfo) => {
         // 选择租户
         await changeTenant(page, taskId);
 
-        console.log(`taskId: ${taskId}, 开始检测`);
+        console.log(`taskId: ${taskId}, 准备工作完成，开始检测`);
         runResult = await lighthouse(url, getLhOptions(PORT), lhConfig);
         console.log(`taskId: ${taskId}, 检测完成`);
     } catch (error) {
-        console.log(`taskId: ${taskId}, 检测失败`, error);
+        console.log(`taskId: ${taskId}, 检测出错`, error);
         throw error;
     } finally {
         await page.close();
@@ -122,8 +124,8 @@ const withLogin = async (runInfo: IRunInfo) => {
 };
 
 // 不需要登录的页面检测
-const withOutLogin = async (runInfo: IRunInfo) => {
-    const { url, taskId } = runInfo;
+const withOutLogin = async (runInfo: ITask) => {
+    const { taskId, url } = runInfo;
     let chrome, runResult;
     try {
         console.log(`taskId: ${taskId}, 开始检测`);
@@ -140,24 +142,23 @@ const withOutLogin = async (runInfo: IRunInfo) => {
     return runResult;
 };
 
-export const taskRun = async (runInfo: IRunInfo, successCallback?, failCallback?) => {
-    const start = new Date().getTime();
-    const { url, loginUrl, taskId } = runInfo;
+export const taskRun = async (task: ITask, successCallback, failCallback, completeCallback) => {
+    const { taskId, start, url, loginUrl } = task;
     try {
         // 依据是否包含 devops 来判断是否需要登录
         const needLogin = url.includes('devops') || loginUrl;
         console.log(`taskId: ${taskId}, 本次检测${needLogin ? '' : '不'}需要登录，检测地址：`, url);
 
-        const runResult = needLogin ? await withLogin(runInfo) : await withOutLogin(runInfo);
+        const runResult = needLogin ? await withLogin(task) : await withOutLogin(task);
 
-        // 保存检测结果文件，便于预览
+        // 保存检测结果的报告文件，便于预览
         const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|#/g, '');
         const fileName = `${moment().format('YYYY-MM-DD')}-${taskId}-${urlStr}`;
         const filePath = `./static/${fileName}.html`;
         const reportUrl = `/report/${fileName}.html`;
         fs.writeFileSync(filePath, runResult?.report);
 
-        // 性能数据
+        // 整理性能数据
         const audits = runResult?.lhr?.audits || {};
         const auditRefs =
             runResult?.lhr?.categories?.performance?.auditRefs?.filter((item) => item.weight) || [];
@@ -181,15 +182,17 @@ export const taskRun = async (runInfo: IRunInfo, successCallback?, failCallback?
             reportUrl,
             performance,
         };
-        await successCallback?.(taskId, result);
+        await successCallback(taskId, result);
 
         console.log(`taskId: ${taskId}, 本次检测耗时：${duration}ms`);
         return result;
     } catch (error) {
         const failReason = error.toString().substring(0, 10240);
         const duration = Number((new Date().getTime() - start).toFixed(2));
-        await failCallback?.(taskId, failReason, duration);
+        await failCallback(taskId, failReason, duration);
         console.log(`taskId: ${taskId}, taskRun error`, failReason);
         throw error;
+    } finally {
+        completeCallback();
     }
 };

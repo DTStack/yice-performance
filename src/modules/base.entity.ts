@@ -11,7 +11,7 @@ export default class BaseContent {
     isDelete: number;
 
     @CreateDateColumn({
-        type: 'timestamp',
+        type: 'datetime',
         nullable: false,
         name: 'createAt',
         comment: '创建时间',
@@ -19,7 +19,7 @@ export default class BaseContent {
     createAt: Date;
 
     @UpdateDateColumn({
-        type: 'timestamp',
+        type: 'datetime',
         nullable: false,
         name: 'updateAt',
         comment: '创建时间',

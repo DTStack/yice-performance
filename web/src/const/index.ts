@@ -25,7 +25,7 @@ const scoreColor = {
     greenMin: 90,
 };
 
-export const getScoreColor = (score: string | number) => {
+export const getScoreColor = (score: number) => {
     if (score >= scoreColor.greenMin) {
         return 'green';
     } else if (score >= scoreColor.orangeMin) {

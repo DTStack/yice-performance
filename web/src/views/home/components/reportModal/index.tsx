@@ -38,7 +38,7 @@ function ReportModal(props: IProps) {
         });
     };
 
-    const getScoreDiv = (score: string | number) => {
+    const getScoreDiv = (score: number) => {
         const className = getScoreColor(score);
         return <div className={className}></div>;
     };

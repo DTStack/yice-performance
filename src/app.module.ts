@@ -10,6 +10,9 @@ import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { ProjectModule } from './modules/project/project.module';
 import { TaskModule } from './modules/task/task.module';
 import { PerformanceModule } from './modules/performance/performance.module';
+import { BuildModule } from './modules/build/build.module';
+import { VersionModule } from './modules/version/version.module';
+import { DevopsModule } from './modules/devops/devops.module';
 
 @Module({
     imports: [
@@ -39,6 +42,10 @@ import { PerformanceModule } from './modules/performance/performance.module';
         ProjectModule,
         TaskModule,
         PerformanceModule,
+        BuildModule,
+        VersionModule,
+        DevopsModule,
+
         // 托管页面的静态资源
         ServeStaticModule.forRoot({
             serveRoot: '/',

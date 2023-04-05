@@ -7,16 +7,19 @@ export class Task extends BaseContent {
     taskId: number;
 
     @Column('int')
-    projectId?: number;
+    versionId?: number;
 
     @Column({ length: 256 })
-    projectName?: string;
+    versionName?: string;
 
-    @Column({ length: 256 })
-    url?: string;
+    @Column('int')
+    start?: number;
 
-    @Column({ length: 64 })
-    score?: string;
+    @Column({ length: 1024 })
+    url: string;
+
+    @Column('int')
+    score?: number;
 
     @Column('int')
     duration?: number;
@@ -24,12 +27,15 @@ export class Task extends BaseContent {
     @Column({ length: 256 })
     reportUrl?: string;
 
-    @Column('int', { default: 1 })
-    isUseful?: number;
-
     @Column('int', { default: 0 })
-    status?: number;
+    status: number;
 
     @Column({ length: 10240 })
     failReason?: string;
+
+    @Column('int', { default: 1 })
+    triggerType: number;
+
+    @Column('int', { default: 1 })
+    isUseful?: number;
 }

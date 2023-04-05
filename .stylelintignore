@@ -1,0 +1,10 @@
+dist/
+node_modules/
+.cache-loader/
+.DS_Store
+.idea/
+.env
+.vscode
+.history
+*.log
+package-lock.json

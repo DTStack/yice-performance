@@ -92,7 +92,7 @@ function TaskTable(props: IPros) {
         });
     };
 
-    const getScoreDiv = (score: string | number) => {
+    const getScoreDiv = (score: number) => {
         const className = getScoreColor(score);
         return <div className={className}></div>;
     };

@@ -7,20 +7,14 @@ import { ProjectService } from '../services/project.service';
 export class ProjectController {
     constructor(private readonly projectService: ProjectService) {}
 
-    @ApiOperation({
-        summary: '项目列表',
-        description: '项目列表',
-    })
+    @ApiOperation({ summary: '项目列表' })
     @HttpCode(HttpStatus.OK)
     @Get('getProjects')
     async getProjects() {
         return await this.projectService.findAll();
     }
 
-    @ApiOperation({
-        summary: '项目详情',
-        description: '项目详情',
-    })
+    @ApiOperation({ summary: '项目详情' })
     @ApiQuery({ name: 'projectId', required: true })
     @HttpCode(HttpStatus.OK)
     @Get('getProject')
@@ -28,23 +22,10 @@ export class ProjectController {
         return await this.projectService.findOne(query?.projectId);
     }
 
-    @ApiOperation({
-        summary: '更新项目',
-        description: '更新项目',
-    })
+    @ApiOperation({ summary: '更新项目' })
     @HttpCode(HttpStatus.OK)
     @Post('updateProject')
     async updateProject(@Body() projectDto: ProjectDto) {
         return await this.projectService.update(projectDto);
-    }
-
-    @ApiOperation({
-        summary: '创建项目',
-        description: '创建项目',
-    })
-    @HttpCode(HttpStatus.OK)
-    @Post('createProject')
-    async createProject() {
-        return await this.projectService.create();
     }
 }
