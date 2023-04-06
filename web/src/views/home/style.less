@@ -1,28 +1,45 @@
 .home-content {
-    .top-bg {
-        width: 100%;
-        height: calc(28vh + 10px);
-        background-image: url("../../assets/top-bg.png");
-        background-position: top;
-        position: absolute;
-        top: 0;
-        left: 0;
+    height: 100%;
+    background-color: #F4F7FA;
+    display: flex;
+    flex-direction: column;
+    .top-content {
+        height: calc(16vh + 50px);
+        .top-bg {
+            width: 100%;
+            height: calc(16vh + 50px);
+            background-image: url("../../assets/top-bg.png");
+            background-position: top;
+        }
+        .run-input {
+            width: 820px;
+            position: absolute;
+            top: calc(12vh + 25px);
+            left: 50%;
+            right: 50%;
+            transform: translate(-50%, -50%);
+            .ant-input-group {
+                .ant-input {
+                    height: 50px;
+                }
+                .ant-btn {
+                    width: 140px;
+                    height: 50px;
+                }
+                .ant-input:focus, .ant-input-focused {
+                    box-shadow: none;
+                }
+            }
+        }
     }
-    .run-input {
-        width: 820px;
-        margin: 0 auto;
-        padding-top: 18vh;
-        display: block;
-        .ant-input-group {
-            .ant-input {
-                height: 50px;
-            }
-            .ant-btn {
-                width: 140px;
-                height: 50px;
-            }
-            .ant-input:focus, .ant-input-focused {
-                box-shadow: none;
+    .content {
+        flex: 1;
+        .box {
+            height: 100%;
+            padding: 16px;
+            display: flex;
+            .version-box {
+                flex: 1;
             }
         }
     }

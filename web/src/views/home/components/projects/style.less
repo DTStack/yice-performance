@@ -1,26 +1,24 @@
 .project-box {
-    margin: 10vh auto 20px;
-    width: 1200px;
-    display: flex;
-    flex-wrap: wrap;
+    width: 200px;
+    height: calc(100vh - (16vh + 50px) - 32px);
+    background-color: #FFF;
+    box-shadow: 0 0 6px 0 #D8D9E3;
+    overflow: auto;
     .project-item {
-        width: 180px;
-        padding: 10px 0 2px;
-        margin: 0 10px 20px;
-        text-align: center;
-        border-radius: 8px;
-        box-shadow: 0 0 15px 0 #D8D9E3;
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        &.active {
+            background-color: #87CEFAA8;
+        }
         img {
-            width: 60px;
-            height: 60px;
+            width: 40px;
+            height: 40px;
         }
         .name {
             font-size: 14px;
-            padding: 4px 0 12px;
-            border-bottom: 1px solid #E8E8E8;
-        }
-        .btn-box {
-            margin-top: 2px;
+            padding: 0 10px;
         }
     }
 }

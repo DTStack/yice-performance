@@ -44,23 +44,31 @@ function Home() {
 
     return (
         <div className="home-content">
-            <div className="top-bg"></div>
-            <Search
-                className="run-input"
-                placeholder="请输入待检测的地址，以 http(s) 开头"
-                enterButton="开始检测"
-                autoFocus
-                loading={running}
-                onSearch={handleRun}
-                onPressEnter={(e) => !running && handleRun((e?.target as any)?.value)}
-            />
+            <div className="top-content">
+                <div className="top-bg"></div>
+                <Search
+                    className="run-input"
+                    placeholder="请输入待检测的地址，以 http(s) 开头"
+                    enterButton="开始检测"
+                    autoFocus
+                    loading={running}
+                    onSearch={handleRun}
+                    onPressEnter={(e) => !running && handleRun((e?.target as any)?.value)}
+                />
+            </div>
 
-            <Projects
-                projectList={projectList}
-                getProjects={getProjects}
-                onSetRunTime={(time) => setRunTime(time)}
-            />
-            <TaskTable projectList={projectList} runTime={runTime} />
+            <div className="content">
+                <div className="box">
+                    <Projects
+                        projectList={projectList}
+                        getProjects={getProjects}
+                        onSetRunTime={(time) => setRunTime(time)}
+                    />
+                    <div className="version-box"></div>
+                </div>
+            </div>
+
+            {/* <TaskTable projectList={projectList} runTime={runTime} /> */}
         </div>
     );
 }
