@@ -1,3 +1,6 @@
+/**
+ * 备用
+ */
 module.exports = {
     name: 'yice',
     script: './dist/main.js',
