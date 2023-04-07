@@ -4,7 +4,13 @@ import moment from 'moment';
 import type { ColumnsType } from 'antd/es/table';
 import API from '../../../../utils/api';
 import { getScoreColor, TASK_STATUS, TASK_STATUS_TEXT } from '../../../../const';
-import { SyncOutlined } from '@ant-design/icons';
+import {
+    CheckCircleOutlined,
+    ClockCircleOutlined,
+    CloseCircleOutlined,
+    MinusCircleOutlined,
+    SyncOutlined,
+} from '@ant-design/icons';
 import ReportModal from '../reportModal';
 import './style.less';
 
@@ -160,27 +166,32 @@ function TaskTable(props: IPros) {
             width: 120,
             filters: TASK_STATUS_TEXT,
             render: (status) => {
-                let color = '';
+                let icon, color;
                 switch (status) {
                     case TASK_STATUS.WAITING:
-                        color = 'volcano';
+                        icon = <ClockCircleOutlined />;
+                        color = 'warning';
                         break;
                     case TASK_STATUS.RUNNING:
-                        color = 'blue';
+                        icon = <SyncOutlined spin />;
+                        color = 'processing';
                         break;
                     case TASK_STATUS.FAIL:
-                        color = 'red';
+                        icon = <CloseCircleOutlined />;
+                        color = 'error';
                         break;
                     case TASK_STATUS.SUCCESS:
-                        color = 'green';
+                        icon = <CheckCircleOutlined />;
+                        color = 'success';
                         break;
                     case TASK_STATUS.CANCEL:
+                        icon = <MinusCircleOutlined />;
                         color = 'default';
                         break;
                 }
 
                 return (
-                    <Tag color={color}>
+                    <Tag icon={icon} color={color}>
                         {TASK_STATUS_TEXT.find((item) => item.value === status)?.text}
                     </Tag>
                 );
