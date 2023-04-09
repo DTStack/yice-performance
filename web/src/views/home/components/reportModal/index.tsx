@@ -16,16 +16,38 @@ function ReportModal(props: IProps) {
     const { taskId, score, duration, reportPath } = taskInfo;
     const [performances, setPerformances] = useState<any[]>([]);
     const list = [
-        { key: 'FCP', label: '首次内容渲染时长', desc: '页面最新出现的内容渲染时长' },
+        {
+            key: 'FCP',
+            label: '首次内容渲染时长',
+            desc: '用于记录页面首次绘制文本、图片、非空白 Canvas 或 SVG 的时间。',
+        },
         { key: 'SI', label: '首次展现平均值', desc: '页面内容可见填充的速度' },
         {
             key: 'LCP',
             label: '最大内容绘制时间',
-            desc: '页面核心内容呈现时间，不采用 loading 状态的数据',
+            desc: '用于记录视窗内最大的元素绘制的时间，该时间会随着页面渲染变化而变化，因为页面中的最大元素在渲染过程中可能会发生改变，另外该指标会在用户第一次交互后停止记录。',
         },
-        { key: 'TTI', label: '可交互时间', desc: '用户是否会体验到卡顿' },
-        { key: 'TBT', label: '总阻塞时间', desc: '主线程被阻塞的时间，无法作出输入响应' },
-        { key: 'CLS', label: '累计布局样式偏移', desc: '到加载完成布局的偏移量' },
+        {
+            key: 'TTI',
+            label: '可交互时间',
+            desc: (
+                <>
+                    测量页面所有资源加载成功并能够可靠地快速响应用户输入的时间。通常是发生在页面依赖的资源已经加载完成，此时浏览器可以快速响应用户交互的时间。指标的计算过程，需要满足以下几个条件：
+                    <div>1、从 FCP 指标后开始计算；</div>
+                    <div>
+                        2、持续 5 秒内无长任务（执行时间超过 50ms）且无两个以上正在进行中的 GET
+                        请求；
+                    </div>
+                    <div>3、往前回溯至 5 秒前的最后一个长任务结束的时间。</div>
+                </>
+            ),
+        },
+        {
+            key: 'TBT',
+            label: '总阻塞时间',
+            desc: '记录在 FCP 到 TTI 之间所有长任务的阻塞时间总和，TBT = FCP 和 TTI 之间发生的每个长任务的「阻塞时间」总和。',
+        },
+        { key: 'CLS', label: '累计布局样式偏移', desc: '记录了页面上非预期的位移波动' },
     ];
 
     useEffect(() => {
