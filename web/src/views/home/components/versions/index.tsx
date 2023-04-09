@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Modal, Spin, Tabs, message } from 'antd';
+import { Button, Empty, Modal, Spin, Tabs, message } from 'antd';
 import API from '../../../../utils/api';
 import VersionModal from '../versionModal';
 import { IProject, IVersion } from 'typing';
@@ -19,15 +19,21 @@ export default function Versions(props: IProps) {
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [runLoading, setRunLoading] = useState<boolean>(false);
+    const [isDefault, setIsDefault] = useState<boolean>(false);
     const [versionId, setVersionId] = useState<number | undefined>(undefined);
     // runTime 更新则代表 点击了运行按钮，需要更新任务列表
     const [runTime, setRunTime] = useState<number>(0);
 
     useEffect(() => {
         if (projectId) {
+            setVersionId(undefined);
             getVersions(true);
         }
     }, [projectId]);
+
+    useEffect(() => {
+        setIsDefault(versionList.some((item) => !item.closable));
+    }, [versionList]);
 
     // 获取版本列表
     const getVersions = (projectChanged = false) => {
@@ -48,8 +54,11 @@ export default function Versions(props: IProps) {
         return versionList.map((item: any) => {
             return {
                 label: item.name,
+                closable: item.closable,
                 key: `${item.versionId}`,
-                children: <TaskTable versionId={versionId} runTime={runTime} />,
+                children: (
+                    <TaskTable isDefault={isDefault} versionId={versionId} runTime={runTime} />
+                ),
             };
         });
     };
@@ -98,7 +107,7 @@ export default function Versions(props: IProps) {
     };
 
     const renderButtons = () => {
-        return (
+        return isDefault ? null : (
             <>
                 <Button onClick={handleAdd}>新增</Button>
                 {!!versionList.length && (
@@ -134,6 +143,7 @@ export default function Versions(props: IProps) {
                         onEdit={handleEditTab}
                     />
                 </Spin>
+                {!versionList.length && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
             </div>
 
             <VersionModal

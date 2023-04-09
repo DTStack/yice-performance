@@ -20,12 +20,13 @@ import ReportModal from '../reportModal';
 import './style.less';
 
 interface IPros {
+    isDefault: boolean;
     versionId: number | undefined;
     runTime: number;
 }
 
 export default function TaskTable(props: IPros) {
-    const { versionId, runTime } = props;
+    const { isDefault, versionId, runTime } = props;
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [current, setCurrent] = useState<number>(1);
@@ -37,7 +38,7 @@ export default function TaskTable(props: IPros) {
     const pageSize = 10;
 
     useEffect(() => {
-        fetchData();
+        versionId && fetchData();
     }, [versionId, runTime, current, triggerType, status]);
 
     const fetchData = () => {
@@ -110,20 +111,6 @@ export default function TaskTable(props: IPros) {
         //     key: 'versionName',
         //     width: 100,
         //     ellipsis: { showTitle: false },
-        // },
-        // {
-        //     title: '检测地址',
-        //     dataIndex: 'url',
-        //     key: 'url',
-        //     width: 280,
-        //     ellipsis: { showTitle: false },
-        //     render: (text) => (
-        //         <Tooltip placement="topLeft" title={text}>
-        //             <a href={text} target="_blank" rel="noreferrer">
-        //                 {text}
-        //             </a>
-        //         </Tooltip>
-        //     ),
         // },
         {
             title: '检测得分',
@@ -268,6 +255,21 @@ export default function TaskTable(props: IPros) {
             },
         },
     ];
+    isDefault &&
+        columns.unshift({
+            title: '检测地址',
+            dataIndex: 'url',
+            key: 'url',
+            // width: 240,
+            ellipsis: { showTitle: false },
+            render: (text) => (
+                <Tooltip placement="topLeft" title={text}>
+                    <a href={text} target="_blank" rel="noreferrer">
+                        {text}
+                    </a>
+                </Tooltip>
+            ),
+        });
 
     const pagination = {
         pageSize,

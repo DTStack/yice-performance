@@ -16,6 +16,7 @@ declare module 'typing' {
         loginUrl?: string;
         username?: string;
         password?: string;
+        closable?: boolean;
     }
 
     /** 任务字段 */

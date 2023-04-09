@@ -13,6 +13,7 @@ function Home() {
     const [project, setProject] = useState<IProject>();
     const [projectList, setProjectList] = useState<any[]>([]);
     const [running, setRunning] = useState<boolean>(false);
+    const [search, setSearch] = useState<string>('');
 
     useEffect(() => {
         getProjects();
@@ -35,6 +36,7 @@ function Home() {
         setRunning(true);
         API.createTask({ url })
             .then(() => {
+                setSearch('');
                 message.success('操作成功，请在『其他』的任务列表查看');
             })
             .finally(() => {
@@ -51,7 +53,9 @@ function Home() {
                     placeholder="请输入待检测的地址，以 http(s) 开头"
                     enterButton="开始检测"
                     autoFocus
+                    value={search}
                     loading={running}
+                    onChange={(e) => setSearch((e?.target as any)?.value)}
                     onSearch={handleRun}
                     onPressEnter={(e) => !running && handleRun((e?.target as any)?.value)}
                 />

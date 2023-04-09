@@ -18,17 +18,8 @@ CREATE TABLE `project` (
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '项目表';
 
 
-INSERT INTO project (devopsProjectId, name, appName) values (7, '离线', 'batch');
-INSERT INTO project (devopsProjectId, name, appName) values (9, '实时', 'stream');
-INSERT INTO project (devopsProjectId, name, appName) values (12, '控制台', 'console');
-INSERT INTO project (devopsProjectId, name, appName) values (1, 'API', 'dataApi');
-INSERT INTO project (devopsProjectId, name, appName) values (13, '资产', 'dataAssets');
-INSERT INTO project (devopsProjectId, name, appName) values (3, '标签', 'tag');
-INSERT INTO project (devopsProjectId, name, appName) values (2, '指标', 'easyIndex');
-INSERT INTO project (devopsProjectId, name, appName) values (16, '数据湖', 'dataLake');
-INSERT INTO project (devopsProjectId, name, appName) values (11, 'portal', 'portal');
--- INSERT INTO project (devopsProjectId, name, appName) values (11, '数据源中心', 'dataSource');
-INSERT INTO project (name) values ('其他');
+INSERT INTO project (devopsProjectId, name, appName) values (7, '离线', 'batch'), (9, '实时', 'stream'), (12, '控制台', 'console'), (1, 'API', 'dataApi'), (13, '资产', 'dataAssets'), (3, '标签', 'tag'), (2, '指标', 'easyIndex'), (16, '数据湖', 'dataLake'), (11, 'portal', 'portal');
+INSERT INTO project (name, appName) values ('其他', 'default');
 
 
 -- ----------------------------
@@ -49,6 +40,8 @@ CREATE TABLE `version` (
   `updateAt` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`versionId`) USING BTREE
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '项目版本表';
+
+INSERT INTO version (projectId, name, url) SELECT projectId, name, appName FROM project WHERE name = '其他';
 
 
 -- ----------------------------

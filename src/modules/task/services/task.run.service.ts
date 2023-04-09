@@ -67,6 +67,12 @@ export class TaskRunService {
                 getWhere({ versionId })
             );
             taskInfo = { ...taskDto, ...taskInfo, ...version, versionName };
+        } else {
+            // 输入框输入地址进行检测
+            const version = await this.versionRepository.findOneBy(
+                getWhere({ name: '其他', url: 'default' })
+            );
+            taskInfo = { ...taskInfo, versionId: version?.versionId };
         }
 
         // 保存任务
@@ -151,7 +157,7 @@ export class TaskRunService {
             getWhere({ status: TASK_STATUS.RUNNING })
         );
 
-        // 开始检测
+        // 没有运行中的任务则查询等待中的任务
         if (!runTask?.taskId) {
             const start = new Date().getTime();
             const task = await this.taskRepository.findOneBy(
@@ -160,7 +166,9 @@ export class TaskRunService {
             // 有等待中的任务
             if (task?.taskId) {
                 const { versionId } = task;
-                const version = await this.versionRepository.findOneBy(getWhere({ versionId }));
+                const { url, ...version } = await this.versionRepository.findOneBy(
+                    getWhere({ versionId })
+                );
 
                 await this.taskService.update(task?.taskId, {
                     status: TASK_STATUS.RUNNING,
@@ -168,8 +176,9 @@ export class TaskRunService {
                 });
 
                 // 参数的方法不能简写，否则会使方法丢失 this
+                // url 使用 task 的 url 即可，使用 version 的 url 会导致 default 的 url 覆盖实际输入的 url
                 taskRun(
-                    { ...task, ...version, start },
+                    { url, ...task, ...version, start },
                     (taskId, result) => this.successCallback(taskId, result),
                     (taskId, failReason, duration) =>
                         this.failCallback(taskId, failReason, duration),

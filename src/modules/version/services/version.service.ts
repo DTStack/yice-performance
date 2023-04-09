@@ -15,7 +15,9 @@ export class VersionService {
 
     async findAll(projectId: number): Promise<Version[]> {
         const result = await this.versionRepository.find({ where: getWhere({ projectId }) });
-        return result;
+        return result.map((item) => {
+            return { ...item, closable: !(item.name === '其他' && item.url === 'default') };
+        });
     }
 
     async findOne(query: getVersionReqDto): Promise<Version> {
