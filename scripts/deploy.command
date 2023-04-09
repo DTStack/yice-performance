@@ -24,5 +24,5 @@ echo -e '\n6、删除本地压缩包'
 rm -rf yice-performance.tar.gz
 
 
-echo -e '\nDONE! 资源已经成功上传到远程服务器啦~\n\n'
+echo -e '\nDONE! 所有操作都已经完成啦，去浏览器看看效果吧~\n\n'
 
