@@ -10,7 +10,7 @@ declare module 'typing' {
         /** 待检测地址 */
         url?: string;
         /** 检测得分 */
-        score?: string;
+        score?: number;
         /** 检测耗时 */
         duration?: number;
         /** 检测结果html文件路径 */
@@ -28,12 +28,12 @@ declare module 'typing' {
         /** 检测任务id */
         taskId?: number;
         /** 单项所占的权重 */
-        weight: string;
+        weight: number;
         /** 单项名称 */
         name: string;
         /** 单项得分 */
-        score: string;
+        score: number;
         /** 单项耗时 */
-        time: string;
+        duration: number;
     }
 }

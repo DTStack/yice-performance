@@ -172,7 +172,7 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
                 weight,
                 name: acronym,
                 score: Math.floor(score * 100),
-                time: Math.round(numericValue * 100) / 100,
+                duration: Math.round(numericValue * 100) / 100,
             });
         }
         const duration = Number((new Date().getTime() - start).toFixed(2));
