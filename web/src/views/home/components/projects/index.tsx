@@ -1,36 +1,29 @@
-import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
+import { IProject } from 'typing';
 import { getImgUrl } from '../../../../utils';
 import './style.less';
 
 interface IProps {
+    projectId: number | undefined;
     projectList: any[];
-    getProjects: () => void;
-    onSetRunTime: (time: number) => void;
+    setProject: (project: IProject) => void;
 }
 
-function Projects(props: IProps) {
-    const { projectList = [] } = props;
+export default function Projects(props: IProps) {
+    const { projectId, projectList = [], setProject } = props;
     // const navigate = useNavigate();
     // navigate(`/about`, { state: { id: item } });
-    const [active, setActive] = useState(undefined);
-
-    // 选择项目
-    const handleProject = (item: any) => {
-        console.log(111, item);
-        setActive(item.projectId);
-    };
 
     return (
         <div className="project-box">
             {projectList.map((item) => {
                 return (
                     <div
-                        className={`project-item ${active === item.projectId ? 'active' : ''}`}
+                        className={`project-item ${projectId === item.projectId ? 'active' : ''}`}
                         key={item.projectId}
-                        onClick={() => handleProject(item)}
+                        onClick={() => setProject(item)}
                     >
-                        <img src={getImgUrl(item.logo || 'batch.png')} alt="" />
+                        <img src={getImgUrl(`${item.appName || 'default'}.png`)} alt="" />
                         <div className="name">{item.name}</div>
                     </div>
                 );
@@ -38,5 +31,3 @@ function Projects(props: IProps) {
         </div>
     );
 }
-
-export default Projects;

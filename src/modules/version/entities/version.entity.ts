@@ -9,6 +9,9 @@ export class Version extends BaseContent {
     @Column('int')
     projectId: number;
 
+    @Column('int')
+    devopsShiLiId: number;
+
     @Column({ length: 256 })
     name?: string;
 

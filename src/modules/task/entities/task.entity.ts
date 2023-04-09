@@ -25,7 +25,7 @@ export class Task extends BaseContent {
     duration?: number;
 
     @Column({ length: 256 })
-    reportUrl?: string;
+    reportPath?: string;
 
     @Column('int', { default: 0 })
     status: number;

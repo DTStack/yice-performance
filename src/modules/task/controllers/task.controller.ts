@@ -13,6 +13,7 @@ import { TaskService } from '../services/task.service';
 import { TaskRunService } from '../services/task.run.service';
 import { TaskDto } from '../dto/task.dto';
 import { TaskReqDto } from '../dto/task.req.dto';
+import { TASK_STATUS } from '@/const';
 
 @Controller('task')
 export class TaskController {
@@ -55,6 +56,18 @@ export class TaskController {
         if (!taskId) {
             throw new HttpException('请传入任务id', HttpStatus.OK);
         }
+
+        // 取消检测时判断任务是否还是运行中
+        const { status } = taskDto;
+        const { status: latestStatus } = await this.taskService.findOne(taskId);
+        if (status === TASK_STATUS.CANCEL) {
+            if (latestStatus !== TASK_STATUS.RUNNING) {
+                throw new HttpException('当前任务不在检测中，不能取消检测', HttpStatus.OK);
+            } else {
+                return await this.taskRunService.cancel(taskId, taskDto);
+            }
+        }
+
         return await this.taskService.update(taskId, taskDto);
     }
 

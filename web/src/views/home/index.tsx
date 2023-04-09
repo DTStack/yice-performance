@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Input, message } from 'antd';
 import Projects from './components/projects';
-import TaskTable from './components/taskTable';
 import { httpPattern } from '../../utils';
 import API from '../../utils/api';
+import Versions from './components/versions';
+import { IProject } from 'typing';
 import './style.less';
 
 const { Search } = Input;
 
 function Home() {
+    const [project, setProject] = useState<IProject>();
     const [projectList, setProjectList] = useState<any[]>([]);
     const [running, setRunning] = useState<boolean>(false);
-    // 最后一次点击开始检测的时间戳
-    const [runTime, setRunTime] = useState<number>(0);
 
     useEffect(() => {
         getProjects();
@@ -21,6 +21,7 @@ function Home() {
     const getProjects = () => {
         API.getProjects().then((res) => {
             setProjectList(res.data || []);
+            setProject(res.data?.[0]);
         });
     };
 
@@ -34,8 +35,7 @@ function Home() {
         setRunning(true);
         API.createTask({ url })
             .then(() => {
-                message.success('成功，请在任务列表查看');
-                setRunTime(new Date().getTime());
+                message.success('成功，请在『其他』的任务列表查看');
             })
             .finally(() => {
                 setRunning(false);
@@ -60,11 +60,11 @@ function Home() {
             <div className="content">
                 <div className="box">
                     <Projects
+                        projectId={project?.projectId}
                         projectList={projectList}
-                        getProjects={getProjects}
-                        onSetRunTime={(time) => setRunTime(time)}
+                        setProject={(project: IProject) => setProject(project)}
                     />
-                    <div className="version-box"></div>
+                    <Versions project={project} />
                 </div>
             </div>
 

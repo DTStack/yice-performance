@@ -13,7 +13,7 @@ interface IProps {
 
 function ReportModal(props: IProps) {
     const { open, taskInfo, onCancel } = props;
-    const { taskId, score, duration, reportUrl } = taskInfo;
+    const { taskId, score, duration, reportPath } = taskInfo;
     const [performances, setPerformances] = useState<any[]>([]);
     const list = [
         { key: 'FCP', label: '首次内容渲染时长', desc: '页面最新出现的内容渲染时长' },
@@ -43,10 +43,10 @@ function ReportModal(props: IProps) {
         return <div className={className}></div>;
     };
 
-    const _reportUrl =
+    const _reportPath =
         process.env.NODE_ENV === 'development'
-            ? `http://localhost:4000${reportUrl}`
-            : `${location.origin}${reportUrl}`;
+            ? `http://localhost:4000${reportPath}`
+            : `${location.origin}${reportPath}`;
 
     return (
         <Modal
@@ -110,8 +110,8 @@ function ReportModal(props: IProps) {
                 })}
 
                 <Descriptions.Item label="查看报告原件" span={2}>
-                    <a target="_blank" href={_reportUrl} rel="noreferrer">
-                        {_reportUrl}
+                    <a target="_blank" href={_reportPath} rel="noreferrer">
+                        {_reportPath}
                     </a>
                 </Descriptions.Item>
             </Descriptions>

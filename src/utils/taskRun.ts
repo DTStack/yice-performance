@@ -155,7 +155,7 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|#/g, '');
         const fileName = `${moment().format('YYYY-MM-DD')}-${taskId}-${urlStr}`;
         const filePath = `./static/${fileName}.html`;
-        const reportUrl = `/report/${fileName}.html`;
+        const reportPath = `/report/${fileName}.html`;
         fs.writeFileSync(filePath, runResult?.report);
 
         // 整理性能数据
@@ -179,7 +179,7 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         const result = {
             score: Math.floor(score * 100),
             duration,
-            reportUrl,
+            reportPath,
             performance,
         };
         await successCallback(taskId, result);

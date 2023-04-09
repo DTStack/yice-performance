@@ -1,6 +1,34 @@
 import instance from './axios';
 
 export default {
+    // 项目相关
+    getProjects(params?: any) {
+        return instance.get('/project/getProjects', { params });
+    },
+    getProject(params: any) {
+        return instance.get('/project/getProject', { params });
+    },
+    updateProject(data: any) {
+        return instance.post('/project/updateProject', data);
+    },
+
+    // 版本相关
+    getVersions(params?: any) {
+        return instance.get('/version/getVersions', { params });
+    },
+    getVersion(params?: any) {
+        return instance.get('/version/getVersion', { params });
+    },
+    createVersion(data: any) {
+        return instance.post('/version/createVersion', data);
+    },
+    updateVersion(data: any) {
+        return instance.post('/version/updateVersion', data);
+    },
+    deleteVersion(data: any) {
+        return instance.post('/version/deleteVersion', data);
+    },
+
     // 任务相关
     getTasks(params: any) {
         return instance.get('/task/getTasks', { params });
@@ -21,19 +49,16 @@ export default {
         return instance.post('/task/tryRunTask', data);
     },
 
-    // 项目相关
-    getProjects(params?: any) {
-        return instance.get('/project/getProjects', { params });
-    },
-    getProject(params: any) {
-        return instance.get('/project/getProject', { params });
-    },
-    updateProject(data: any) {
-        return instance.post('/project/updateProject', data);
-    },
-
     // 性能指标相关
     getPerformancesByTaskId(params: any) {
         return instance.get('/performance/getPerformancesByTaskId', { params });
+    },
+
+    // devops 相关
+    getShiLis(params?: any) {
+        return instance.get('/devops/getShiLis', { params });
+    },
+    getDevopsUrl(params?: any) {
+        return instance.get('/devops/getDevopsUrl', { params });
     },
 };

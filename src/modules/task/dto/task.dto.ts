@@ -10,16 +10,17 @@ export class TaskDto {
     readonly versionId?: number;
 
     @IsOptional()
-    @MaxLength(256, { message: '最大长度为256' })
     @ApiPropertyOptional({ description: '版本名称' })
+    @MaxLength(256, { message: '版本名称最大长度为256' })
     versionName?: string;
 
     @IsOptional()
     @ApiPropertyOptional({ description: '检测开始的时间戳' })
     readonly start?: number;
 
+    @IsOptional()
     @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: '检测地址无效' })
-    @MaxLength(2048, { message: '最大长度为2048' })
+    @MaxLength(2048, { message: '检测地址最大长度为2048' })
     @ApiPropertyOptional({ description: '检测地址' })
     url?: string;
 
@@ -32,9 +33,9 @@ export class TaskDto {
     readonly duration?: number;
 
     @IsOptional()
-    @MaxLength(256, { message: '最大长度为256' })
     @ApiPropertyOptional({ description: '检测结果html文件的相对路径' })
-    readonly reportUrl?: string;
+    @MaxLength(256, { message: '检测结果html文件的相对路径最大长度为256' })
+    readonly reportPath?: string;
 
     @IsOptional()
     @ApiPropertyOptional({

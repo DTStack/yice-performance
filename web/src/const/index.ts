@@ -14,6 +14,16 @@ export const TASK_STATUS_TEXT = [
     { text: '取消检测', value: TASK_STATUS.CANCEL },
 ];
 
+export enum TASK_TRIGGER_TYPE {
+    SYSTEM,
+    USER_HAND,
+}
+
+export const TASK_TRIGGER_TYPE_TEXT = [
+    { text: '系统触发', value: TASK_TRIGGER_TYPE.SYSTEM },
+    { text: '手动触发', value: TASK_TRIGGER_TYPE.USER_HAND },
+];
+
 /**
  * 得分的颜色
  * 慢 red #FF3333 0 ~ 49

@@ -10,11 +10,11 @@ export class ProjectDto {
 
     @IsNotEmpty({ message: '项目名称不能为空' })
     @ApiPropertyOptional({ description: '项目名称' })
-    @MaxLength(256, { message: '最大长度为256' })
+    @MaxLength(256, { message: '项目名称最大长度为256' })
     readonly name: string;
 
     @IsOptional()
     @ApiPropertyOptional({ description: '项目路径/标识' })
-    @MaxLength(256, { message: '最大长度为256' })
+    @MaxLength(256, { message: '项目路径/标识最大长度为256' })
     readonly appName?: string;
 }

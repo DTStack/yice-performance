@@ -3,27 +3,31 @@ import { IsNotEmpty, IsUrl, MaxLength } from 'class-validator';
 
 export class VersionDto {
     @ApiPropertyOptional({ description: '版本id' })
-    readonly versionId: number;
+    versionId: number;
 
     @ApiPropertyOptional({ description: '项目id' })
+    @IsNotEmpty({ message: '项目id不能为空' })
     readonly projectId: number;
 
-    @MaxLength(256, { message: '最大长度为256' })
+    @ApiPropertyOptional({ description: '绑定的devops实例id' })
+    readonly devopsShiLiId?: number;
+
     @ApiPropertyOptional({ description: '版本名称' })
+    @MaxLength(256, { message: '版本名称最大长度为256' })
     readonly name: string;
 
     @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: '检测地址无效' })
     @IsNotEmpty({ message: '检测地址不能为空' })
-    @MaxLength(2048, { message: '最大长度为2048' })
     @ApiPropertyOptional({ description: '检测地址' })
+    @MaxLength(2048, { message: '检测地址最大长度为2048' })
     readonly url: string;
 
     @IsUrl(
         { protocols: ['http', 'https'], require_protocol: true },
         { message: '登录页面地址无效' }
     )
-    @MaxLength(2048, { message: '最大长度为2048' })
     @ApiPropertyOptional({ description: '登录页面地址，可选' })
+    @MaxLength(2048, { message: '登录页面地址最大长度为2048' })
     readonly loginUrl: string;
 
     @IsNotEmpty({ message: '用户名不能为空' })

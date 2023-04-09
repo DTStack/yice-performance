@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Query, HttpStatus, HttpCode, Body } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Query,
+    HttpStatus,
+    HttpCode,
+    Body,
+    HttpException,
+} from '@nestjs/common';
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { VersionDto } from '../dto/version.dto';
 import { VersionService } from '../services/version.service';
@@ -13,7 +22,11 @@ export class VersionController {
     @HttpCode(HttpStatus.OK)
     @Get('getVersions')
     async getVersions(@Query() query: getVersionsReqDto) {
-        return await this.versionService.findAll(query?.projectId);
+        const { projectId } = query;
+        if (!projectId) {
+            throw new HttpException('项目id不能为空', HttpStatus.OK);
+        }
+        return await this.versionService.findAll(projectId);
     }
 
     @ApiOperation({ summary: '版本详情' })
@@ -21,7 +34,30 @@ export class VersionController {
     @HttpCode(HttpStatus.OK)
     @Get('getVersion')
     async getVersion(@Query() query: getVersionReqDto) {
-        return await this.versionService.findOne(query?.versionId);
+        const { versionId } = query;
+        return await this.versionService.findOne({ versionId });
+    }
+
+    @ApiOperation({ summary: '创建版本' })
+    @HttpCode(HttpStatus.OK)
+    @Post('createVersion')
+    async createVersion(@Body() versionDto: VersionDto) {
+        const { name, projectId, devopsShiLiId } = versionDto;
+        if (devopsShiLiId) {
+            const version = await this.versionService.findOne({ devopsShiLiId });
+            if (version) {
+                throw new HttpException('当前实例已经被绑定，请重新选择', HttpStatus.OK);
+            }
+        }
+        if (name && projectId) {
+            const version = await this.versionService.findOne({ name, projectId });
+            if (version) {
+                throw new HttpException('当前项目下名称重复，请重新输入名称', HttpStatus.OK);
+            }
+        }
+
+        delete versionDto.versionId;
+        return await this.versionService.create(versionDto);
     }
 
     @ApiOperation({ summary: '更新版本' })
@@ -31,10 +67,10 @@ export class VersionController {
         return await this.versionService.update(versionDto);
     }
 
-    @ApiOperation({ summary: '创建版本' })
+    @ApiOperation({ summary: '删除版本' })
     @HttpCode(HttpStatus.OK)
-    @Post('createVersion')
-    async createVersion(@Body() versionDto: VersionDto) {
-        return await this.versionService.create(versionDto);
+    @Post('deleteVersion')
+    async deleteVersion(@Body() { versionId }) {
+        return await this.versionService.update({ versionId, isDelete: 1 });
     }
 }

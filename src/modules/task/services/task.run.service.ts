@@ -11,6 +11,7 @@ import { TaskService } from '../services/task.service';
 import { Performance } from '@/modules/performance/entities/performance.entity';
 import { TASK_STATUS } from '@/const';
 import { Version } from '@/modules/version/entities/version.entity';
+import { getWhere } from '@/utils';
 
 @Injectable()
 export class TaskRunService {
@@ -28,9 +29,8 @@ export class TaskRunService {
     async tryAgain(taskId: number) {
         const currentTask = await this.taskService.findOne(taskId);
 
-        console.log(1111, currentTask);
+        // 去除 taskId，用其余信息新建一个任务
         delete currentTask.taskId;
-        console.log(1112, currentTask);
 
         const task = this.taskRepository.create({
             ...currentTask,
@@ -62,9 +62,9 @@ export class TaskRunService {
 
         // 根据项目新增的任务
         if (versionId) {
-            const { name: versionName, ...version } = await this.versionRepository.findOneBy({
-                versionId,
-            });
+            const { name: versionName, ...version } = await this.versionRepository.findOneBy(
+                getWhere({ versionId })
+            );
             taskInfo = { ...taskDto, ...taskInfo, ...version, versionName };
         }
 
@@ -77,13 +77,28 @@ export class TaskRunService {
         return result;
     }
 
+    // 取消检测
+    async cancel(taskId: number, taskDto: TaskDto) {
+        // 取消检测时判断任务是否还是运行中
+        const { status } = taskDto;
+        const { status: latestStatus } = await this.taskService.findOne(taskId);
+        if (status === TASK_STATUS.CANCEL && latestStatus !== TASK_STATUS.RUNNING) {
+            throw new HttpException('当前任务不在检测中，不能取消检测', HttpStatus.OK);
+        }
+
+        // 手动取消任务只会修改任务状态，任务实际不会停止
+        const result = await this.taskRepository.update(taskId, taskDto);
+        this.scheduleControl();
+        return result;
+    }
+
     // 任务运行成功的回调
     private async successCallback(taskId, result) {
         try {
             const { status } = await this.taskService.findOne(taskId);
             // 只有当前任务是运行中才保存检测结果，因为任务可能被手动取消，手动取消的任务不保存结果数据
             if (status === TASK_STATUS.RUNNING) {
-                const { score, duration, reportUrl, performance } = result;
+                const { score, duration, reportPath, performance } = result;
                 await this.performanceRepository
                     .createQueryBuilder()
                     .insert()
@@ -98,7 +113,7 @@ export class TaskRunService {
                 await this.taskService.update(taskId, {
                     score,
                     duration,
-                    reportUrl,
+                    reportPath,
                     status: TASK_STATUS.SUCCESS,
                     // failReason: '',
                 });

@@ -1,12 +1,11 @@
 /**
  * 任务的查询和更新
  */
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TaskDto } from '../dto/task.dto';
 import { Task } from '../entities/task.entity';
-import { TASK_STATUS } from '@/const';
 import { TaskReqDto } from '../dto/task.req.dto';
 
 @Injectable()
@@ -18,18 +17,17 @@ export class TaskService {
 
     async findAll(query: TaskReqDto): Promise<object> {
         try {
-            const { pageSize = 10, current = 1, status = [], projectId = [] } = query;
-            let whereSql = '';
-            const whereParams = {};
+            const { pageSize = 10, current = 1, versionId, triggerType = [], status = [] } = query;
+            let whereSql = 'versionId= :versionId';
+            const whereParams = { versionId };
 
+            if (triggerType?.length) {
+                whereSql += 'triggerType IN (:...triggerType)';
+                Object.assign(whereParams, { triggerType });
+            }
             if (status?.length) {
                 whereSql += 'status IN (:...status)';
                 Object.assign(whereParams, { status });
-            }
-            if (projectId?.length) {
-                whereSql.length && (whereSql += ' AND ');
-                whereSql += 'projectId IN (:...projectId)';
-                Object.assign(whereParams, { projectId });
             }
 
             const [data, total] = await this.taskRepository
@@ -58,14 +56,6 @@ export class TaskService {
     }
 
     async update(taskId: number, taskDto: TaskDto) {
-        // 取消检测时判断任务是否还是运行中
-        const { status } = taskDto;
-        const { status: latestStatus } = await this.findOne(taskId);
-        if (status === TASK_STATUS.CANCEL && latestStatus !== TASK_STATUS.RUNNING) {
-            throw new HttpException('当前任务不在检测中，不能取消检测', HttpStatus.OK);
-        }
-
-        // 手动取消任务只会修改任务状态，任务实际不会停止
         const result = await this.taskRepository.update(taskId, taskDto);
         return result;
     }

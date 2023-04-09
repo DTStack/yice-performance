@@ -1,75 +1,151 @@
-import React, { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-import { Button, Divider, message, Popconfirm } from 'antd';
-import { getImgUrl } from '../../../../utils';
+import { useEffect, useState } from 'react';
+import { Button, Modal, Spin, Tabs, message } from 'antd';
 import API from '../../../../utils/api';
-import ProjectModal from '../projectModal';
-import { ProjectInfo } from 'typing';
+import VersionModal from '../versionModal';
+import { IProject, IVersion } from 'typing';
 import './style.less';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import TaskTable from '../taskTable';
 
 interface IProps {
-    projectList: any[];
-    getProjects: () => void;
-    onSetRunTime: (time: number) => void;
+    project: IProject | undefined;
 }
 
-function Projects(props: IProps) {
-    const { projectList = [], getProjects, onSetRunTime } = props;
-    // const navigate = useNavigate();
-    const [projectInfo, setProjectInfo] = useState<ProjectInfo>({ url: '' });
-    const [projectModalOpen, setProjectModalOpen] = useState<boolean>(false);
+export default function Versions(props: IProps) {
+    const { project } = props;
+    const { projectId } = project || {};
+    const [versionList, setVersionList] = useState<IVersion[]>([]);
+    const [open, setOpen] = useState<boolean>(false);
+    const [isEdit, setIsEdit] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [runLoading, setRunLoading] = useState<boolean>(false);
+    const [versionId, setVersionId] = useState<number | undefined>(undefined);
+    // runTime 更新则代表 点击了运行按钮，需要更新任务列表
+    const [runTime, setRunTime] = useState<number>(0);
 
-    const handleEdit = (item: any) => {
-        // navigate(`/about`, { state: { id: item } });
-        setProjectInfo(item);
-        setProjectModalOpen(true);
+    useEffect(() => {
+        if (projectId) {
+            getVersions(true);
+        }
+    }, [projectId]);
+
+    // 获取版本列表
+    const getVersions = (projectChanged = false) => {
+        setLoading(true);
+        API.getVersions({ projectId })
+            .then((res) => {
+                setVersionList(res.data || []);
+                projectChanged && setVersionId(res.data?.[0]?.versionId);
+                // 版本全部删除后清除 versionId
+                !res.data?.length && setVersionId(undefined);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
-    // 点击检测
-    const handleRun = (item: ProjectInfo) => {
-        const { projectId } = item;
-        API.createTask({ projectId }).then(() => {
-            message.success('成功，请在任务列表查看');
-            onSetRunTime(new Date().getTime());
+    const renderItems = () => {
+        return versionList.map((item: any) => {
+            return {
+                label: item.name,
+                key: item.versionId,
+                children: <TaskTable versionId={versionId} runTime={runTime} />,
+            };
         });
     };
 
+    const onChange = (newActiveKey: any) => {
+        setVersionId(newActiveKey);
+    };
+
+    // 新增按钮
+    const handleAdd = () => {
+        setIsEdit(false);
+        setOpen(true);
+    };
+    // 编辑按钮
+    const handleEdit = () => {
+        setIsEdit(true);
+        setOpen(true);
+    };
+    // 新增或删除 tab
+    const handleEditTab = (targetKey: any, action: 'add' | 'remove') => {
+        if (action === 'remove') {
+            // 删除版本
+            Modal.confirm({
+                title: '是否删除该版本？',
+                icon: <ExclamationCircleOutlined />,
+                onOk() {
+                    API.deleteVersion({ versionId: targetKey }).then(() => {
+                        getVersions();
+                        message.success('操作成功！');
+                    });
+                },
+            });
+        }
+    };
+    // 运行按钮
+    const handleRun = () => {
+        setRunLoading(true);
+        API.createTask({ versionId })
+            .then(() => {
+                setRunTime(new Date().getTime());
+                message.success('成功，请在任务列表查看');
+            })
+            .finally(() => {
+                setRunLoading(false);
+            });
+    };
+
+    const renderButtons = () => {
+        return (
+            <>
+                <Button onClick={handleAdd}>新增</Button>
+                {!!versionList.length && (
+                    <>
+                        <Button style={{ marginLeft: 12 }} onClick={handleEdit}>
+                            编辑
+                        </Button>
+                        <Button
+                            type="primary"
+                            style={{ marginLeft: 12 }}
+                            loading={runLoading}
+                            onClick={handleRun}
+                        >
+                            运行
+                        </Button>
+                    </>
+                )}
+            </>
+        );
+    };
+
     return (
-        <React.Fragment>
-            <div className="project-box">
-                {projectList.map((item) => {
-                    return (
-                        <div className="project-item" key={item.projectId}>
-                            <img src={getImgUrl(item.logo || 'batch.png')} alt="" />
-                            <div className="name">{item.name}</div>
-                            <div className="btn-box">
-                                <Button type="link" onClick={() => handleEdit(item)}>
-                                    编辑
-                                </Button>
-                                <Divider type="vertical" />
-                                <Popconfirm
-                                    title="是否检测该项目？"
-                                    placement="bottomRight"
-                                    onConfirm={() => handleRun(item)}
-                                >
-                                    <Button type="link">检测</Button>
-                                </Popconfirm>
-                            </div>
-                        </div>
-                    );
-                })}
+        <>
+            <div className="version-box">
+                <Spin spinning={loading}>
+                    <Tabs
+                        hideAdd
+                        type="editable-card"
+                        tabBarExtraContent={renderButtons()}
+                        items={renderItems()}
+                        onChange={onChange}
+                        onEdit={handleEditTab}
+                    />
+                </Spin>
             </div>
 
-            <ProjectModal
-                projectInfo={projectInfo}
-                open={projectModalOpen}
+            <VersionModal
+                open={open}
+                isEdit={isEdit}
+                project={project}
+                versionId={versionId}
                 onCancel={(needFetch: boolean) => {
-                    setProjectModalOpen(false);
-                    needFetch && getProjects();
+                    setOpen(false);
+                    // 新增的第一个版本设置为默认的 versionId
+                    needFetch && getVersions(!versionList.length);
                 }}
             />
-        </React.Fragment>
+        </>
     );
 }
-
-export default Projects;

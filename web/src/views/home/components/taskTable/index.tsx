@@ -3,7 +3,12 @@ import { Table, Tag, Divider, Popconfirm, Tooltip, message } from 'antd';
 import moment from 'moment';
 import type { ColumnsType } from 'antd/es/table';
 import API from '../../../../utils/api';
-import { getScoreColor, TASK_STATUS, TASK_STATUS_TEXT } from '../../../../const';
+import {
+    getScoreColor,
+    TASK_STATUS,
+    TASK_STATUS_TEXT,
+    TASK_TRIGGER_TYPE_TEXT,
+} from '../../../../const';
 import {
     CheckCircleOutlined,
     ClockCircleOutlined,
@@ -15,35 +20,29 @@ import ReportModal from '../reportModal';
 import './style.less';
 
 interface IPros {
+    versionId: number | undefined;
     runTime: number;
-    projectList: any[];
 }
 
-function TaskTable(props: IPros) {
-    const { runTime, projectList } = props;
+export default function TaskTable(props: IPros) {
+    const { versionId, runTime } = props;
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [current, setCurrent] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
-    const [projectId, setProjectId] = useState<number[] | undefined>(undefined);
+    const [triggerType, setTriggerType] = useState<number[] | undefined>(undefined);
     const [status, setStatus] = useState<number[] | undefined>(undefined);
     const [taskInfo, setTaskInfo] = useState<any>({});
     const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
     const pageSize = 10;
-    const projectFilters = projectList.map((item) => {
-        return {
-            text: item.name,
-            value: item.projectId,
-        };
-    });
 
     useEffect(() => {
         fetchData();
-    }, [runTime, current, projectId, status]);
+    }, [versionId, runTime, current, triggerType, status]);
 
     const fetchData = () => {
         setLoading(true);
-        const params = { current, pageSize, projectId, status };
+        const params = { versionId, current, pageSize, triggerType, status };
         API.getTasks(params)
             .then((res) => {
                 const { data, total } = res.data;
@@ -55,9 +54,10 @@ function TaskTable(props: IPros) {
             });
     };
 
+    // 表格的分页、筛选
     const handleTableChange = (pagination: any, filters: any) => {
         setCurrent(pagination?.current);
-        setProjectId(filters?.projectId);
+        setTriggerType(filters?.triggerType);
         setStatus(filters?.status);
     };
 
@@ -104,31 +104,27 @@ function TaskTable(props: IPros) {
     };
 
     const columns: ColumnsType<any> = [
-        {
-            title: '关联项目',
-            dataIndex: 'projectId',
-            key: 'projectId',
-            width: 160,
-            filters: projectFilters,
-            filterSearch: (input, record) => `${record.text}`.includes(input),
-            render: (_text, record) => record?.projectName || '-',
-        },
-        {
-            title: '检测地址',
-            dataIndex: 'url',
-            key: 'url',
-            width: 280,
-            ellipsis: {
-                showTitle: false,
-            },
-            render: (text) => (
-                <Tooltip placement="topLeft" title={text}>
-                    <a href={text} target="_blank" rel="noreferrer">
-                        {text}
-                    </a>
-                </Tooltip>
-            ),
-        },
+        // {
+        //     title: '版本名称',
+        //     dataIndex: 'versionName',
+        //     key: 'versionName',
+        //     width: 100,
+        //     ellipsis: { showTitle: false },
+        // },
+        // {
+        //     title: '检测地址',
+        //     dataIndex: 'url',
+        //     key: 'url',
+        //     width: 280,
+        //     ellipsis: { showTitle: false },
+        //     render: (text) => (
+        //         <Tooltip placement="topLeft" title={text}>
+        //             <a href={text} target="_blank" rel="noreferrer">
+        //                 {text}
+        //             </a>
+        //         </Tooltip>
+        //     ),
+        // },
         {
             title: '检测得分',
             dataIndex: 'score',
@@ -153,6 +149,15 @@ function TaskTable(props: IPros) {
             render: (text) => (text ? `${text} ms` : '-'),
         },
         {
+            title: '触发方式',
+            dataIndex: 'triggerType',
+            key: 'triggerType',
+            width: 110,
+            filters: TASK_TRIGGER_TYPE_TEXT,
+            render: (triggerType) =>
+                TASK_TRIGGER_TYPE_TEXT.find((item) => item.value === triggerType)?.text,
+        },
+        {
             title: '创建时间',
             dataIndex: 'createAt',
             key: 'createAt',
@@ -163,7 +168,7 @@ function TaskTable(props: IPros) {
             title: '任务状态',
             dataIndex: 'status',
             key: 'status',
-            width: 120,
+            width: 110,
             filters: TASK_STATUS_TEXT,
             render: (status) => {
                 let icon, color;
@@ -279,6 +284,7 @@ function TaskTable(props: IPros) {
             <Table
                 className="task-table"
                 rowKey="taskId"
+                size="small"
                 loading={loading}
                 columns={columns}
                 dataSource={taskList}
@@ -294,5 +300,3 @@ function TaskTable(props: IPros) {
         </React.Fragment>
     );
 }
-
-export default TaskTable;
