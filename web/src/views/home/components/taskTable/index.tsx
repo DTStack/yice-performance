@@ -149,6 +149,13 @@ export default function TaskTable(props: IPros) {
             render: (text) => (text ? `${text} ms` : '-'),
         },
         {
+            title: '创建时间',
+            dataIndex: 'createAt',
+            key: 'createAt',
+            width: 220,
+            render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
+        },
+        {
             title: '触发方式',
             dataIndex: 'triggerType',
             key: 'triggerType',
@@ -156,13 +163,6 @@ export default function TaskTable(props: IPros) {
             filters: TASK_TRIGGER_TYPE_TEXT,
             render: (triggerType) =>
                 TASK_TRIGGER_TYPE_TEXT.find((item) => item.value === triggerType)?.text,
-        },
-        {
-            title: '创建时间',
-            dataIndex: 'createAt',
-            key: 'createAt',
-            width: 220,
-            render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
         },
         {
             title: '任务状态',
