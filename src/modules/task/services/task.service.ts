@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { TaskDto } from '../dto/task.dto';
 import { Task } from '../entities/task.entity';
 import { TaskReqDto } from '../dto/task.req.dto';
+import { getWhere } from '@/utils';
 
 @Injectable()
 export class TaskService {
@@ -51,7 +52,7 @@ export class TaskService {
     }
 
     async findOne(taskId: number): Promise<Task> {
-        const result = await this.taskRepository.findOneBy({ taskId });
+        const result = await this.taskRepository.findOneBy(getWhere({ taskId }));
         return result;
     }
 

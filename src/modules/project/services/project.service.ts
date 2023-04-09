@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProjectDto } from '../dto/project.dto';
 import { Project } from '../entities/project.entity';
+import { getWhere } from '@/utils';
 
 @Injectable()
 export class ProjectService {
@@ -12,12 +13,12 @@ export class ProjectService {
     ) {}
 
     async findAll(): Promise<Project[]> {
-        const result = await this.projectRepository.find();
+        const result = await this.projectRepository.find({ where: getWhere() });
         return result;
     }
 
     async findOne(projectId): Promise<Project> {
-        const result = await this.projectRepository.findOneBy({ projectId });
+        const result = await this.projectRepository.findOneBy(getWhere({ projectId }));
         return result;
     }
 

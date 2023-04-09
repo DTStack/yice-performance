@@ -45,7 +45,9 @@ export class TaskRunService {
     // 尝试运行 - 手动触发调度
     async scheduleControlByHand(taskId: number) {
         const task = await this.taskService.findOne(taskId);
-        const runTask = await this.taskRepository.findOneBy({ status: TASK_STATUS.RUNNING });
+        const runTask = await this.taskRepository.findOneBy(
+            getWhere({ status: TASK_STATUS.RUNNING })
+        );
         if (runTask?.taskId && runTask.taskId !== taskId) {
             throw new HttpException('当前还有运行中的任务，请耐心等待', HttpStatus.OK);
         } else {
@@ -145,16 +147,20 @@ export class TaskRunService {
      * 2、没有则运行等待中的第一个任务，有则不进行下一步处理
      */
     private async scheduleControl() {
-        const runTask = await this.taskRepository.findOneBy({ status: TASK_STATUS.RUNNING });
+        const runTask = await this.taskRepository.findOneBy(
+            getWhere({ status: TASK_STATUS.RUNNING })
+        );
 
         // 开始检测
         if (!runTask?.taskId) {
             const start = new Date().getTime();
-            const task = await this.taskRepository.findOneBy({ status: TASK_STATUS.WAITING });
+            const task = await this.taskRepository.findOneBy(
+                getWhere({ status: TASK_STATUS.WAITING })
+            );
             // 有等待中的任务
             if (task?.taskId) {
                 const { versionId } = task;
-                const version = await this.versionRepository.findOneBy({ versionId });
+                const version = await this.versionRepository.findOneBy(getWhere({ versionId }));
 
                 await this.taskService.update(task?.taskId, {
                     status: TASK_STATUS.RUNNING,

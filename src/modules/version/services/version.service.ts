@@ -19,7 +19,7 @@ export class VersionService {
     }
 
     async findOne(query: getVersionReqDto): Promise<Version> {
-        const result = await this.versionRepository.findOneBy(query);
+        const result = await this.versionRepository.findOneBy(getWhere(query));
         return result;
     }
 
