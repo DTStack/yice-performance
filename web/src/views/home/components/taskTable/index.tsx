@@ -236,12 +236,7 @@ export default function TaskTable(props: IPros) {
                 } else if (status === TASK_STATUS.RUNNING) {
                     return (
                         <Popconfirm
-                            title={
-                                <div>
-                                    <div>由于系统原因可能导致该任务已经失效，</div>
-                                    <div>取消检测后可以再次检测，是否继续？</div>
-                                </div>
-                            }
+                            title={<div>取消检测后可以再次检测，是否继续？</div>}
                             onConfirm={() => handleCancel(record)}
                         >
                             <a>取消检测</a>

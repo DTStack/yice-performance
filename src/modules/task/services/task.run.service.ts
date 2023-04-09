@@ -27,13 +27,12 @@ export class TaskRunService {
 
     // 再次检测
     async tryAgain(taskId: number) {
-        const currentTask = await this.taskService.findOne(taskId);
-
-        // 去除 taskId，用其余信息新建一个任务
-        delete currentTask.taskId;
+        const { versionId, versionName, url } = await this.taskService.findOne(taskId);
 
         const task = this.taskRepository.create({
-            ...currentTask,
+            versionId,
+            versionName,
+            url,
             status: TASK_STATUS.WAITING,
         });
         const result = await this.taskRepository.save(task);
@@ -47,7 +46,7 @@ export class TaskRunService {
     async scheduleControlByHand(taskId: number) {
         const task = await this.taskService.findOne(taskId);
         const runTask = await this.taskRepository.findOneBy({ status: TASK_STATUS.RUNNING });
-        if (runTask?.taskId) {
+        if (runTask?.taskId && runTask.taskId !== taskId) {
             throw new HttpException('当前还有运行中的任务，请耐心等待', HttpStatus.OK);
         } else {
             this.scheduleControl();
@@ -152,19 +151,25 @@ export class TaskRunService {
         if (!runTask?.taskId) {
             const start = new Date().getTime();
             const task = await this.taskRepository.findOneBy({ status: TASK_STATUS.WAITING });
+            // 有等待中的任务
             if (task?.taskId) {
+                const { versionId } = task;
+                const version = await this.versionRepository.findOneBy({ versionId });
+
                 await this.taskService.update(task?.taskId, {
                     status: TASK_STATUS.RUNNING,
                     start,
                 });
-            }
 
-            taskRun(
-                { ...task, start },
-                this.successCallback,
-                this.failCallback,
-                this.scheduleControl
-            );
+                // 参数的方法不能简写，否则会使方法丢失 this
+                taskRun(
+                    { ...task, ...version, start },
+                    (taskId, result) => this.successCallback(taskId, result),
+                    (taskId, failReason, duration) =>
+                        this.failCallback(taskId, failReason, duration),
+                    () => this.scheduleControl()
+                );
+            }
         }
     }
 }

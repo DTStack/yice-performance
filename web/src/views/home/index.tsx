@@ -35,7 +35,7 @@ function Home() {
         setRunning(true);
         API.createTask({ url })
             .then(() => {
-                message.success('成功，请在『其他』的任务列表查看');
+                message.success('操作成功，请在『其他』的任务列表查看');
             })
             .finally(() => {
                 setRunning(false);

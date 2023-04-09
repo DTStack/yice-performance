@@ -48,14 +48,14 @@ export default function Versions(props: IProps) {
         return versionList.map((item: any) => {
             return {
                 label: item.name,
-                key: item.versionId,
+                key: `${item.versionId}`,
                 children: <TaskTable versionId={versionId} runTime={runTime} />,
             };
         });
     };
 
-    const onChange = (newActiveKey: any) => {
-        setVersionId(newActiveKey);
+    const onChange = (newActiveKey: string) => {
+        setVersionId(Number(newActiveKey));
     };
 
     // 新增按钮
@@ -90,7 +90,7 @@ export default function Versions(props: IProps) {
         API.createTask({ versionId })
             .then(() => {
                 setRunTime(new Date().getTime());
-                message.success('成功，请在任务列表查看');
+                message.success('操作成功，请在任务列表查看');
             })
             .finally(() => {
                 setRunLoading(false);
@@ -127,8 +127,9 @@ export default function Versions(props: IProps) {
                     <Tabs
                         hideAdd
                         type="editable-card"
-                        tabBarExtraContent={renderButtons()}
                         items={renderItems()}
+                        activeKey={`${versionId}`}
+                        tabBarExtraContent={renderButtons()}
                         onChange={onChange}
                         onEdit={handleEditTab}
                     />
