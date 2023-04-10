@@ -43,7 +43,7 @@ export default function TaskTable(props: IPros) {
 
     const fetchData = () => {
         setLoading(true);
-        const params = { versionId, current, pageSize, triggerType, status };
+        const params = { isDefault, versionId, current, pageSize, triggerType, status };
         API.getTasks(params)
             .then((res) => {
                 const { data, total } = res.data;
@@ -105,13 +105,6 @@ export default function TaskTable(props: IPros) {
     };
 
     const columns: ColumnsType<any> = [
-        // {
-        //     title: '版本名称',
-        //     dataIndex: 'versionName',
-        //     key: 'versionName',
-        //     width: 100,
-        //     ellipsis: { showTitle: false },
-        // },
         {
             title: '检测得分',
             dataIndex: 'score',
@@ -255,21 +248,34 @@ export default function TaskTable(props: IPros) {
             },
         },
     ];
-    isDefault &&
-        columns.unshift({
-            title: '检测地址',
-            dataIndex: 'url',
-            key: 'url',
-            width: 220,
-            ellipsis: { showTitle: false },
-            render: (text) => (
-                <Tooltip placement="topLeft" title={text}>
-                    <a href={text} target="_blank" rel="noreferrer">
-                        {text}
-                    </a>
-                </Tooltip>
-            ),
-        });
+    if (isDefault) {
+        columns.splice(
+            0,
+            0,
+            {
+                title: '版本名称',
+                dataIndex: 'versionName',
+                key: 'versionName',
+                width: 140,
+                fixed: 'left',
+                ellipsis: { showTitle: true },
+            }
+            // {
+            //     title: '检测地址',
+            //     dataIndex: 'url',
+            //     key: 'url',
+            //     width: 220,
+            //     ellipsis: { showTitle: false },
+            //     render: (text) => (
+            //         <Tooltip placement="topLeft" title={text}>
+            //             <a href={text} target="_blank" rel="noreferrer">
+            //                 {text}
+            //             </a>
+            //         </Tooltip>
+            //     ),
+            // }
+        );
+    }
 
     const pagination = {
         current,
@@ -287,7 +293,7 @@ export default function TaskTable(props: IPros) {
                 columns={columns}
                 dataSource={taskList}
                 pagination={pagination}
-                scroll={{ x: 1040 }}
+                scroll={{ x: isDefault ? 840 : 960 }}
                 onChange={handleTableChange}
             />
 

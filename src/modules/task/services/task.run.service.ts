@@ -12,6 +12,7 @@ import { Performance } from '@/modules/performance/entities/performance.entity';
 import { TASK_STATUS } from '@/const';
 import { Version } from '@/modules/version/entities/version.entity';
 import { getWhere } from '@/utils';
+import { Project } from '@/modules/project/entities/project.entity';
 
 @Injectable()
 export class TaskRunService {
@@ -22,6 +23,8 @@ export class TaskRunService {
         private readonly performanceRepository: Repository<Performance>,
         @InjectRepository(Version)
         private readonly versionRepository: Repository<Version>,
+        @InjectRepository(Project)
+        private readonly projectRepository: Repository<Project>,
         private readonly taskService: TaskService
     ) {}
 
@@ -63,14 +66,24 @@ export class TaskRunService {
 
         // 根据项目新增的任务
         if (versionId) {
-            const { name: versionName, ...version } = await this.versionRepository.findOneBy(
-                getWhere({ versionId })
+            const {
+                name: versionName,
+                projectId,
+                ...version
+            } = await this.versionRepository.findOneBy(getWhere({ versionId }));
+            const { name: projectName } = await this.projectRepository.findOneBy(
+                getWhere({ projectId })
             );
-            taskInfo = { ...taskDto, ...taskInfo, ...version, versionName };
+            taskInfo = {
+                ...taskDto,
+                ...taskInfo,
+                ...version,
+                versionName: `${projectName}-${versionName}`,
+            };
         } else {
             // 输入框输入地址进行检测
             const version = await this.versionRepository.findOneBy(
-                getWhere({ name: '其他', url: 'default' })
+                getWhere({ name: '汇总', url: 'default' })
             );
             taskInfo = { ...taskInfo, versionId: version?.versionId };
         }

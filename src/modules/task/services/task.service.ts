@@ -18,16 +18,23 @@ export class TaskService {
 
     async findAll(query: TaskReqDto): Promise<object> {
         try {
-            const { pageSize = 10, current = 1, versionId, triggerType = [], status = [] } = query;
-            let whereSql = 'versionId= :versionId';
-            const whereParams = { versionId };
+            const {
+                pageSize = 10,
+                current = 1,
+                isDefault,
+                versionId,
+                triggerType = [],
+                status = [],
+            } = query;
+            let whereSql = isDefault === 'true' ? '' : 'versionId= :versionId ';
+            const whereParams = isDefault === 'true' ? {} : { versionId };
 
             if (triggerType?.length) {
-                whereSql += 'triggerType IN (:...triggerType)';
+                whereSql += 'and triggerType IN (:...triggerType) ';
                 Object.assign(whereParams, { triggerType });
             }
             if (status?.length) {
-                whereSql += 'status IN (:...status)';
+                whereSql += 'and status IN (:...status) ';
                 Object.assign(whereParams, { status });
             }
 

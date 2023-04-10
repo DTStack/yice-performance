@@ -57,7 +57,7 @@ export default function Versions(props: IProps) {
                 closable: item.closable,
                 key: `${item.versionId}`,
                 children: (
-                    <TaskTable isDefault={isDefault} versionId={versionId} runTime={runTime} />
+                    <TaskTable isDefault={!item.closable} versionId={versionId} runTime={runTime} />
                 ),
             };
         });
