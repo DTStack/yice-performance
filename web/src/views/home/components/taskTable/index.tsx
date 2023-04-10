@@ -95,7 +95,7 @@ export default function TaskTable(props: IPros) {
     const handleTryAgain = (item: any) => {
         API.tryTaskAgain({ taskId: item.taskId }).then(() => {
             message.success('操作成功！');
-            fetchData();
+            current === 1 ? fetchData() : setCurrent(1);
         });
     };
 
@@ -116,7 +116,7 @@ export default function TaskTable(props: IPros) {
             title: '检测得分',
             dataIndex: 'score',
             key: 'score',
-            width: 140,
+            width: 120,
             render: (text) => {
                 return text ? (
                     <div className="color-content">
@@ -132,21 +132,21 @@ export default function TaskTable(props: IPros) {
             title: '检测耗时',
             dataIndex: 'duration',
             key: 'duration',
-            width: 140,
-            render: (text) => (text ? `${text} ms` : '-'),
+            width: 120,
+            render: (text) => (text ? `${Math.round(text / 1000)} s` : '-'),
         },
         {
-            title: '创建时间',
-            dataIndex: 'createAt',
-            key: 'createAt',
-            width: 220,
+            title: '检测开始时间',
+            dataIndex: 'startAt',
+            key: 'startAt',
+            width: 200,
             render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
         },
         {
             title: '触发方式',
             dataIndex: 'triggerType',
             key: 'triggerType',
-            width: 110,
+            width: 120,
             filters: TASK_TRIGGER_TYPE_TEXT,
             render: (triggerType) =>
                 TASK_TRIGGER_TYPE_TEXT.find((item) => item.value === triggerType)?.text,
@@ -155,7 +155,8 @@ export default function TaskTable(props: IPros) {
             title: '任务状态',
             dataIndex: 'status',
             key: 'status',
-            width: 110,
+            width: 120,
+            fixed: 'right',
             filters: TASK_STATUS_TEXT,
             render: (status) => {
                 let icon, color;
@@ -199,7 +200,8 @@ export default function TaskTable(props: IPros) {
                 );
             },
             key: 'action',
-            width: 240,
+            width: 140,
+            fixed: 'right',
             render: (_text, record: any) => {
                 const { status, failReason } = record;
                 const tryAgainBtn = (
@@ -243,8 +245,6 @@ export default function TaskTable(props: IPros) {
                     return (
                         <div>
                             <a onClick={() => handleReport(record)}>查看报告</a>
-                            <Divider type="vertical" />
-                            {tryAgainBtn}
                         </div>
                     );
                 } else if (status === TASK_STATUS.CANCEL) {
@@ -260,7 +260,7 @@ export default function TaskTable(props: IPros) {
             title: '检测地址',
             dataIndex: 'url',
             key: 'url',
-            // width: 240,
+            width: 220,
             ellipsis: { showTitle: false },
             render: (text) => (
                 <Tooltip placement="topLeft" title={text}>
@@ -272,6 +272,7 @@ export default function TaskTable(props: IPros) {
         });
 
     const pagination = {
+        current,
         pageSize,
         total,
     };
@@ -286,6 +287,7 @@ export default function TaskTable(props: IPros) {
                 columns={columns}
                 dataSource={taskList}
                 pagination={pagination}
+                scroll={{ x: 1040 }}
                 onChange={handleTableChange}
             />
 

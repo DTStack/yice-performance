@@ -15,8 +15,8 @@ export class TaskDto {
     versionName?: string;
 
     @IsOptional()
-    @ApiPropertyOptional({ description: '检测开始的时间戳' })
-    readonly start?: number;
+    @ApiPropertyOptional({ description: '检测开始时间' })
+    readonly startAt?: Date;
 
     @IsOptional()
     @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: '检测地址无效' })

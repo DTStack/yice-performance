@@ -25,7 +25,7 @@ declare module 'typing' {
         versionId?: number;
         versionName?: string;
         url?: string;
-        start?: number;
+        startAt?: Date;
         duration?: number;
         score?: number;
         reportPath?: string;

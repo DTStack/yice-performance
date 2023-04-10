@@ -53,7 +53,7 @@ CREATE TABLE `task` (
   `versionId` int NULL COMMENT '版本id',
   `versionName` varchar(256) NULL COMMENT '版本名称',
   `url` varchar(1024) NOT NULL COMMENT '待检测地址',
-  `start` bigint NULL COMMENT '检测开始的时间戳',
+  `startAt` datetime NULL COMMENT '检测开始时间',
   `score` int NULL COMMENT '检测得分',
   `duration` int NULL COMMENT '检测耗时，单位毫秒',
   `reportPath` varchar(256) NULL COMMENT '检测结果html文件的相对路径',

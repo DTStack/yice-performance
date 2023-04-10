@@ -172,7 +172,7 @@ export class TaskRunService {
 
                 await this.taskService.update(task?.taskId, {
                     status: TASK_STATUS.RUNNING,
-                    start,
+                    startAt: new Date(start),
                 });
 
                 // 参数的方法不能简写，否则会使方法丢失 this

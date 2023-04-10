@@ -12,8 +12,8 @@ export class Task extends BaseContent {
     @Column({ length: 256 })
     versionName?: string;
 
-    @Column('int')
-    start?: number;
+    @Column('datetime')
+    startAt?: Date;
 
     @Column({ length: 1024 })
     url: string;
