@@ -3,6 +3,7 @@ import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 import { join } from 'path';
 import { ValidationPipe } from './pipe/validation/validation.pipe';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
@@ -56,6 +57,8 @@ import { DevopsModule } from './modules/devops/devops.module';
             serveRoot: '/report',
             rootPath: join(__dirname, '..', 'static'),
         }),
+
+        ScheduleModule.forRoot(),
     ],
     controllers: [],
     providers: [

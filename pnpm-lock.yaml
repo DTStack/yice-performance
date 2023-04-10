@@ -7,11 +7,13 @@ specifiers:
   '@nestjs/config': ^2.2.0
   '@nestjs/core': ^9.0.0
   '@nestjs/platform-express': ^9.0.0
+  '@nestjs/schedule': ^2.2.1
   '@nestjs/schematics': ^9.0.0
   '@nestjs/serve-static': ^3.0.1
   '@nestjs/swagger': ^6.1.4
   '@nestjs/testing': ^9.0.0
   '@nestjs/typeorm': ^9.0.1
+  '@types/cron': ^2.0.1
   '@types/express': ^4.17.13
   '@types/jest': 29.2.4
   '@types/lodash': ^4.14.191
@@ -22,6 +24,7 @@ specifiers:
   class-transformer: ^0.5.1
   class-validator: ^0.14.0
   conventional-changelog-cli: ^2.2.2
+  cron-parser: ^4.8.1
   cz-conventional-changelog: ^3.3.0
   eslint: 8.22.0
   eslint-config-prettier: 8.5.0
@@ -56,6 +59,7 @@ dependencies:
   '@nestjs/config': 2.2.0_0f1f70bc1f11c2b30700513a8cf62365
   '@nestjs/core': 9.2.1_27960f42b212c00268241592d616b2a4
   '@nestjs/platform-express': 9.2.1_3a4507b80408e3f30ddd3985ad1e6709
+  '@nestjs/schedule': 2.2.1_1b662dd2105372e1d309726921cbaa58
   '@nestjs/serve-static': 3.0.1_3a4507b80408e3f30ddd3985ad1e6709
   '@nestjs/swagger': 6.1.4_e14e7be333b1c2b01554daa2b94e346f
   '@nestjs/typeorm': 9.0.1_8c364f6ef11b50723f41db2e513db16e
@@ -63,6 +67,7 @@ dependencies:
   chrome-launcher: 0.15.1
   class-transformer: 0.5.1
   class-validator: 0.14.0
+  cron-parser: 4.8.1
   lighthouse: 9.6.8
   lodash: 4.17.21
   moment: 2.29.4
@@ -77,6 +82,7 @@ devDependencies:
   '@nestjs/cli': 9.1.8
   '@nestjs/schematics': 9.0.4_typescript@4.7.4
   '@nestjs/testing': 9.2.1_b0c352cae51db2bb0ca8c1f46c352be3
+  '@types/cron': 2.0.1
   '@types/express': 4.17.15
   '@types/jest': 29.2.4
   '@types/lodash': 4.14.191
@@ -1106,6 +1112,20 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@nestjs/schedule/2.2.1_1b662dd2105372e1d309726921cbaa58:
+    resolution: {integrity: sha512-7jev9Q3aFnRajKAi/At+9rzwflZNN10SA5PcdCvxc35GFfTdM2a6O5GA7tiIbLuOOzdjPYPbC3RxP4tpXOHVWw==}
+    peerDependencies:
+      '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0
+      '@nestjs/core': ^7.0.0 || ^8.0.0 || ^9.0.0
+      reflect-metadata: ^0.1.12
+    dependencies:
+      '@nestjs/common': 9.2.1_b11626e1d3e8723ed81a03aa155de8e2
+      '@nestjs/core': 9.2.1_27960f42b212c00268241592d616b2a4
+      cron: 2.3.0
+      reflect-metadata: 0.1.13
+      uuid: 9.0.0
+    dev: false
+
   /@nestjs/schematics/9.0.4_chokidar@3.5.3+typescript@4.9.4:
     resolution: {integrity: sha512-egurCfAc4e5i1r2TmeAF0UrOKejFmT5oTdv4b7HcOVPupc3QGU7CbEfGleL3mkM5AjrixTQeMxU9bJ00ttAbGg==}
     peerDependencies:
@@ -1390,6 +1410,13 @@ packages:
     resolution: {integrity: sha512-t73xJJrvdTjXrn4jLS9VSGRbz0nUY3cl2DMGDU48lKl+HR9dbbjW2A9r3g40VA++mQpy6uuHg33gy7du2BKpog==}
     dev: true
 
+  /@types/cron/2.0.1:
+    resolution: {integrity: sha512-WHa/1rtNtD2Q/H0+YTTZoty+/5rcE66iAFX2IY+JuUoOACsevYyFkSYu/2vdw+G5LrmO7Lxowrqm0av4k3qWNQ==}
+    dependencies:
+      '@types/luxon': 3.3.0
+      '@types/node': 18.11.18
+    dev: true
+
   /@types/eslint-scope/3.7.4:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
@@ -1464,6 +1491,10 @@ packages:
 
   /@types/lodash/4.14.191:
     resolution: {integrity: sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==}
+    dev: true
+
+  /@types/luxon/3.3.0:
+    resolution: {integrity: sha512-uKRI5QORDnrGFYgcdAVnHvEIvEZ8noTpP/Bg+HeUzZghwinDlIS87DEenV5r1YoOF9G4x600YsUXLWZ19rmTmg==}
     dev: true
 
   /@types/mime/3.0.1:
@@ -2777,6 +2808,19 @@ packages:
 
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
+
+  /cron-parser/4.8.1:
+    resolution: {integrity: sha512-jbokKWGcyU4gl6jAfX97E1gDpY12DJ1cLJZmoDzaAln/shZ+S3KBFBuA2Q6WeUN4gJf/8klnV1EfvhA2lK5IRQ==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      luxon: 3.3.0
+    dev: false
+
+  /cron/2.3.0:
+    resolution: {integrity: sha512-ZN5HP8zDY41sJolMsbc+GksRATcbvkPKF5wR/qc8FrV4NBVi9ORQa1HmYa5GydaysUB80X9XpRlRkooa5uEtTA==}
+    dependencies:
+      luxon: 3.3.0
+    dev: false
 
   /cross-fetch/3.1.5:
     resolution: {integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==}
@@ -5532,6 +5576,11 @@ packages:
 
   /lru_map/0.3.3:
     resolution: {integrity: sha512-Pn9cox5CsMYngeDbmChANltQl+5pi6XmTrraMSzhPmMBbmgcxmqWry0U3PGapCU1yB4/LqCcom7qhHZiF/jGfQ==}
+    dev: false
+
+  /luxon/3.3.0:
+    resolution: {integrity: sha512-An0UCfG/rSiqtAIiBPO0Y9/zAnHUZxAMiCpTd5h2smgsj7GGmcenvrvww2cqNA8/4A5ZrD1gJpHN2mIHZQF+Mg==}
+    engines: {node: '>=12'}
     dev: false
 
   /macos-release/2.5.0:

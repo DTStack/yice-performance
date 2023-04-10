@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Divider, Popconfirm, Tooltip, message } from 'antd';
+import { Table, Tag, Popconfirm, Tooltip, message } from 'antd';
 import moment from 'moment';
 import type { ColumnsType } from 'antd/es/table';
 import API from '../../../../utils/api';
@@ -129,7 +129,7 @@ export default function TaskTable(props: IPros) {
             render: (text) => (text ? `${Math.round(text / 1000)} s` : '-'),
         },
         {
-            title: '检测开始时间',
+            title: '开始检测时间',
             dataIndex: 'startAt',
             key: 'startAt',
             width: 200,
@@ -151,7 +151,8 @@ export default function TaskTable(props: IPros) {
             width: 120,
             fixed: 'right',
             filters: TASK_STATUS_TEXT,
-            render: (status) => {
+            render: (status, record) => {
+                const { failReason } = record;
                 let icon, color;
                 switch (status) {
                     case TASK_STATUS.WAITING:
@@ -176,11 +177,13 @@ export default function TaskTable(props: IPros) {
                         break;
                 }
 
-                return (
+                const tag = (
                     <Tag icon={icon} color={color}>
                         {TASK_STATUS_TEXT.find((item) => item.value === status)?.text}
                     </Tag>
                 );
+
+                return TASK_STATUS.FAIL ? <Tooltip title={failReason}>{tag}</Tooltip> : tag;
             },
         },
         {
@@ -193,10 +196,10 @@ export default function TaskTable(props: IPros) {
                 );
             },
             key: 'action',
-            width: 140,
+            width: 100,
             fixed: 'right',
             render: (_text, record: any) => {
-                const { status, failReason } = record;
+                const { status } = record;
                 const tryAgainBtn = (
                     <Popconfirm
                         title="再次检测将新建检测任务，是否继续？"
@@ -225,15 +228,7 @@ export default function TaskTable(props: IPros) {
                         </Popconfirm>
                     );
                 } else if (status === TASK_STATUS.FAIL) {
-                    return (
-                        <div>
-                            <Tooltip title={failReason}>
-                                <a>报错信息</a>
-                            </Tooltip>
-                            <Divider type="vertical" />
-                            {tryAgainBtn}
-                        </div>
-                    );
+                    return tryAgainBtn;
                 } else if (status === TASK_STATUS.SUCCESS) {
                     return (
                         <div>
@@ -293,7 +288,7 @@ export default function TaskTable(props: IPros) {
                 columns={columns}
                 dataSource={taskList}
                 pagination={pagination}
-                scroll={{ x: isDefault ? 840 : 960 }}
+                scroll={{ x: isDefault ? 800 : 920 }}
                 onChange={handleTableChange}
             />
 

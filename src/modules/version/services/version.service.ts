@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VersionDto } from '../dto/version.dto';
 import { Version } from '../entities/version.entity';
-import { getWhere } from '@/utils';
+import { getWhere, previewCron } from '@/utils';
 import { getVersionReqDto } from '../dto/version.req.dto';
 
 @Injectable()
@@ -33,6 +33,16 @@ export class VersionService {
 
     async update(versionDto) {
         const result = await this.versionRepository.update(versionDto.versionId, versionDto);
+        return result;
+    }
+
+    async updateVersionCron(versionDto) {
+        const result = await this.versionRepository.update(versionDto.versionId, versionDto);
+        return result;
+    }
+
+    async previewCron(cron: string) {
+        const result = await previewCron(cron);
         return result;
     }
 }

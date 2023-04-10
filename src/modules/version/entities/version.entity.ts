@@ -26,4 +26,7 @@ export class Version extends BaseContent {
 
     @Column({ length: 256 })
     password: string;
+
+    @Column({ length: 64 })
+    cron: string;
 }

@@ -37,4 +37,7 @@ export class VersionDto {
     @IsNotEmpty({ message: '密码不能为空' })
     @ApiPropertyOptional({ description: '密码' })
     readonly password: string;
+
+    @ApiPropertyOptional({ description: '版本的cron表达式' })
+    readonly cron?: string;
 }

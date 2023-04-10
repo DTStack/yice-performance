@@ -15,7 +15,7 @@ export class TaskDto {
     versionName?: string;
 
     @IsOptional()
-    @ApiPropertyOptional({ description: '检测开始时间' })
+    @ApiPropertyOptional({ description: '开始检测时间' })
     readonly startAt?: Date;
 
     @IsOptional()

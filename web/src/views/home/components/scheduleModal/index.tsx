@@ -1,35 +1,39 @@
 import { useEffect, useState } from 'react';
-import { Modal, Form, Input, message, Button, DatePicker, Select } from 'antd';
+import { Modal, Form, Input, message, Button, Tooltip } from 'antd';
 import API from '../../../../utils/api';
-import moment from 'moment';
 import './style.less';
-
-const { RangePicker } = DatePicker;
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import { IProject } from 'typing';
 
 interface IProps {
     open: boolean;
     versionId: number | undefined;
     versionName: string | undefined;
+    project: IProject | undefined;
     onCancel: (needFetch: any) => void;
     setRunTime: (runTime: number) => void;
 }
 
 export default function ScheduleModal(props: IProps) {
-    const { open, versionId, versionName, onCancel, setRunTime } = props;
+    const { open, versionId, versionName, project, onCancel, setRunTime } = props;
     const [form] = Form.useForm();
     const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
     const [runLoading, setRunLoading] = useState<boolean>(false);
-    const scheduleTypeList = [
-        { label: '分钟', value: 'minute' },
-        { label: '小时', value: 'hour' },
-        { label: '天', value: 'day' },
-    ];
 
     useEffect(() => {
         if (open) {
             form.resetFields();
+            getVersion();
         }
     }, [open]);
+
+    const getVersion = () => {
+        API.getVersion({ versionId }).then((res) => {
+            setTimeout(() => {
+                form.setFieldsValue(res.data || {});
+            }, 200);
+        });
+    };
 
     // 运行按钮
     const handleRun = () => {
@@ -47,37 +51,49 @@ export default function ScheduleModal(props: IProps) {
 
     // 确定按钮
     const handleOk = () => {
-        setConfirmLoading(true);
-        form.validateFields()
-            .then((values) => {
-                // 去除值为空字符串的字段
-                const params = Object.keys(values)
-                    .filter((key) => values[key] !== '')
-                    .reduce((acc, key) => ({ ...acc, [key]: values[key] }), {});
-                // beginDate: values.beginDate[0].format('YYYY-MM-DD')
+        form.validateFields().then((values) => {
+            setConfirmLoading(true);
 
-                API[open ? 'updateVersion' : 'createVersion']({
-                    ...params,
-                    versionId,
+            API.updateVersionCron({ projectId: project?.projectId, versionId, ...values })
+                .then(() => {
+                    message.success('保存成功！');
+                    onCancel(false);
                 })
-                    .then(() => {
-                        message.success('保存成功！');
-                        onCancel(false);
-                    })
-                    .finally(() => {
-                        setConfirmLoading(false);
+                .finally(() => {
+                    setConfirmLoading(false);
+                });
+        });
+    };
+
+    // 预览最近的十个计划周期
+    const handlePreviewCron = () => {
+        form.validateFields().then((values) => {
+            setConfirmLoading(true);
+            API.previewCron(values)
+                .then((res) => {
+                    const list = res?.data || [];
+                    Modal.info({
+                        title: '接下来的10个计划周期',
+                        content: (
+                            <>
+                                {list.map((item: any, idx: number) => (
+                                    <div key={idx}>{item}</div>
+                                ))}
+                            </>
+                        ),
                     });
-            })
-            .catch(() => {
-                setConfirmLoading(false);
-            });
+                })
+                .finally(() => {
+                    setConfirmLoading(false);
+                });
+        });
     };
 
     const renderButtons = () => {
         return (
             <div className="btn-box">
                 <Button type="primary" loading={runLoading} onClick={handleRun}>
-                    立即运行
+                    单次运行
                 </Button>
 
                 <div>
@@ -90,45 +106,52 @@ export default function ScheduleModal(props: IProps) {
         );
     };
 
-    // 选择某个调度周期
-    const handleScheduleType = (value: any) => {
-        console.log(111, value);
-    };
+    const tooltip = (
+        <>
+            <div>0 10 * * * * 每小时的第10分钟</div>
+            <div>0 */12 0-2 * * * 零点到两点每12分钟</div>
+            <div>0 30 11 * * 1-5 周一至周五的 11:30</div>
+            <a
+                href="https://docs.nestjs.com/techniques/task-scheduling#declarative-cron-jobs"
+                target="_blank"
+                rel="noreferrer"
+            >
+                nestjs cron jobs
+            </a>
+        </>
+    );
 
     return (
         <Modal
+            width={500}
             title={`${versionName}调度信息`}
             open={open}
             forceRender
             destroyOnClose
             footer={renderButtons()}
+            onCancel={onCancel}
         >
-            <Form form={form} labelCol={{ span: 5 }} wrapperCol={{ span: 18 }} name="Form">
+            <Form
+                className="schedule-form"
+                form={form}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 14 }}
+                name="Form"
+            >
                 <Form.Item
-                    name="startDate"
-                    label="生效日期"
-                    rules={[{ required: true, message: '生效日期不能为空' }]}
-                    initialValue={[moment('2001-01-01'), moment('2001-01-01').add(120, 'years')]}
+                    name="cron"
+                    label="Cron表达式"
+                    rules={[{ required: true }]}
+                    initialValue="0 */12 0-2 * * *"
                 >
-                    <RangePicker format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']} />
+                    <Input placeholder="请输入Cron表达式" maxLength={64} />
                 </Form.Item>
-                <Form.Item
-                    name="scheduleType"
-                    label="调度周期"
-                    // initialValue={`${scheduleConf?.scheduleType}`}
-                    rules={[
-                        {
-                            required: true,
-                            message: '调度周期必选',
-                        },
-                    ]}
-                >
-                    <Select
-                        placeholder="请选择绑定的 devops 实例"
-                        options={scheduleTypeList}
-                        onSelect={handleScheduleType}
-                    />
-                </Form.Item>
+
+                <Tooltip title={tooltip} placement="bottom">
+                    <QuestionCircleOutlined />
+                </Tooltip>
+
+                <Button onClick={handlePreviewCron}>预览</Button>
             </Form>
         </Modal>
     );

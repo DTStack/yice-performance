@@ -3,6 +3,7 @@
  */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cron } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { TaskDto } from '../dto/task.dto';
 import { Task } from '../entities/task.entity';
@@ -11,7 +12,7 @@ import { TaskService } from '../services/task.service';
 import { Performance } from '@/modules/performance/entities/performance.entity';
 import { TASK_STATUS } from '@/const';
 import { Version } from '@/modules/version/entities/version.entity';
-import { getWhere } from '@/utils';
+import { canCreateTask, formatDate, getWhere } from '@/utils';
 import { Project } from '@/modules/project/entities/project.entity';
 
 @Injectable()
@@ -27,6 +28,20 @@ export class TaskRunService {
         private readonly projectRepository: Repository<Project>,
         private readonly taskService: TaskService
     ) {}
+
+    // 每分钟执行一次 https://docs.nestjs.com/techniques/task-scheduling#declarative-cron-jobs
+    @Cron('0 * * * * *')
+    async handleCron() {
+        const result = await this.versionRepository.find({ where: getWhere() });
+        result.forEach((item: any) => {
+            const { cron, versionId } = item;
+            const currentDate = formatDate();
+            if (cron && cron?.[0] === '0') {
+                const flag = canCreateTask(currentDate, cron);
+                flag && this.create({ versionId, triggerType: 0 });
+            }
+        });
+    }
 
     // 再次检测
     async tryAgain(taskId: number) {

@@ -25,8 +25,14 @@ export default {
     updateVersion(data: any) {
         return instance.post('/version/updateVersion', data);
     },
+    updateVersionCron(data: any) {
+        return instance.post('/version/updateVersionCron', data);
+    },
     deleteVersion(data: any) {
         return instance.post('/version/deleteVersion', data);
+    },
+    previewCron(data: any) {
+        return instance.post('/version/previewCron', data);
     },
 
     // 任务相关

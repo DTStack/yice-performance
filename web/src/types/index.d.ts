@@ -17,6 +17,7 @@ declare module 'typing' {
         username?: string;
         password?: string;
         closable?: boolean;
+        cron?: string;
     }
 
     /** 任务字段 */

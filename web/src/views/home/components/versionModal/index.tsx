@@ -65,30 +65,26 @@ export default function VersionModal(props: IProps) {
     };
 
     const handleOk = () => {
-        setLoading(true);
-        form.validateFields()
-            .then((values) => {
-                // 去除值为空字符串的字段
-                const params = Object.keys(values)
-                    .filter((key) => values[key] !== '')
-                    .reduce((acc, key) => ({ ...acc, [key]: values[key] }), {});
+        form.validateFields().then((values) => {
+            setLoading(true);
+            // 去除值为空字符串的字段
+            const params = Object.keys(values)
+                .filter((key) => values[key] !== '')
+                .reduce((acc, key) => ({ ...acc, [key]: values[key] }), {});
 
-                API[isEdit ? 'updateVersion' : 'createVersion']({
-                    ...params,
-                    projectId,
-                    versionId,
-                })
-                    .then(() => {
-                        message.success('保存成功！');
-                        onCancel(true);
-                    })
-                    .finally(() => {
-                        setLoading(false);
-                    });
+            API[isEdit ? 'updateVersion' : 'createVersion']({
+                ...params,
+                projectId,
+                versionId,
             })
-            .catch(() => {
-                setLoading(false);
-            });
+                .then(() => {
+                    message.success('保存成功！');
+                    onCancel(true);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        });
     };
 
     return (
@@ -96,10 +92,10 @@ export default function VersionModal(props: IProps) {
             title="子产品版本信息"
             open={open}
             confirmLoading={loading}
-            onOk={handleOk}
-            onCancel={onCancel}
             forceRender
             destroyOnClose
+            onOk={handleOk}
+            onCancel={onCancel}
         >
             <Form form={form} labelCol={{ span: 5 }} wrapperCol={{ span: 18 }} name="Form">
                 <Form.Item name="devopsShiLiId" label="绑定实例">

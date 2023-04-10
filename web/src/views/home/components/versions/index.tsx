@@ -3,10 +3,10 @@ import { Button, Empty, Modal, Spin, Tabs, message } from 'antd';
 import API from '../../../../utils/api';
 import VersionModal from '../versionModal';
 import { IProject, IVersion } from 'typing';
-import './style.less';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { EditOutlined, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import TaskTable from '../taskTable';
 import ScheduleModal from '../scheduleModal';
+import './style.less';
 
 interface IProps {
     project: IProject | undefined;
@@ -102,12 +102,10 @@ export default function Versions(props: IProps) {
     const renderButtons = () => {
         return isDefault ? null : (
             <>
-                <Button onClick={handleAdd}>新增</Button>
+                <Button icon={<PlusOutlined />} onClick={handleAdd} />
                 {!!versionList.length && (
                     <>
-                        <Button className="btn-left" onClick={handleEdit}>
-                            编辑
-                        </Button>
+                        <Button className="btn-left" icon={<EditOutlined />} onClick={handleEdit} />
                         <Button className="btn-left" type="primary" onClick={handleSchedule}>
                             调度
                         </Button>
@@ -150,6 +148,7 @@ export default function Versions(props: IProps) {
                 open={scheduleOpen}
                 versionId={versionId}
                 versionName={versionList.find((item) => item.versionId === versionId)?.name}
+                project={project}
                 onCancel={(needFetch: boolean) => {
                     setScheduleOpen(false);
                     // 新增的第一个版本设置为默认的 versionId

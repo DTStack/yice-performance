@@ -67,10 +67,28 @@ export class VersionController {
         return await this.versionService.update(versionDto);
     }
 
+    @ApiOperation({ summary: '更新版本的cron表达式' })
+    @HttpCode(HttpStatus.OK)
+    @Post('updateVersionCron')
+    async updateVersionCron(@Body() versionDto) {
+        return await this.versionService.updateVersionCron(versionDto);
+    }
+
     @ApiOperation({ summary: '删除版本' })
     @HttpCode(HttpStatus.OK)
     @Post('deleteVersion')
     async deleteVersion(@Body() { versionId }) {
         return await this.versionService.update({ versionId, isDelete: 1 });
+    }
+
+    @ApiOperation({ summary: '预览cron表达式' })
+    @ApiQuery({ name: 'cron', required: true })
+    @HttpCode(HttpStatus.OK)
+    @Post('previewCron')
+    async previewCron(@Body() { cron }) {
+        if (cron?.[0] !== '0') {
+            throw new HttpException('不允许秒级调度，请修改Cron表达式', HttpStatus.OK);
+        }
+        return await this.versionService.previewCron(cron);
     }
 }
