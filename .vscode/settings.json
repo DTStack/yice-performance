@@ -24,7 +24,7 @@
     },
     "stylelint.validate": ["css", "less", "postcss", "scss"],
     "stylelint.snippet": ["css", "less", "postcss", "scss"],
-    "stylelint.stylelintPath": "node_modules/.pnpm/stylelint@15.2.0/node_modules/stylelint",
+    "stylelint.stylelintPath": "node_modules/.pnpm/stylelint@14.11.0/node_modules/stylelint",
     "[nginx]": {
         "editor.defaultFormatter": "ahmadalli.vscode-nginx-conf"
     },

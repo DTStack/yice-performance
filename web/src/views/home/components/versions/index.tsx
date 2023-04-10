@@ -6,6 +6,7 @@ import { IProject, IVersion } from 'typing';
 import './style.less';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import TaskTable from '../taskTable';
+import ScheduleModal from '../scheduleModal';
 
 interface IProps {
     project: IProject | undefined;
@@ -15,10 +16,10 @@ export default function Versions(props: IProps) {
     const { project } = props;
     const { projectId } = project || {};
     const [versionList, setVersionList] = useState<IVersion[]>([]);
-    const [open, setOpen] = useState<boolean>(false);
+    const [infoOpen, setInfoOpen] = useState<boolean>(false);
+    const [scheduleOpen, setScheduleOpen] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [runLoading, setRunLoading] = useState<boolean>(false);
     const [isDefault, setIsDefault] = useState<boolean>(false);
     const [versionId, setVersionId] = useState<number | undefined>(undefined);
     // runTime 更新则代表 点击了运行按钮，需要更新任务列表
@@ -70,12 +71,16 @@ export default function Versions(props: IProps) {
     // 新增按钮
     const handleAdd = () => {
         setIsEdit(false);
-        setOpen(true);
+        setInfoOpen(true);
     };
     // 编辑按钮
     const handleEdit = () => {
         setIsEdit(true);
-        setOpen(true);
+        setInfoOpen(true);
+    };
+    // 调度按钮
+    const handleSchedule = () => {
+        setScheduleOpen(true);
     };
     // 新增或删除 tab
     const handleEditTab = (targetKey: any, action: 'add' | 'remove') => {
@@ -93,18 +98,6 @@ export default function Versions(props: IProps) {
             });
         }
     };
-    // 运行按钮
-    const handleRun = () => {
-        setRunLoading(true);
-        API.createTask({ versionId })
-            .then(() => {
-                setRunTime(new Date().getTime());
-                message.success('操作成功，请在任务列表查看');
-            })
-            .finally(() => {
-                setRunLoading(false);
-            });
-    };
 
     const renderButtons = () => {
         return isDefault ? null : (
@@ -112,16 +105,11 @@ export default function Versions(props: IProps) {
                 <Button onClick={handleAdd}>新增</Button>
                 {!!versionList.length && (
                     <>
-                        <Button style={{ marginLeft: 12 }} onClick={handleEdit}>
+                        <Button className="btn-left" onClick={handleEdit}>
                             编辑
                         </Button>
-                        <Button
-                            type="primary"
-                            style={{ marginLeft: 12 }}
-                            loading={runLoading}
-                            onClick={handleRun}
-                        >
-                            运行
+                        <Button className="btn-left" type="primary" onClick={handleSchedule}>
+                            调度
                         </Button>
                     </>
                 )}
@@ -147,15 +135,27 @@ export default function Versions(props: IProps) {
             </div>
 
             <VersionModal
-                open={open}
+                open={infoOpen}
                 isEdit={isEdit}
                 project={project}
                 versionId={versionId}
                 onCancel={(needFetch: boolean) => {
-                    setOpen(false);
+                    setInfoOpen(false);
                     // 新增的第一个版本设置为默认的 versionId
                     needFetch && getVersions(!versionList.length);
                 }}
+            />
+
+            <ScheduleModal
+                open={scheduleOpen}
+                versionId={versionId}
+                versionName={versionList.find((item) => item.versionId === versionId)?.name}
+                onCancel={(needFetch: boolean) => {
+                    setScheduleOpen(false);
+                    // 新增的第一个版本设置为默认的 versionId
+                    needFetch && getVersions(!versionList.length);
+                }}
+                setRunTime={setRunTime}
             />
         </>
     );
