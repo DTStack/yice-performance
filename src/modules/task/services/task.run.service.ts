@@ -34,9 +34,9 @@ export class TaskRunService {
     async handleCron() {
         const result = await this.versionRepository.find({ where: getWhere() });
         result.forEach((item: any) => {
-            const { cron, versionId } = item;
+            const { cron, isFreeze, versionId } = item;
             const currentDate = formatDate();
-            if (cron && cron?.[0] === '0') {
+            if (cron && !isFreeze && cron?.[0] === '0') {
                 const flag = canCreateTask(currentDate, cron);
                 flag && this.create({ versionId, triggerType: 0 });
             }

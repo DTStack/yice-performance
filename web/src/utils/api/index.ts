@@ -25,8 +25,8 @@ export default {
     updateVersion(data: any) {
         return instance.post('/version/updateVersion', data);
     },
-    updateVersionCron(data: any) {
-        return instance.post('/version/updateVersionCron', data);
+    updateScheduleConf(data: any) {
+        return instance.post('/version/updateScheduleConf', data);
     },
     deleteVersion(data: any) {
         return instance.post('/version/deleteVersion', data);

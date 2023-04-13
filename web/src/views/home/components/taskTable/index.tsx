@@ -133,7 +133,7 @@ export default function TaskTable(props: IPros) {
             dataIndex: 'startAt',
             key: 'startAt',
             width: 200,
-            render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
+            render: (text) => (text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : '-'),
         },
         {
             title: '触发方式',

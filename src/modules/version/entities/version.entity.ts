@@ -29,4 +29,7 @@ export class Version extends BaseContent {
 
     @Column({ length: 64 })
     cron: string;
+
+    @Column('int')
+    isFreeze: number;
 }

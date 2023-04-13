@@ -69,9 +69,9 @@ export class VersionController {
 
     @ApiOperation({ summary: '更新版本的cron表达式' })
     @HttpCode(HttpStatus.OK)
-    @Post('updateVersionCron')
-    async updateVersionCron(@Body() versionDto) {
-        return await this.versionService.updateVersionCron(versionDto);
+    @Post('updateScheduleConf')
+    async updateScheduleConf(@Body() versionDto) {
+        return await this.versionService.updateScheduleConf(versionDto);
     }
 
     @ApiOperation({ summary: '删除版本' })

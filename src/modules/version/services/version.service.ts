@@ -20,9 +20,9 @@ export class VersionService {
         });
     }
 
-    async findOne(query: getVersionReqDto): Promise<Version> {
+    async findOne(query: getVersionReqDto) {
         const result = await this.versionRepository.findOneBy(getWhere(query));
-        return result;
+        return { ...result, isFreeze: !!result.isFreeze };
     }
 
     async create(versionDto: VersionDto) {
@@ -36,7 +36,7 @@ export class VersionService {
         return result;
     }
 
-    async updateVersionCron(versionDto) {
+    async updateScheduleConf(versionDto) {
         const result = await this.versionRepository.update(versionDto.versionId, versionDto);
         return result;
     }

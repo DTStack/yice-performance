@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Modal, Form, Input, message, Button, Tooltip } from 'antd';
+import { Modal, Form, Input, message, Button, Tooltip, Checkbox } from 'antd';
 import API from '../../../../utils/api';
 import './style.less';
 import { QuestionCircleOutlined } from '@ant-design/icons';
@@ -35,7 +35,7 @@ export default function ScheduleModal(props: IProps) {
         });
     };
 
-    // 运行按钮
+    // 立即运行按钮
     const handleRun = () => {
         setRunLoading(true);
         API.createTask({ versionId })
@@ -53,8 +53,7 @@ export default function ScheduleModal(props: IProps) {
     const handleOk = () => {
         form.validateFields().then((values) => {
             setConfirmLoading(true);
-
-            API.updateVersionCron({ projectId: project?.projectId, versionId, ...values })
+            API.updateScheduleConf({ projectId: project?.projectId, versionId, ...values })
                 .then(() => {
                     message.success('保存成功！');
                     onCancel(false);
@@ -93,7 +92,7 @@ export default function ScheduleModal(props: IProps) {
         return (
             <div className="btn-box">
                 <Button type="primary" loading={runLoading} onClick={handleRun}>
-                    单次运行
+                    立即运行
                 </Button>
 
                 <div>
@@ -138,13 +137,11 @@ export default function ScheduleModal(props: IProps) {
                 wrapperCol={{ span: 14 }}
                 name="Form"
             >
-                <Form.Item
-                    name="cron"
-                    label="Cron表达式"
-                    rules={[{ required: true }]}
-                    initialValue="0 */12 0-2 * * *"
-                >
+                <Form.Item name="cron" label="Cron表达式" rules={[{ required: true }]}>
                     <Input placeholder="请输入Cron表达式" maxLength={64} />
+                </Form.Item>
+                <Form.Item name="isFreeze" label="调度冻结" valuePropName="checked" required>
+                    <Checkbox>冻结</Checkbox>
                 </Form.Item>
 
                 <Tooltip title={tooltip} placement="bottom">
