@@ -39,6 +39,7 @@
         "chrome-launcher": "^0.15.1",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.0",
+        "compression": "^1.7.4",
         "cron-parser": "^4.8.1",
         "lighthouse": "^9.6.8",
         "lodash": "^4.17.21",

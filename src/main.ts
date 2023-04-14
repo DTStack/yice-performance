@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import * as compression from 'compression';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 
@@ -26,6 +27,9 @@ async function bootstrap() {
 
     // 全局注册错误的过滤器(错误异常)
     app.useGlobalFilters(new HttpExceptionFilter());
+
+    // 开启 gzip 压缩
+    app.use(compression());
 
     await app.listen(APP_PORT, () => {
         console.log(`app is running: http://localhost:${APP_PORT}`);
