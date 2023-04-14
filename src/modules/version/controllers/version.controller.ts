@@ -45,7 +45,7 @@ export class VersionController {
         const { name, projectId, devopsShiLiId } = versionDto;
         if (devopsShiLiId) {
             const version = await this.versionService.findOne({ devopsShiLiId });
-            if (version) {
+            if (version?.versionId) {
                 throw new HttpException('当前实例已经被绑定，请重新选择', HttpStatus.OK);
             }
         }

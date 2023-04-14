@@ -22,7 +22,7 @@ export class VersionService {
 
     async findOne(query: getVersionReqDto) {
         const result = await this.versionRepository.findOneBy(getWhere(query));
-        return { ...result, isFreeze: !!result.isFreeze };
+        return result ? { ...result, isFreeze: !!result.isFreeze } : null;
     }
 
     async create(versionDto: VersionDto) {
