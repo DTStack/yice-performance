@@ -100,7 +100,7 @@ export class TaskRunService {
             const version = await this.versionRepository.findOneBy(
                 getWhere({ name: '汇总', url: 'default' })
             );
-            taskInfo = { ...taskInfo, versionId: version?.versionId };
+            taskInfo = { ...taskInfo, versionId: version?.versionId, versionName: '其他' };
         }
 
         // 保存任务

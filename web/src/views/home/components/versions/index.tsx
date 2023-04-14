@@ -10,10 +10,12 @@ import './style.less';
 
 interface IProps {
     project: IProject | undefined;
+    runTime: number;
+    setRunTime: (runTime: number) => void;
 }
 
 export default function Versions(props: IProps) {
-    const { project } = props;
+    const { project, runTime, setRunTime } = props;
     const { projectId } = project || {};
     const [versionList, setVersionList] = useState<IVersion[]>([]);
     const [infoOpen, setInfoOpen] = useState<boolean>(false);
@@ -22,8 +24,6 @@ export default function Versions(props: IProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [isDefault, setIsDefault] = useState<boolean>(false);
     const [versionId, setVersionId] = useState<number | undefined>(undefined);
-    // runTime 更新则代表 点击了运行按钮，需要更新任务列表
-    const [runTime, setRunTime] = useState<number>(0);
 
     useEffect(() => {
         if (projectId) {

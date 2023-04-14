@@ -14,6 +14,8 @@ function Home() {
     const [projectList, setProjectList] = useState<any[]>([]);
     const [running, setRunning] = useState<boolean>(false);
     const [search, setSearch] = useState<string>('');
+    // runTime 更新则代表 点击了运行按钮，需要更新任务列表
+    const [runTime, setRunTime] = useState<number>(0);
 
     useEffect(() => {
         getProjects();
@@ -36,6 +38,7 @@ function Home() {
         setRunning(true);
         API.createTask({ url })
             .then(() => {
+                setRunTime(new Date().getTime());
                 setSearch('');
                 message.success('操作成功，请在『其他』的任务列表查看');
             })
@@ -56,7 +59,7 @@ function Home() {
                     value={search}
                     loading={running}
                     onChange={(e) => setSearch((e?.target as any)?.value)}
-                    onSearch={handleRun}
+                    onSearch={handleRun} // 按钮事件
                     onPressEnter={(e) => !running && handleRun((e?.target as any)?.value)}
                 />
             </div>
@@ -68,11 +71,10 @@ function Home() {
                         projectList={projectList}
                         setProject={(project: IProject) => setProject(project)}
                     />
-                    <Versions project={project} />
+
+                    <Versions project={project} runTime={runTime} setRunTime={setRunTime} />
                 </div>
             </div>
-
-            {/* <TaskTable projectList={projectList} runTime={runTime} /> */}
         </div>
     );
 }

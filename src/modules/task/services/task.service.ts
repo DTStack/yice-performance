@@ -19,7 +19,7 @@ export class TaskService {
     async findAll(query: TaskReqDto): Promise<object> {
         try {
             const {
-                pageSize = 10,
+                pageSize = 20,
                 current = 1,
                 isDefault,
                 versionId,

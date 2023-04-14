@@ -35,7 +35,7 @@ export default function TaskTable(props: IPros) {
     const [status, setStatus] = useState<number[] | undefined>(undefined);
     const [taskInfo, setTaskInfo] = useState<any>({});
     const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
-    const pageSize = 10;
+    const pageSize = 20;
 
     useEffect(() => {
         versionId && fetchData();
@@ -283,12 +283,15 @@ export default function TaskTable(props: IPros) {
             <Table
                 className="task-table"
                 rowKey="taskId"
-                size="small"
+                size="middle"
                 loading={loading}
                 columns={columns}
                 dataSource={taskList}
                 pagination={pagination}
-                scroll={{ x: isDefault ? 800 : 920 }}
+                scroll={{
+                    x: isDefault ? 800 : 920,
+                    y: 'calc(100vh - 16vh - 50px - 32px - 68px - 24px - 32px - 47px)',
+                }}
                 onChange={handleTableChange}
             />
 
