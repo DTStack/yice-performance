@@ -14,6 +14,7 @@ import {
     ClockCircleOutlined,
     CloseCircleOutlined,
     MinusCircleOutlined,
+    QuestionCircleOutlined,
     SyncOutlined,
 } from '@ant-design/icons';
 import ReportModal from '../reportModal';
@@ -183,7 +184,16 @@ export default function TaskTable(props: IPros) {
                     </Tag>
                 );
 
-                return TASK_STATUS.FAIL ? <Tooltip title={failReason}>{tag}</Tooltip> : tag;
+                return status === TASK_STATUS.FAIL ? (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        {tag}
+                        <Tooltip title={failReason}>
+                            <QuestionCircleOutlined />
+                        </Tooltip>
+                    </div>
+                ) : (
+                    tag
+                );
             },
         },
         {
