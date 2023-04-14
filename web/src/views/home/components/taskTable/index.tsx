@@ -107,6 +107,20 @@ export default function TaskTable(props: IPros) {
 
     const columns: ColumnsType<any> = [
         {
+            title: '检测地址',
+            dataIndex: 'url',
+            key: 'url',
+            width: 200,
+            ellipsis: { showTitle: false },
+            render: (text) => (
+                <Tooltip placement="topLeft" title={text}>
+                    <a href={text} target="_blank" rel="noreferrer">
+                        {text}
+                    </a>
+                </Tooltip>
+            ),
+        },
+        {
             title: '检测得分',
             dataIndex: 'score',
             key: 'score',
@@ -254,32 +268,14 @@ export default function TaskTable(props: IPros) {
         },
     ];
     if (isDefault) {
-        columns.splice(
-            0,
-            0,
-            {
-                title: '版本名称',
-                dataIndex: 'versionName',
-                key: 'versionName',
-                width: 140,
-                fixed: 'left',
-                ellipsis: { showTitle: true },
-            }
-            // {
-            //     title: '检测地址',
-            //     dataIndex: 'url',
-            //     key: 'url',
-            //     width: 220,
-            //     ellipsis: { showTitle: false },
-            //     render: (text) => (
-            //         <Tooltip placement="topLeft" title={text}>
-            //             <a href={text} target="_blank" rel="noreferrer">
-            //                 {text}
-            //             </a>
-            //         </Tooltip>
-            //     ),
-            // }
-        );
+        columns.splice(0, 0, {
+            title: '版本名称',
+            dataIndex: 'versionName',
+            key: 'versionName',
+            width: 140,
+            fixed: 'left',
+            ellipsis: { showTitle: true },
+        });
     }
 
     const pagination = {
@@ -299,7 +295,7 @@ export default function TaskTable(props: IPros) {
                 dataSource={taskList}
                 pagination={pagination}
                 scroll={{
-                    x: isDefault ? 800 : 920,
+                    x: isDefault ? 1000 : 1120,
                     y: 'calc(100vh - 16vh - 50px - 32px - 68px - 24px - 32px - 47px)',
                 }}
                 onChange={handleTableChange}
