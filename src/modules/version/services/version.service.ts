@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VersionDto } from '../dto/version.dto';
 import { Version } from '../entities/version.entity';
-import { getWhere, previewCron } from '@/utils';
+import { getWhere, isSecond, previewCron } from '@/utils';
 import { getVersionReqDto } from '../dto/version.req.dto';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class VersionService {
     }
 
     async previewCron(cron: string) {
-        const result = await previewCron(cron);
-        return result;
+        const data = await previewCron(cron);
+        return { data, isSecond: isSecond(cron) };
     }
 }

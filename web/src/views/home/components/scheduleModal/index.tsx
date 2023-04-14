@@ -64,19 +64,24 @@ export default function ScheduleModal(props: IProps) {
         });
     };
 
-    // 预览最近的十个计划周期
+    // 预览最近的20个计划周期
     const handlePreviewCron = () => {
         form.validateFields().then((values) => {
             setConfirmLoading(true);
             API.previewCron(values)
                 .then((res) => {
-                    const list = res?.data || [];
-                    Modal.info({
-                        title: '接下来的10个计划周期',
+                    const { data: list = [], isSecond } = res?.data || {};
+                    Modal[isSecond ? 'warning' : 'info']({
+                        title: `最近的20个计划周期${
+                            isSecond ? '，当前属于秒级调度，将不允许保存' : ''
+                        }`,
+                        okText: isSecond ? '这就去改' : '知道了',
                         content: (
                             <>
                                 {list.map((item: any, idx: number) => (
-                                    <div key={idx}>{item}</div>
+                                    <div key={idx} style={{ fontSize: 16 }}>
+                                        {item}
+                                    </div>
                                 ))}
                             </>
                         ),
@@ -138,7 +143,7 @@ export default function ScheduleModal(props: IProps) {
                 name="Form"
             >
                 <Form.Item name="cron" label="Cron表达式" rules={[{ required: true }]}>
-                    <Input placeholder="请输入Cron表达式" maxLength={64} />
+                    <Input placeholder="请输入Cron表达式" autoFocus maxLength={64} />
                 </Form.Item>
                 <Form.Item name="isFreeze" label="调度冻结" valuePropName="checked" required>
                     <Checkbox>冻结</Checkbox>

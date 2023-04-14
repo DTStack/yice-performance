@@ -12,6 +12,7 @@ import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { VersionDto } from '../dto/version.dto';
 import { VersionService } from '../services/version.service';
 import { getVersionsReqDto, getVersionReqDto } from '../dto/version.req.dto';
+import { isSecond } from '@/utils';
 
 @Controller('version')
 export class VersionController {
@@ -71,6 +72,11 @@ export class VersionController {
     @HttpCode(HttpStatus.OK)
     @Post('updateScheduleConf')
     async updateScheduleConf(@Body() versionDto) {
+        const { cron } = versionDto;
+        if (isSecond(cron)) {
+            throw new HttpException('不允许秒级调度，请修改Cron表达式', HttpStatus.OK);
+        }
+
         return await this.versionService.updateScheduleConf(versionDto);
     }
 
@@ -86,9 +92,6 @@ export class VersionController {
     @HttpCode(HttpStatus.OK)
     @Post('previewCron')
     async previewCron(@Body() { cron }) {
-        if (cron?.[0] !== '0') {
-            throw new HttpException('不允许秒级调度，请修改Cron表达式', HttpStatus.OK);
-        }
         return await this.versionService.previewCron(cron);
     }
 }
