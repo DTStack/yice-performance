@@ -104,9 +104,9 @@ function ReportModal(props: IProps) {
                     );
                     const detail = (
                         <div>
-                            <div>耗时：{performance?.duration} ms</div>
-                            <div>得分：{performance?.score} 分</div>
-                            <div>权重：{performance?.weight}%</div>
+                            <div>耗时：{performance?.duration || '--'} ms</div>
+                            <div>得分：{performance?.score || '--'} 分</div>
+                            <div>权重：{performance?.weight || '--'}%</div>
                         </div>
                     );
                     return (
@@ -125,7 +125,7 @@ function ReportModal(props: IProps) {
                             }
                         >
                             <Tooltip title={detail} placement="right">
-                                {performance?.duration} ms
+                                {performance?.duration || '--'} ms
                             </Tooltip>
                         </Descriptions.Item>
                     );
