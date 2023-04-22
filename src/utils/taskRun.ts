@@ -171,8 +171,10 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         for (const auditRef of auditRefs) {
             const { weight, acronym } = auditRef;
             const { score, numericValue } = audits[auditRef.id] || {};
-            if (!numericValue) {
-                throw new Error('检测结果出现问题，没有单项检测时长');
+            if (numericValue === undefined) {
+                throw new Error(
+                    `检测结果出现问题，没有单项检测时长，${JSON.stringify(audits[auditRef.id])}`
+                );
             }
             performance.push({
                 weight,
@@ -195,7 +197,7 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
     } catch (error) {
         const failReason = error.toString().substring(0, 10240);
         const duration = Number((new Date().getTime() - start).toFixed(2));
-        await failCallback(taskId, failReason, duration);
+        await failCallback(task, failReason, duration);
         console.log(`taskId: ${taskId}, taskRun error`, failReason);
         throw error;
     } finally {

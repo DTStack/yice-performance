@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Button, Empty, Modal, Spin, Tabs, message } from 'antd';
+import { EditOutlined, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { useSearchParams } from 'react-router-dom';
 import API from '../../../../utils/api';
 import VersionModal from '../versionModal';
 import { IProject, IVersion } from 'typing';
-import { EditOutlined, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import TaskTable from '../taskTable';
 import ScheduleModal from '../scheduleModal';
 import './style.less';
@@ -15,6 +16,7 @@ interface IProps {
 }
 
 export default function Versions(props: IProps) {
+    const [searchParams] = useSearchParams();
     const { project, runTime, setRunTime } = props;
     const { projectId } = project || {};
     const [versionList, setVersionList] = useState<IVersion[]>([]);
@@ -42,7 +44,8 @@ export default function Versions(props: IProps) {
         API.getVersions({ projectId })
             .then((res) => {
                 setVersionList(res.data || []);
-                projectChanged && setVersionId(res.data?.[0]?.versionId);
+                projectChanged &&
+                    setVersionId(Number(searchParams.get('versionId')) || res.data?.[0]?.versionId);
                 // 版本全部删除后清除 versionId
                 !res.data?.length && setVersionId(undefined);
             })

@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TaskDto } from '../dto/task.dto';
 import { Task } from '../entities/task.entity';
+import { Performance } from '@/modules/performance/entities/performance.entity';
 import { TaskReqDto } from '../dto/task.req.dto';
 import { getWhere } from '@/utils';
 
@@ -13,7 +14,9 @@ import { getWhere } from '@/utils';
 export class TaskService {
     constructor(
         @InjectRepository(Task)
-        private readonly taskRepository: Repository<Task>
+        private readonly taskRepository: Repository<Task>,
+        @InjectRepository(Performance)
+        private readonly performanceRepository: Repository<Performance>
     ) {}
 
     async findAll(query: TaskReqDto): Promise<object> {
@@ -84,6 +87,15 @@ export class TaskService {
             .set({ isDelete: 1 })
             .where('taskId IN (:...taskIds) ', { taskIds })
             .execute();
+
+        // 批量删除任务时，把关联的性能数据也删除
+        await this.performanceRepository
+            .createQueryBuilder()
+            .update(Performance)
+            .set({ isDelete: 1 })
+            .where('taskId IN (:...taskIds) ', { taskIds })
+            .execute();
+
         return result;
     }
 }

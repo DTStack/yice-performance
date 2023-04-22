@@ -45,6 +45,15 @@ export class TaskRunService {
     async tryAgain(taskId: number) {
         const { versionId, versionName, url } = await this.taskService.findOne(taskId);
 
+        // 如果该版本已删除，不允许再次检测
+        const version = await this.versionRepository.findOneBy(getWhere({ versionId }));
+        if (!version?.versionId) {
+            throw new HttpException(
+                '当前检查记录对应的版本已经删除，不允许再次检测',
+                HttpStatus.OK
+            );
+        }
+
         const task = this.taskRepository.create({
             versionId,
             versionName,
@@ -169,10 +178,10 @@ export class TaskRunService {
     }
 
     // 任务运行失败的回调
-    private async failCallback(taskId, failReason, duration) {
+    private async failCallback(task, failReason, duration) {
         try {
-            DingtalkRobot.failure(taskId);
-            await this.taskService.update(taskId, {
+            DingtalkRobot.failure(task);
+            await this.taskService.update(task?.taskId, {
                 status: TASK_STATUS.FAIL,
                 failReason,
                 duration,
@@ -201,24 +210,34 @@ export class TaskRunService {
             // 有等待中的任务
             if (task?.taskId) {
                 const { versionId } = task;
-                const { url, ...version } = await this.versionRepository.findOneBy(
+                const versionResult = await this.versionRepository.findOneBy(
                     getWhere({ versionId })
                 );
 
-                await this.taskService.update(task?.taskId, {
-                    status: TASK_STATUS.RUNNING,
-                    startAt: new Date(start),
-                });
+                if (versionResult) {
+                    const { url, ...version } = versionResult;
 
-                // 参数的方法不能简写，否则会使方法丢失 this
-                // url 使用 task 的 url 即可，使用 version 的 url 会导致 default 的 url 覆盖实际输入的 url
-                taskRun(
-                    { url, ...task, ...version, start },
-                    (taskId, result) => this.successCallback(taskId, result),
-                    (taskId, failReason, duration) =>
-                        this.failCallback(taskId, failReason, duration),
-                    () => this.scheduleControl()
-                );
+                    await this.taskService.update(task?.taskId, {
+                        status: TASK_STATUS.RUNNING,
+                        startAt: new Date(start),
+                    });
+
+                    // 参数的方法不能简写，否则会使方法丢失 this
+                    // url 使用 task 的 url 即可，使用 version 的 url 会导致 default 的 url 覆盖实际输入的 url
+                    taskRun(
+                        { url, ...task, ...version, start },
+                        (taskId, result) => this.successCallback(taskId, result),
+                        (task, failReason, duration) =>
+                            this.failCallback(task, failReason, duration),
+                        () => this.scheduleControl()
+                    );
+                } else {
+                    // 如果该版本已删除，不允许再次检测
+                    await this.taskService.update(task?.taskId, {
+                        status: TASK_STATUS.FAIL,
+                        failReason: '当前检查记录对应的版本已经删除，不允许再次检测',
+                    });
+                }
             }
         }
     }
@@ -263,11 +282,16 @@ export class TaskRunService {
         const result = await this.taskRepository.find({
             where: getWhere({ status: TASK_STATUS.RUNNING }),
         });
-        result.forEach((task: any) => {
+        result.forEach(async (task: any) => {
             // 任务运行超过五分钟
             if (new Date().getTime() - new Date(task.startAt).getTime() > 5 * 60 * 1000) {
                 console.log(`taskId: ${task.taskId}, 运行超过五分钟！`);
-                DingtalkRobot.timeout(task.taskId);
+
+                const { projectId } = await this.versionRepository.findOne({
+                    where: getWhere({ versionId: task.versionId }),
+                });
+
+                DingtalkRobot.timeout({ ...task, projectId });
             }
         });
     }

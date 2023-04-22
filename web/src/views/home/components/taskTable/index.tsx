@@ -46,7 +46,9 @@ export default function TaskTable(props: IPros) {
     }, [versionId, current, pageSize, triggerType, status]);
 
     useEffect(() => {
-        current === 1 ? fetchData() : setCurrent(1);
+        if (runTime !== 0) {
+            current === 1 ? fetchData() : setCurrent(1);
+        }
     }, [runTime]);
 
     const fetchData = () => {

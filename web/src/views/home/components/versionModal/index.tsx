@@ -108,7 +108,7 @@ export default function VersionModal(props: IProps) {
                     />
                 </Form.Item>
                 <Form.Item name="name" label="版本名称" rules={[{ required: true }]}>
-                    <Input allowClear placeholder="请输入版本名称" />
+                    <Input allowClear placeholder="请输入版本名称" onPressEnter={handleOk} />
                 </Form.Item>
                 <Form.Item
                     name="url"
