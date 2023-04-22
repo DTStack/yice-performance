@@ -256,7 +256,7 @@ export default function TaskTable(props: IPros) {
                 if (status === TASK_STATUS.WAITING) {
                     return (
                         <Popconfirm
-                            title="尝试运行将会把该任务重新加入任务队列，是否继续？"
+                            title="该任务将重新加入任务队列，是否继续？"
                             onConfirm={() => handleTryRun(record)}
                         >
                             <a>尝试运行</a>
@@ -297,7 +297,12 @@ export default function TaskTable(props: IPros) {
             key: 'versionName',
             width: 140,
             fixed: 'left',
-            ellipsis: { showTitle: true },
+            ellipsis: { showTitle: false },
+            render: (text) => (
+                <Tooltip placement="topLeft" title={text}>
+                    {text}
+                </Tooltip>
+            ),
         });
     }
 
@@ -355,12 +360,14 @@ export default function TaskTable(props: IPros) {
                 onChange={handleTableChange}
             />
 
-            <div className="select-content">
-                <div className="count">当前选中：{selectedRowKeys.length}</div>
-                <Button danger disabled={!selectedRowKeys.length} onClick={handleDelete}>
-                    批量删除
-                </Button>
-            </div>
+            {taskList.length ? (
+                <div className="select-content">
+                    <div className="count">当前选中：{selectedRowKeys.length}</div>
+                    <Button danger disabled={!selectedRowKeys.length} onClick={handleDelete}>
+                        批量删除
+                    </Button>
+                </div>
+            ) : null}
 
             <ReportModal
                 open={reportModalOpen}

@@ -225,15 +225,37 @@ export class TaskRunService {
 
     // 检查版本的 cron 符合当前时间运行的则创建任务
     private async checkCronForCurrentDate() {
-        const result = await this.versionRepository.find({ where: getWhere() });
-        result.forEach((version: any) => {
-            const { cron, isFreeze, versionId } = version;
+        const versionResult = await this.versionRepository.find({ where: getWhere() });
+        const versionList = versionResult.filter((version: any) => {
+            const { cron, isFreeze } = version;
             const currentDate = formatDate();
             if (cron && !isFreeze) {
-                const flag = canCreateTask(currentDate, cron);
-                flag && this.create({ versionId, triggerType: 0 });
+                return canCreateTask(currentDate, cron);
+            } else {
+                return false;
             }
         });
+
+        const projectList = await this.projectRepository.find({ where: getWhere() });
+        const taskList = versionList.map((version: any) => {
+            return {
+                ...version,
+                versionName: `${
+                    projectList.find((project: any) => project.projectId === version.projectId)
+                        ?.name
+                }-${version.name}`,
+            };
+        });
+
+        // 批量创建任务
+        await this.taskRepository
+            .createQueryBuilder()
+            .insert()
+            .into(Task)
+            .values(taskList)
+            .execute();
+
+        this.scheduleControl();
     }
 
     // 检查任务的运行时长，超过的则让任务失败

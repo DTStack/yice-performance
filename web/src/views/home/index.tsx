@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Input, message } from 'antd';
+import { useSearchParams } from 'react-router-dom';
 import Projects from './components/projects';
 import { httpPattern } from '../../utils';
 import API from '../../utils/api';
@@ -10,6 +11,7 @@ import './style.less';
 const { Search } = Input;
 
 function Home() {
+    const [searchParams] = useSearchParams();
     const [project, setProject] = useState<IProject>();
     const [projectList, setProjectList] = useState<any[]>([]);
     const [running, setRunning] = useState<boolean>(false);
@@ -28,7 +30,10 @@ function Home() {
                 res.data?.find(
                     (project: IProject) =>
                         project.projectId ===
-                        Number(sessionStorage.getItem('yice-active-projectId'))
+                        Number(
+                            searchParams.get('projectId') ||
+                                sessionStorage.getItem('yice-active-projectId')
+                        )
                 ) || res.data?.[0]
             );
         });
