@@ -24,14 +24,23 @@ export class TaskService {
                 isDefault,
                 versionId,
                 triggerType = [],
+                isUseful = [],
                 status = [],
             } = query;
-            let whereSql = isDefault === 'true' ? '' : 'versionId= :versionId ';
-            const whereParams = isDefault === 'true' ? {} : { versionId };
+            let whereSql = 'isDelete = 0 ';
+            const whereParams = { isDelete: 0 };
 
+            if (isDefault !== 'true') {
+                whereSql += 'and versionId= :versionId ';
+                Object.assign(whereParams, { versionId });
+            }
             if (triggerType?.length) {
                 whereSql += 'and triggerType IN (:...triggerType) ';
                 Object.assign(whereParams, { triggerType });
+            }
+            if (isUseful?.length) {
+                whereSql += 'and isUseful IN (:...isUseful) ';
+                Object.assign(whereParams, { isUseful });
             }
             if (status?.length) {
                 whereSql += 'and status IN (:...status) ';
@@ -65,6 +74,16 @@ export class TaskService {
 
     async update(taskId: number, taskDto: TaskDto) {
         const result = await this.taskRepository.update(taskId, taskDto);
+        return result;
+    }
+
+    async batchTask(taskIds: number[]) {
+        const result = await this.taskRepository
+            .createQueryBuilder()
+            .update(Task)
+            .set({ isDelete: 1 })
+            .where('taskId IN (:...taskIds) ', { taskIds })
+            .execute();
         return result;
     }
 }

@@ -15,7 +15,16 @@ export class TaskReqDto extends QueryDto {
     @IsOptional()
     triggerType?: number[];
 
+    @ApiPropertyOptional({ required: false, description: '是否有效' })
+    @IsOptional()
+    isUseful?: number[];
+
     @ApiPropertyOptional({ required: false, description: '任务状态' })
     @IsOptional()
     status?: number[];
+}
+
+export class batchDeleteReqDto {
+    @ApiPropertyOptional({ required: false, description: '任务id集合' })
+    taskIds: number[];
 }

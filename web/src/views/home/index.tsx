@@ -14,7 +14,7 @@ function Home() {
     const [projectList, setProjectList] = useState<any[]>([]);
     const [running, setRunning] = useState<boolean>(false);
     const [search, setSearch] = useState<string>('');
-    // runTime 更新则代表 点击了运行按钮，需要更新任务列表
+    // runTime 更新则代表 点击了运行按钮，需要更新任务列表，页码为 1
     const [runTime, setRunTime] = useState<number>(0);
 
     useEffect(() => {
@@ -24,7 +24,13 @@ function Home() {
     const getProjects = () => {
         API.getProjects().then((res) => {
             setProjectList(res.data || []);
-            setProject(res.data?.[0]);
+            setProject(
+                res.data?.find(
+                    (project: IProject) =>
+                        project.projectId ===
+                        Number(sessionStorage.getItem('yice-active-projectId'))
+                ) || res.data?.[0]
+            );
         });
     };
 
@@ -45,6 +51,11 @@ function Home() {
             .finally(() => {
                 setRunning(false);
             });
+    };
+
+    const handleSelectProject = (project: IProject) => {
+        sessionStorage.setItem('yice-active-projectId', `${project.projectId}`);
+        setProject(project);
     };
 
     return (
@@ -69,7 +80,7 @@ function Home() {
                     <Projects
                         projectId={project?.projectId}
                         projectList={projectList}
-                        setProject={(project: IProject) => setProject(project)}
+                        setProject={(project: IProject) => handleSelectProject(project)}
                     />
 
                     <Versions project={project} runTime={runTime} setRunTime={setRunTime} />

@@ -149,11 +149,7 @@ export default function Versions(props: IProps) {
                 versionId={versionId}
                 versionName={versionList.find((item) => item.versionId === versionId)?.name}
                 project={project}
-                onCancel={(needFetch: boolean) => {
-                    setScheduleOpen(false);
-                    // 新增的第一个版本设置为默认的 versionId
-                    needFetch && getVersions(!versionList.length);
-                }}
+                onCancel={() => setScheduleOpen(false)}
                 setRunTime={setRunTime}
             />
         </>

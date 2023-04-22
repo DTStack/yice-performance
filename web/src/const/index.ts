@@ -5,7 +5,6 @@ export enum TASK_STATUS {
     SUCCESS,
     CANCEL,
 }
-
 export const TASK_STATUS_TEXT = [
     { text: '等待中', value: TASK_STATUS.WAITING },
     { text: '检测中', value: TASK_STATUS.RUNNING },
@@ -18,10 +17,18 @@ export enum TASK_TRIGGER_TYPE {
     SYSTEM,
     USER_HAND,
 }
-
 export const TASK_TRIGGER_TYPE_TEXT = [
     { text: '系统触发', value: TASK_TRIGGER_TYPE.SYSTEM },
     { text: '手动触发', value: TASK_TRIGGER_TYPE.USER_HAND },
+];
+
+export enum IS_USEFUL {
+    INVALID,
+    EFFECTIVE,
+}
+export const IS_USEFUL_TEXT = [
+    { text: '无效', value: IS_USEFUL.INVALID },
+    { text: '有效', value: IS_USEFUL.EFFECTIVE },
 ];
 
 /**

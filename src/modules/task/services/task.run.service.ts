@@ -32,15 +32,8 @@ export class TaskRunService {
     // 每分钟执行一次 https://docs.nestjs.com/techniques/task-scheduling#declarative-cron-jobs
     @Cron('0 * * * * *')
     async handleCron() {
-        const result = await this.versionRepository.find({ where: getWhere() });
-        result.forEach((item: any) => {
-            const { cron, isFreeze, versionId } = item;
-            const currentDate = formatDate();
-            if (cron && !isFreeze && cron?.[0] === '0') {
-                const flag = canCreateTask(currentDate, cron);
-                flag && this.create({ versionId, triggerType: 0 });
-            }
-        });
+        this.checkCronForCurrentDate();
+        this.checkTimeoutForCurrentDate();
     }
 
     // 再次检测
@@ -134,27 +127,35 @@ export class TaskRunService {
             // 只有当前任务是运行中才保存检测结果，因为任务可能被手动取消，手动取消的任务不保存结果数据
             if (status === TASK_STATUS.RUNNING) {
                 const { score, duration, reportPath, performance } = result;
-                await this.performanceRepository
-                    .createQueryBuilder()
-                    .insert()
-                    .into(Performance)
-                    .values(
-                        performance.map((item) => {
-                            return { ...item, taskId };
-                        })
-                    )
-                    .printSql()
-                    .execute();
+                let status = TASK_STATUS.SUCCESS;
+                let failReason = '';
+                try {
+                    await this.performanceRepository
+                        .createQueryBuilder()
+                        .insert()
+                        .into(Performance)
+                        .values(
+                            performance.map((item) => {
+                                return { ...item, taskId };
+                            })
+                        )
+                        .printSql()
+                        .execute();
+                } catch (error) {
+                    status = TASK_STATUS.FAIL;
+                    failReason = error;
+                    console.log('performance save error', error?.toString());
+                }
                 await this.taskService.update(taskId, {
                     score,
                     duration,
                     reportPath,
-                    status: TASK_STATUS.SUCCESS,
-                    // failReason: '',
+                    status,
+                    failReason,
                 });
             } else {
                 console.log(
-                    `taskId: ${taskId}, 任务不是运行中的状态，可能是由于被手动取消了，故本次检测结果不做记录, taskStatus: ${status}`
+                    `taskId: ${taskId}, 任务不是运行中的状态，可能是由于被手动取消了，故本次检测结果不做记录`
                 );
             }
         } catch (error) {
@@ -214,5 +215,31 @@ export class TaskRunService {
                 );
             }
         }
+    }
+
+    // 检查版本的 cron 符合当前时间运行的则创建任务
+    private async checkCronForCurrentDate() {
+        const result = await this.versionRepository.find({ where: getWhere() });
+        result.forEach((version: any) => {
+            const { cron, isFreeze, versionId } = version;
+            const currentDate = formatDate();
+            if (cron && !isFreeze) {
+                const flag = canCreateTask(currentDate, cron);
+                flag && this.create({ versionId, triggerType: 0 });
+            }
+        });
+    }
+
+    // 检查任务的运行时长，超过的则让任务失败
+    private async checkTimeoutForCurrentDate() {
+        const result = await this.taskRepository.find({
+            where: getWhere({ status: TASK_STATUS.RUNNING }),
+        });
+        result.forEach((task: any) => {
+            // 任务运行超过五分钟
+            if (new Date().getTime() - new Date(task.startAt).getTime() > 5 * 60 * 1000) {
+                console.log(`taskId: ${task.taskId}, 运行超过五分钟！`);
+            }
+        });
     }
 }

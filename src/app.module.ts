@@ -36,6 +36,7 @@ import { DevopsModule } from './modules/devops/devops.module';
                 pollPingInterval: 60, // 每隔60秒连接
                 pollTimeout: 60, // 连接有效60秒
             },
+            // logging: true, // 打印真实 sql
             // autoLoadEntities: true, // 自动链接被 forFeature 注册的实体
             // synchronize: true, // 实体与表同步 调试模式下开始。不然会有强替换导致数据丢失
         }),

@@ -49,7 +49,7 @@ const toLogin = async (page, runInfo: ITask) => {
         const currentUrl = await page.url();
         // 依据是否包含 login 或 uicfront 来判断是否需要登录，若跳转之后仍在登录页，说明登录出错
         if (currentUrl.includes('login') || currentUrl.includes('uicfront')) {
-            throw new Error('登录失败，仍在登录页面');
+            throw new Error(`taskId: ${taskId}, 登录失败，仍在登录页面`);
         } else {
             console.log(`taskId: ${taskId}, 登录成功`);
         }
@@ -70,7 +70,7 @@ const changeTenant = async (page, taskId) => {
         const tenantInput = await page.$('input#change_ten_id');
         await tenantInput.type('demo');
 
-        // 搜索到的租户，点击查询到的第一条租户信息
+        // 搜索到的 demo 租户，点击查询到的第一条租户信息
         await sleep(process.env.RESPONSE_SLEEP);
         // v5.3.x
         try {
@@ -147,7 +147,10 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
     try {
         // 依据是否包含 devops 来判断是否需要登录
         const needLogin = url.includes('devops') || loginUrl;
-        console.log(`taskId: ${taskId}, 本次检测${needLogin ? '' : '不'}需要登录，检测地址：`, url);
+        console.log(
+            `\ntaskId: ${taskId}, 本次检测${needLogin ? '' : '不'}需要登录，检测地址：`,
+            url
+        );
 
         const runResult = needLogin ? await withLogin(task) : await withOutLogin(task);
 

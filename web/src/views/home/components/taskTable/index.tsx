@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Popconfirm, Tooltip, message } from 'antd';
+import { Table, Tag, Popconfirm, Tooltip, message, Button, Modal } from 'antd';
 import moment from 'moment';
 import type { ColumnsType } from 'antd/es/table';
+import {
+    CheckCircleOutlined,
+    ClockCircleOutlined,
+    CloseCircleOutlined,
+    ExclamationCircleOutlined,
+    MinusCircleOutlined,
+    QuestionCircleOutlined,
+    SyncOutlined,
+} from '@ant-design/icons';
+import copy from 'copy-to-clipboard';
 import API from '../../../../utils/api';
 import {
     getScoreColor,
@@ -9,14 +19,6 @@ import {
     TASK_STATUS_TEXT,
     TASK_TRIGGER_TYPE_TEXT,
 } from '../../../../const';
-import {
-    CheckCircleOutlined,
-    ClockCircleOutlined,
-    CloseCircleOutlined,
-    MinusCircleOutlined,
-    QuestionCircleOutlined,
-    SyncOutlined,
-} from '@ant-design/icons';
 import ReportModal from '../reportModal';
 import './style.less';
 
@@ -31,16 +33,21 @@ export default function TaskTable(props: IPros) {
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [current, setCurrent] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(20);
     const [total, setTotal] = useState<number>(0);
     const [triggerType, setTriggerType] = useState<number[] | undefined>(undefined);
     const [status, setStatus] = useState<number[] | undefined>(undefined);
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [taskInfo, setTaskInfo] = useState<any>({});
     const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
-    const pageSize = 20;
 
     useEffect(() => {
         versionId && fetchData();
-    }, [versionId, runTime, current, triggerType, status]);
+    }, [versionId, current, pageSize, triggerType, status]);
+
+    useEffect(() => {
+        current === 1 ? fetchData() : setCurrent(1);
+    }, [runTime]);
 
     const fetchData = () => {
         setLoading(true);
@@ -54,13 +61,6 @@ export default function TaskTable(props: IPros) {
             .finally(() => {
                 setLoading(false);
             });
-    };
-
-    // 表格的分页、筛选
-    const handleTableChange = (pagination: any, filters: any) => {
-        setCurrent(pagination?.current);
-        setTriggerType(filters?.triggerType);
-        setStatus(filters?.status);
     };
 
     // 尝试运行
@@ -106,6 +106,13 @@ export default function TaskTable(props: IPros) {
     };
 
     const columns: ColumnsType<any> = [
+        {
+            title: 'taskId',
+            dataIndex: 'taskId',
+            key: 'taskId',
+            width: 90,
+            fixed: 'left',
+        },
         {
             title: '检测地址',
             dataIndex: 'url',
@@ -200,10 +207,23 @@ export default function TaskTable(props: IPros) {
 
                 return status === TASK_STATUS.FAIL ? (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {tag}
-                        <Tooltip title={failReason}>
-                            <QuestionCircleOutlined />
-                        </Tooltip>
+                        {failReason ? (
+                            <>
+                                <Tooltip title="点击复制原因">
+                                    <span
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => copy(failReason)}
+                                    >
+                                        {tag}
+                                    </span>
+                                </Tooltip>
+                                <Tooltip title={failReason}>
+                                    <QuestionCircleOutlined />
+                                </Tooltip>
+                            </>
+                        ) : (
+                            tag
+                        )}
                     </div>
                 ) : (
                     tag
@@ -268,7 +288,7 @@ export default function TaskTable(props: IPros) {
         },
     ];
     if (isDefault) {
-        columns.splice(0, 0, {
+        columns.splice(1, 0, {
             title: '版本名称',
             dataIndex: 'versionName',
             key: 'versionName',
@@ -278,10 +298,40 @@ export default function TaskTable(props: IPros) {
         });
     }
 
+    // 批量删除
+    const handleDelete = () => {
+        Modal.confirm({
+            title: `确定要删除选中的 ${selectedRowKeys.length} 条数据吗？`,
+            icon: <ExclamationCircleOutlined />,
+            onOk() {
+                API.batchTask({ taskIds: selectedRowKeys }).then(() => {
+                    message.success('操作成功！');
+                    current === 1 ? fetchData() : setCurrent(1);
+                    setSelectedRowKeys([]);
+                });
+            },
+        });
+    };
+
+    // 表格的分页、筛选
+    const handleTableChange = (pagination: any, filters: any) => {
+        setCurrent(pagination?.current);
+        setPageSize(pagination?.pageSize);
+        setTriggerType(filters?.triggerType);
+        setStatus(filters?.status);
+    };
+    // 表格的勾选
+    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+        setSelectedRowKeys(newSelectedRowKeys);
+    };
     const pagination = {
         current,
         pageSize,
         total,
+    };
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
     };
 
     return (
@@ -294,12 +344,20 @@ export default function TaskTable(props: IPros) {
                 columns={columns}
                 dataSource={taskList}
                 pagination={pagination}
+                rowSelection={rowSelection}
                 scroll={{
-                    x: isDefault ? 1000 : 1120,
+                    x: isDefault ? 1220 : 1340,
                     y: 'calc(100vh - 16vh - 50px - 32px - 68px - 24px - 32px - 47px)',
                 }}
                 onChange={handleTableChange}
             />
+
+            <div className="select-content">
+                <div className="count">当前选中：{selectedRowKeys.length}</div>
+                <Button danger disabled={!selectedRowKeys.length} onClick={handleDelete}>
+                    批量删除
+                </Button>
+            </div>
 
             <ReportModal
                 open={reportModalOpen}

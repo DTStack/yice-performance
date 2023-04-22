@@ -48,6 +48,9 @@ export default {
     updateTask(data: any) {
         return instance.post('/task/updateTask', data);
     },
+    batchTask(data: any) {
+        return instance.post('/task/batchTask', data);
+    },
     tryTaskAgain(data: any) {
         return instance.post('/task/tryTaskAgain', data);
     },

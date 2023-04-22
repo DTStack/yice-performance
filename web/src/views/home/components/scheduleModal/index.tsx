@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Modal, Form, Input, message, Button, Tooltip, Checkbox } from 'antd';
-import API from '../../../../utils/api';
-import './style.less';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+import API from '../../../../utils/api';
 import { IProject } from 'typing';
+import './style.less';
 
 interface IProps {
     open: boolean;
     versionId: number | undefined;
     versionName: string | undefined;
     project: IProject | undefined;
-    onCancel: (needFetch: any) => void;
+    onCancel: () => void;
     setRunTime: (runTime: number) => void;
 }
 
@@ -45,7 +45,7 @@ export default function ScheduleModal(props: IProps) {
             })
             .finally(() => {
                 setRunLoading(false);
-                onCancel(true);
+                onCancel();
             });
     };
 
@@ -56,7 +56,7 @@ export default function ScheduleModal(props: IProps) {
             API.updateScheduleConf({ projectId: project?.projectId, versionId, ...values })
                 .then(() => {
                     message.success('保存成功！');
-                    onCancel(false);
+                    onCancel();
                 })
                 .finally(() => {
                     setConfirmLoading(false);
