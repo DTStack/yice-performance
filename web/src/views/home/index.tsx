@@ -46,7 +46,7 @@ function Home() {
             .then(() => {
                 setRunTime(new Date().getTime());
                 setSearch('');
-                message.success('操作成功，请在『其他』的任务列表查看');
+                message.success('操作成功，请在『汇总』的任务列表查看');
             })
             .finally(() => {
                 setRunning(false);

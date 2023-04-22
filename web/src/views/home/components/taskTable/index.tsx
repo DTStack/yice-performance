@@ -240,7 +240,7 @@ export default function TaskTable(props: IPros) {
                 );
             },
             key: 'action',
-            width: 100,
+            width: 160,
             fixed: 'right',
             render: (_text, record: any) => {
                 const { status } = record;
@@ -276,7 +276,10 @@ export default function TaskTable(props: IPros) {
                 } else if (status === TASK_STATUS.SUCCESS) {
                     return (
                         <div>
-                            <a onClick={() => handleReport(record)}>查看报告</a>
+                            <a style={{ marginRight: 12 }} onClick={() => handleReport(record)}>
+                                查看报告
+                            </a>
+                            {tryAgainBtn}
                         </div>
                     );
                 } else if (status === TASK_STATUS.CANCEL) {
@@ -346,7 +349,7 @@ export default function TaskTable(props: IPros) {
                 pagination={pagination}
                 rowSelection={rowSelection}
                 scroll={{
-                    x: isDefault ? 1220 : 1340,
+                    x: isDefault ? 1280 : 1400,
                     y: 'calc(100vh - 16vh - 50px - 32px - 68px - 24px - 32px - 47px)',
                 }}
                 onChange={handleTableChange}

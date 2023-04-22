@@ -171,6 +171,9 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         for (const auditRef of auditRefs) {
             const { weight, acronym } = auditRef;
             const { score, numericValue } = audits[auditRef.id] || {};
+            if (!numericValue) {
+                throw new Error('检测结果出现问题，没有单项检测时长');
+            }
             performance.push({
                 weight,
                 name: acronym,

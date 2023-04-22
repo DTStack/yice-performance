@@ -14,6 +14,7 @@ import { TASK_STATUS } from '@/const';
 import { Version } from '@/modules/version/entities/version.entity';
 import { canCreateTask, formatDate, getWhere } from '@/utils';
 import { Project } from '@/modules/project/entities/project.entity';
+import DingtalkRobot from '@/utils/dingtalkRobot';
 
 @Injectable()
 export class TaskRunService {
@@ -33,6 +34,10 @@ export class TaskRunService {
     @Cron('0 * * * * *')
     async handleCron() {
         this.checkCronForCurrentDate();
+    }
+    // 每五分钟执行一次
+    @Cron('0 */5 * * * *')
+    async handleTimeout() {
         this.checkTimeoutForCurrentDate();
     }
 
@@ -166,6 +171,7 @@ export class TaskRunService {
     // 任务运行失败的回调
     private async failCallback(taskId, failReason, duration) {
         try {
+            DingtalkRobot.failure(taskId);
             await this.taskService.update(taskId, {
                 status: TASK_STATUS.FAIL,
                 failReason,
@@ -239,6 +245,7 @@ export class TaskRunService {
             // 任务运行超过五分钟
             if (new Date().getTime() - new Date(task.startAt).getTime() > 5 * 60 * 1000) {
                 console.log(`taskId: ${task.taskId}, 运行超过五分钟！`);
+                DingtalkRobot.timeout(task.taskId);
             }
         });
     }
