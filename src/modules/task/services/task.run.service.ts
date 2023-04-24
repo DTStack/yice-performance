@@ -43,9 +43,14 @@ export class TaskRunService {
 
     // 再次检测
     async tryAgain(taskId: number) {
-        const { versionId, versionName, url } = await this.taskService.findOne(taskId);
+        const currentTask = await this.taskService.findOne(taskId);
+        if (!currentTask?.versionId) {
+            throw new HttpException('当前检查记录已经删除，不允许再次检测', HttpStatus.OK);
+        }
 
-        // 如果该版本已删除，不允许再次检测
+        const { versionId, versionName, url } = currentTask;
+
+        // 如果任务对应的版本已删除，不允许再次检测
         const version = await this.versionRepository.findOneBy(getWhere({ versionId }));
         if (!version?.versionId) {
             throw new HttpException(
@@ -107,7 +112,7 @@ export class TaskRunService {
             const version = await this.versionRepository.findOneBy(
                 getWhere({ name: '汇总', url: 'default' })
             );
-            taskInfo = { ...taskInfo, versionId: version?.versionId, versionName: '其他' };
+            taskInfo = { ...taskInfo, versionId: version?.versionId, versionName: '自定义地址' };
         }
 
         // 保存任务
@@ -244,25 +249,27 @@ export class TaskRunService {
 
     // 检查版本的 cron 符合当前时间运行的则创建任务
     private async checkCronForCurrentDate() {
-        const versionResult = await this.versionRepository.find({ where: getWhere() });
-        const versionList = versionResult.filter((version: any) => {
-            const { cron, isFreeze } = version;
+        const versionResult = await this.versionRepository.find({
+            where: getWhere({ isFreeze: 0 }),
+        });
+        const versionList = versionResult.filter(({ cron }) => {
             const currentDate = formatDate();
-            if (cron && !isFreeze) {
-                return canCreateTask(currentDate, cron);
-            } else {
-                return false;
-            }
+            return cron ? canCreateTask(currentDate, cron) : false;
         });
 
         const projectList = await this.projectRepository.find({ where: getWhere() });
         const taskList = versionList.map((version: any) => {
+            delete version.isDelete;
+            delete version.createAt;
+            delete version.updateAt;
+
             return {
                 ...version,
                 versionName: `${
                     projectList.find((project: any) => project.projectId === version.projectId)
                         ?.name
                 }-${version.name}`,
+                triggerType: 0,
             };
         });
 

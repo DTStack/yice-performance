@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Button, Empty, Modal, Spin, Tabs, message } from 'antd';
-import { EditOutlined, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Empty, Spin, Tabs } from 'antd';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useSearchParams } from 'react-router-dom';
 import API from '../../../../utils/api';
 import VersionModal from '../versionModal';
@@ -44,10 +44,27 @@ export default function Versions(props: IProps) {
         API.getVersions({ projectId })
             .then((res) => {
                 setVersionList(res.data || []);
-                projectChanged &&
-                    setVersionId(Number(searchParams.get('versionId')) || res.data?.[0]?.versionId);
+
                 // 版本全部删除后清除 versionId
-                !res.data?.length && setVersionId(undefined);
+                if (!res.data?.length) {
+                    setVersionId(undefined);
+                } else {
+                    if (projectChanged || res.data?.length === 1) {
+                        let versionIdTemp;
+                        // 路由的 versionId 参数只使用一次
+                        if (
+                            Number(searchParams.get('versionId')) &&
+                            sessionStorage.getItem('yice-versionId-used') !== 'yes'
+                        ) {
+                            versionIdTemp = Number(searchParams.get('versionId'));
+                            sessionStorage.setItem('yice-versionId-used', 'yes');
+                        } else {
+                            versionIdTemp = res.data?.[0]?.versionId;
+                        }
+
+                        setVersionId(versionIdTemp);
+                    }
+                }
             })
             .finally(() => {
                 setLoading(false);
@@ -61,12 +78,18 @@ export default function Versions(props: IProps) {
                 closable: item.closable,
                 key: `${item.versionId}`,
                 children: (
-                    <TaskTable isDefault={!item.closable} versionId={versionId} runTime={runTime} />
+                    <TaskTable
+                        isDefault={!item.closable}
+                        versionId={versionId}
+                        runTime={runTime}
+                        setRunTime={setRunTime}
+                    />
                 ),
             };
         });
     };
 
+    // 切换版本
     const onChange = (newActiveKey: string) => {
         setVersionId(Number(newActiveKey));
     };
@@ -85,23 +108,8 @@ export default function Versions(props: IProps) {
     const handleSchedule = () => {
         setScheduleOpen(true);
     };
-    // 新增或删除 tab
-    const handleEditTab = (targetKey: any, action: 'add' | 'remove') => {
-        if (action === 'remove') {
-            // 删除版本
-            Modal.confirm({
-                title: '是否删除该版本？',
-                icon: <ExclamationCircleOutlined />,
-                onOk() {
-                    API.deleteVersion({ versionId: targetKey }).then(() => {
-                        getVersions();
-                        message.success('操作成功！');
-                    });
-                },
-            });
-        }
-    };
 
+    // 渲染右上角的操作区域
     const renderButtons = () => {
         return isDefault ? null : (
             <>
@@ -124,12 +132,11 @@ export default function Versions(props: IProps) {
                 <Spin spinning={loading}>
                     <Tabs
                         hideAdd
-                        type="editable-card"
+                        type="card"
                         items={renderItems()}
                         activeKey={`${versionId}`}
                         tabBarExtraContent={renderButtons()}
                         onChange={onChange}
-                        onEdit={handleEditTab}
                     />
                 </Spin>
                 {!versionList.length && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}

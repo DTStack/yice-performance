@@ -22,6 +22,14 @@ export class TaskReqDto extends QueryDto {
     @ApiPropertyOptional({ required: false, description: '任务状态' })
     @IsOptional()
     status?: number[];
+
+    @ApiPropertyOptional({ required: false, description: '开始时间' })
+    @IsOptional()
+    startTime?: string;
+
+    @ApiPropertyOptional({ required: false, description: '结束时间' })
+    @IsOptional()
+    endTime?: string;
 }
 
 export class batchDeleteReqDto {

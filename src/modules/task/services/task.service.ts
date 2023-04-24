@@ -29,6 +29,8 @@ export class TaskService {
                 triggerType = [],
                 isUseful = [],
                 status = [],
+                startTime = '',
+                endTime = '',
             } = query;
             let whereSql = 'isDelete = 0 ';
             const whereParams = { isDelete: 0 };
@@ -48,6 +50,10 @@ export class TaskService {
             if (status?.length) {
                 whereSql += 'and status IN (:...status) ';
                 Object.assign(whereParams, { status });
+            }
+            if (startTime && endTime) {
+                whereSql += 'and startAt between :startTime and :endTime ';
+                Object.assign(whereParams, { startTime, endTime });
             }
 
             const [data, total] = await this.taskRepository
@@ -80,12 +86,13 @@ export class TaskService {
         return result;
     }
 
+    // 批量操作 - 删除
     async batchTask(taskIds: number[]) {
         const result = await this.taskRepository
             .createQueryBuilder()
             .update(Task)
             .set({ isDelete: 1 })
-            .where('taskId IN (:...taskIds) ', { taskIds })
+            .where('taskId IN (:...taskIds) and status != :status', { taskIds, status: 1 })
             .execute();
 
         // 批量删除任务时，把关联的性能数据也删除

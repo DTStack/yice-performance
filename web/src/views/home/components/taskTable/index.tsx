@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Popconfirm, Tooltip, message, Button, Modal } from 'antd';
+import { Table, Tag, Popconfirm, Tooltip, message, Button, Modal, DatePicker } from 'antd';
 import moment from 'moment';
+import 'moment/dist/locale/zh-cn';
 import type { ColumnsType } from 'antd/es/table';
 import {
     CheckCircleOutlined,
@@ -20,16 +21,27 @@ import {
     TASK_TRIGGER_TYPE_TEXT,
 } from '../../../../const';
 import ReportModal from '../reportModal';
+import {
+    disabledDate,
+    formatTime,
+    last7DaysRange,
+    lastDayRange,
+    parseTime,
+    todayRange,
+} from '../../../../utils/date';
 import './style.less';
 
 interface IPros {
     isDefault: boolean;
     versionId: number | undefined;
     runTime: number;
+    setRunTime: (runTime: number) => void;
 }
 
+const RangePicker = DatePicker.RangePicker;
+
 export default function TaskTable(props: IPros) {
-    const { isDefault, versionId, runTime } = props;
+    const { isDefault, versionId, runTime, setRunTime } = props;
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [current, setCurrent] = useState<number>(1);
@@ -40,6 +52,12 @@ export default function TaskTable(props: IPros) {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [taskInfo, setTaskInfo] = useState<any>({});
     const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
+    const [startTime, setStartTime] = useState<string | undefined>(
+        formatTime(moment().subtract(0, 'days'))
+    );
+    const [endTime, setEndTime] = useState<string | undefined>(
+        formatTime(moment().subtract(0, 'days'), true)
+    );
 
     useEffect(() => {
         versionId && fetchData();
@@ -53,7 +71,16 @@ export default function TaskTable(props: IPros) {
 
     const fetchData = () => {
         setLoading(true);
-        const params = { isDefault, versionId, current, pageSize, triggerType, status };
+        const params = {
+            isDefault,
+            versionId,
+            current,
+            pageSize,
+            triggerType,
+            status,
+            startTime,
+            endTime,
+        };
         API.getTasks(params)
             .then((res) => {
                 const { data, total } = res.data;
@@ -98,7 +125,7 @@ export default function TaskTable(props: IPros) {
     const handleTryAgain = (item: any) => {
         API.tryTaskAgain({ taskId: item.taskId }).then(() => {
             message.success('操作成功！');
-            current === 1 ? fetchData() : setCurrent(1);
+            setRunTime(new Date().getTime());
         });
     };
 
@@ -310,13 +337,19 @@ export default function TaskTable(props: IPros) {
 
     // 批量删除
     const handleDelete = () => {
+        const hasRunningTask = taskList
+            .filter((task: any) => selectedRowKeys.includes(task.taskId))
+            .some((task: any) => task.status === TASK_STATUS.RUNNING);
+
         Modal.confirm({
-            title: `确定要删除选中的 ${selectedRowKeys.length} 条数据吗？`,
+            title: `确定要删除选中的 ${selectedRowKeys.length} 条数据吗？${
+                hasRunningTask ? '（运行中的任务不会被删除）' : ''
+            }`,
             icon: <ExclamationCircleOutlined />,
             onOk() {
                 API.batchTask({ taskIds: selectedRowKeys }).then(() => {
                     message.success('操作成功！');
-                    current === 1 ? fetchData() : setCurrent(1);
+                    setRunTime(new Date().getTime());
                     setSelectedRowKeys([]);
                 });
             },
@@ -338,14 +371,42 @@ export default function TaskTable(props: IPros) {
         current,
         pageSize,
         total,
+        showTotal: (total: number) => `共 ${total} 条数据`,
     };
     const rowSelection = {
         selectedRowKeys,
         onChange: onSelectChange,
     };
 
+    const changeDate = (value: any) => {
+        // 清除选择后查询
+        if (value === null) {
+            setStartTime(undefined);
+            setEndTime(undefined);
+            setRunTime(new Date().getTime());
+        } else {
+            setStartTime(formatTime(value?.[0]));
+            setEndTime(formatTime(value?.[1], true));
+        }
+    };
+
     return (
         <React.Fragment>
+            <RangePicker
+                size="middle"
+                className={isDefault ? 'range-picker-default' : ''}
+                disabledDate={disabledDate}
+                ranges={{
+                    最近7天: last7DaysRange,
+                    昨天: lastDayRange,
+                    今天: todayRange,
+                }}
+                value={[parseTime(startTime) as any, parseTime(endTime) as any]}
+                onChange={changeDate}
+                onOpenChange={(open) => !open && (current === 1 ? fetchData() : setCurrent(1))}
+                getPopupContainer={(triggerNode) => triggerNode.parentElement as any}
+            />
+
             <Table
                 className="task-table"
                 rowKey="taskId"

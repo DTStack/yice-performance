@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Modal, Form, Input, message, Select } from 'antd';
+import { Modal, Form, Input, message, Select, Button } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { httpPattern } from '../../../../utils';
 import API from '../../../../utils/api';
 import { IProject } from 'typing';
+import './style.less';
 
 interface IProps {
     open: boolean;
@@ -87,15 +89,46 @@ export default function VersionModal(props: IProps) {
         });
     };
 
+    // 删除版本
+    const handleDelete = () => {
+        Modal.confirm({
+            title: '是否删除该版本？',
+            icon: <ExclamationCircleOutlined />,
+            onOk() {
+                API.deleteVersion({ versionId }).then(() => {
+                    onCancel(true);
+                    message.success('操作成功！');
+                });
+            },
+        });
+    };
+
+    const footerRender = () => {
+        return (
+            <div className="footer-btn">
+                <div className="btn-box">
+                    {isEdit ? (
+                        <Button danger onClick={handleDelete}>
+                            删除
+                        </Button>
+                    ) : null}
+                </div>
+                <Button onClick={onCancel}>取消</Button>
+                <Button type="primary" loading={loading} onClick={handleOk}>
+                    确定
+                </Button>
+            </div>
+        );
+    };
+
     return (
         <Modal
             title="子产品版本信息"
             open={open}
-            confirmLoading={loading}
             forceRender
             destroyOnClose
-            onOk={handleOk}
             onCancel={onCancel}
+            footer={footerRender()}
         >
             <Form form={form} labelCol={{ span: 5 }} wrapperCol={{ span: 18 }} name="Form">
                 <Form.Item name="devopsShiLiId" label="绑定实例">
