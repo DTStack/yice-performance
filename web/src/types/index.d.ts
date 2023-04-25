@@ -2,7 +2,7 @@ declare module 'typing' {
     /** 项目字段 */
     export interface IProject {
         projectId: number;
-        devopsProjectId?: number;
+        devopsProjectIds?: string;
         name: string;
         appName?: string;
     }

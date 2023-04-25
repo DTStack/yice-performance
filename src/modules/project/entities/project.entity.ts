@@ -7,7 +7,7 @@ export class Project extends BaseContent {
     projectId: number;
 
     @Column('int')
-    devopsProjectId: number;
+    devopsProjectIds: string;
 
     @Column({ length: 256 })
     name: string;

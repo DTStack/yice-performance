@@ -8,7 +8,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
   `projectId` int NOT NULL AUTO_INCREMENT,
-  `devopsProjectId` int NULL COMMENT 'devops项目id',
+  `devopsProjectIds` varchar(64) NULL COMMENT 'devops项目id',
   `name` varchar(256) NOT NULL COMMENT '项目名称',
   `appName` varchar(256) NULL COMMENT '项目路径/标识',
   `isDelete` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0 未删除, 1 已删除',
@@ -18,7 +18,7 @@ CREATE TABLE `project` (
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '项目表';
 
 
-INSERT INTO project (devopsProjectId, name, appName) values (7, '离线', 'batch'), (9, '实时', 'stream'), (12, '控制台', 'console'), (1, 'API', 'dataApi'), (13, '资产', 'dataAssets'), (3, '标签', 'tag'), (2, '指标', 'easyIndex'), (16, '数据湖', 'dataLake'), (11, 'portal', 'portal');
+INSERT INTO project (devopsProjectIds, name, appName) values ('7,15', '离线', 'batch'), ('9,15', '实时', 'stream'), ('12,15', '控制台', 'console'), ('1,15', 'API', 'dataApi'), ('13,15', '资产', 'dataAssets'), ('3,15', '标签', 'tag'), ('2,15', '指标', 'easyIndex'), ('16,15', '数据湖', 'dataLake'), ('11,15', 'portal', 'portal');
 INSERT INTO project (name, appName) values ('汇总', 'default');
 
 

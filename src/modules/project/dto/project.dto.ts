@@ -6,7 +6,7 @@ export class ProjectDto {
     readonly projectId: number;
 
     @ApiPropertyOptional({ description: 'devops项目id' })
-    readonly devopsProjectId: number;
+    readonly devopsProjectIds: string;
 
     @IsNotEmpty({ message: '项目名称不能为空' })
     @ApiPropertyOptional({ description: '项目名称' })

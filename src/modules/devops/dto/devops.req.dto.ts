@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class getShiLisReqDto {
     @ApiPropertyOptional({ required: false, description: 'devops项目id' })
-    devopsProjectId: number;
+    devopsProjectIds: string;
 }
 
 export class getStagesReqDto {

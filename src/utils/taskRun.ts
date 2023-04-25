@@ -41,7 +41,7 @@ const toLogin = async (page, runInfo: ITask) => {
         // 登录按钮
         await page.click('.c-login__container__form__btn');
         // await page.waitForNavigation();
-        await sleep(process.env.RESPONSE_SLEEP);
+        await sleep(Number(process.env.RESPONSE_SLEEP || 0) * 2);
 
         /**
          * TODO 开了验证码，账号密码错误，不弹出选择租户

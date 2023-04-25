@@ -16,7 +16,7 @@ interface IProps {
 
 export default function VersionModal(props: IProps) {
     const { open, isEdit, project, versionId, onCancel } = props;
-    const { projectId, appName, devopsProjectId } = project || {};
+    const { projectId, appName, devopsProjectIds } = project || {};
     const [form] = Form.useForm();
     const [loading, setLoading] = useState<boolean>(false);
     const [devopsShiLiList, setDevopsShiLiList] = useState<any[]>([]);
@@ -39,7 +39,7 @@ export default function VersionModal(props: IProps) {
 
     // 获取项目下的 devops 实例列表
     const getShiLis = () => {
-        API.getShiLis({ devopsProjectId }).then((res) => {
+        API.getShiLis({ devopsProjectIds }).then((res) => {
             setDevopsShiLiList(
                 res.data?.map((item: any) => {
                     return {

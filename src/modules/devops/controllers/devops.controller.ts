@@ -13,11 +13,11 @@ export class DevopsController {
     constructor(private readonly devopsService: DevopsService) {}
 
     @ApiOperation({ summary: '1、获取项目下的实例列表' })
-    @ApiQuery({ name: 'devopsProjectId', required: true })
+    @ApiQuery({ name: 'devopsProjectIds', required: true })
     @HttpCode(HttpStatus.OK)
     @Get('getShiLis')
     async getShiLis(@Query() query: getShiLisReqDto) {
-        return await this.devopsService.getShiLis(query?.devopsProjectId);
+        return await this.devopsService.getShiLis(query?.devopsProjectIds?.split(',') || []);
     }
 
     // @ApiOperation({ summary: '2、获取实例下的阶段列表' })

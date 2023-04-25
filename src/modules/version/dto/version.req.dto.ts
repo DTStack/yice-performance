@@ -16,8 +16,3 @@ export class getVersionReqDto extends QueryDto {
     @ApiPropertyOptional({ required: false, description: '版本名称' })
     name?: string;
 }
-
-export class devopsShiliReqDto {
-    @ApiPropertyOptional({ required: false, description: 'devops项目id' })
-    devopsProjectId: number;
-}

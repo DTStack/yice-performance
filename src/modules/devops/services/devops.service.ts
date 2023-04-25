@@ -19,11 +19,15 @@ export class DevopsService {
     }
 
     /** 1、获取项目下的实例列表 */
-    async getShiLis(devopsProjectId: number) {
-        const res = await this.axiosGet(
-            `http://devops.dtstack.cn/api/v1/workflowruns?project_id=${devopsProjectId}&page=1&limit=20&state=running`
+    async getShiLis(devopsProjectIds: string[]) {
+        const result = await Promise.all(
+            devopsProjectIds.map((devopsProjectId: string) => {
+                return this.axiosGet(
+                    `http://devops.dtstack.cn/api/v1/workflowruns?project_id=${devopsProjectId}&page=1&limit=20&state=running`
+                );
+            })
         );
-        return res?.list || [];
+        return result.map((item: any) => item.list).flat(Infinity) || [];
     }
 
     /** 2、获取实例下的阶段列表 */
