@@ -103,6 +103,12 @@ export default function VersionModal(props: IProps) {
         });
     };
 
+    // 输入框的回车事件
+    const handleInputEnter = (e: any) => {
+        // 中文输入法输入时回车，keyCode 是 229；光标在输入框直接回车，keyCode 是 13
+        !loading && e.keyCode === 13 && handleOk();
+    };
+
     const footerRender = () => {
         return (
             <div className="footer-btn">
@@ -141,7 +147,11 @@ export default function VersionModal(props: IProps) {
                     />
                 </Form.Item>
                 <Form.Item name="name" label="版本名称" rules={[{ required: true }]}>
-                    <Input allowClear placeholder="请输入版本名称" onPressEnter={handleOk} />
+                    <Input
+                        allowClear
+                        placeholder="请输入版本名称"
+                        onPressEnter={handleInputEnter}
+                    />
                 </Form.Item>
                 <Form.Item
                     name="url"

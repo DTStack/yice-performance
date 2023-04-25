@@ -65,6 +65,12 @@ function Home() {
         setProject(project);
     };
 
+    // 输入框的回车事件
+    const handleInputEnter = (e: any) => {
+        // 中文输入法输入时回车，keyCode 是 229；光标在输入框直接回车，keyCode 是 13
+        !running && e.keyCode === 13 && handleRun((e?.target as any)?.value);
+    };
+
     return (
         <div className="home-content">
             <div className="top-content">
@@ -78,7 +84,7 @@ function Home() {
                     loading={running}
                     onChange={(e) => setSearch((e?.target as any)?.value)}
                     onSearch={handleRun} // 按钮事件
-                    onPressEnter={(e) => !running && handleRun((e?.target as any)?.value)}
+                    onPressEnter={handleInputEnter}
                 />
             </div>
 
