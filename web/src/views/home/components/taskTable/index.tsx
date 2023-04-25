@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Popconfirm, Tooltip, message, Button, Modal, DatePicker } from 'antd';
+import { Table, Tag, Popconfirm, Tooltip, message, Button, Modal } from 'antd';
 import moment from 'moment';
-import 'moment/dist/locale/zh-cn';
 import type { ColumnsType } from 'antd/es/table';
 import {
     CheckCircleOutlined,
@@ -21,27 +20,19 @@ import {
     TASK_TRIGGER_TYPE_TEXT,
 } from '../../../../const';
 import ReportModal from '../reportModal';
-import {
-    disabledDate,
-    formatTime,
-    last7DaysRange,
-    lastDayRange,
-    parseTime,
-    todayRange,
-} from '../../../../utils/date';
 import './style.less';
 
 interface IPros {
-    isDefault: boolean;
+    isDefaultVersion: boolean;
     versionId: number | undefined;
+    startTime: string | undefined;
+    endTime: string | undefined;
     runTime: number;
     setRunTime: (runTime: number) => void;
 }
 
-const RangePicker = DatePicker.RangePicker;
-
 export default function TaskTable(props: IPros) {
-    const { isDefault, versionId, runTime, setRunTime } = props;
+    const { isDefaultVersion, versionId, startTime, endTime, runTime, setRunTime } = props;
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [current, setCurrent] = useState<number>(1);
@@ -52,12 +43,6 @@ export default function TaskTable(props: IPros) {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [taskInfo, setTaskInfo] = useState<any>({});
     const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
-    const [startTime, setStartTime] = useState<string | undefined>(
-        formatTime(moment().subtract(0, 'days'))
-    );
-    const [endTime, setEndTime] = useState<string | undefined>(
-        formatTime(moment().subtract(0, 'days'), true)
-    );
 
     useEffect(() => {
         versionId && fetchData();
@@ -72,7 +57,7 @@ export default function TaskTable(props: IPros) {
     const fetchData = () => {
         setLoading(true);
         const params = {
-            isDefault,
+            isDefaultVersion,
             versionId,
             current,
             pageSize,
@@ -319,7 +304,7 @@ export default function TaskTable(props: IPros) {
             },
         },
     ];
-    if (isDefault) {
+    if (isDefaultVersion) {
         columns.splice(1, 0, {
             title: '版本名称',
             dataIndex: 'versionName',
@@ -378,35 +363,8 @@ export default function TaskTable(props: IPros) {
         onChange: onSelectChange,
     };
 
-    const changeDate = (value: any) => {
-        // 清除选择后查询
-        if (value === null) {
-            setStartTime(undefined);
-            setEndTime(undefined);
-            setRunTime(new Date().getTime());
-        } else {
-            setStartTime(formatTime(value?.[0]));
-            setEndTime(formatTime(value?.[1], true));
-        }
-    };
-
     return (
-        <React.Fragment>
-            <RangePicker
-                size="middle"
-                className={isDefault ? 'range-picker-default' : ''}
-                disabledDate={disabledDate}
-                ranges={{
-                    最近7天: last7DaysRange,
-                    昨天: lastDayRange,
-                    今天: todayRange,
-                }}
-                value={[parseTime(startTime) as any, parseTime(endTime) as any]}
-                onChange={changeDate}
-                onOpenChange={(open) => !open && (current === 1 ? fetchData() : setCurrent(1))}
-                getPopupContainer={(triggerNode) => triggerNode.parentElement as any}
-            />
-
+        <>
             <Table
                 className="task-table"
                 rowKey="taskId"
@@ -417,7 +375,7 @@ export default function TaskTable(props: IPros) {
                 pagination={pagination}
                 rowSelection={rowSelection}
                 scroll={{
-                    x: isDefault ? 1280 : 1400,
+                    x: isDefaultVersion ? 1280 : 1400,
                     y: 'calc(100vh - 16vh - 50px - 32px - 68px - 24px - 32px - 47px)',
                 }}
                 onChange={handleTableChange}
@@ -437,6 +395,6 @@ export default function TaskTable(props: IPros) {
                 taskInfo={taskInfo}
                 onCancel={() => setReportModalOpen(false)}
             />
-        </React.Fragment>
+        </>
     );
 }

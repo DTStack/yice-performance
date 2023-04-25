@@ -18,6 +18,7 @@ export default function VersionModal(props: IProps) {
     const { open, isEdit, project, versionId, onCancel } = props;
     const { projectId, appName, devopsProjectIds } = project || {};
     const [form] = Form.useForm();
+    const [fetching, setFetching] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [devopsShiLiList, setDevopsShiLiList] = useState<any[]>([]);
 
@@ -39,16 +40,21 @@ export default function VersionModal(props: IProps) {
 
     // 获取项目下的 devops 实例列表
     const getShiLis = () => {
-        API.getShiLis({ devopsProjectIds }).then((res) => {
-            setDevopsShiLiList(
-                res.data?.map((item: any) => {
-                    return {
-                        label: item.label,
-                        value: item.id,
-                    };
-                }) || []
-            );
-        });
+        setFetching(true);
+        API.getShiLis({ devopsProjectIds })
+            .then((res) => {
+                setDevopsShiLiList(
+                    res.data?.map((item: any) => {
+                        return {
+                            label: item.label,
+                            value: item.id,
+                        };
+                    }) || []
+                );
+            })
+            .finally(() => {
+                setFetching(false);
+            });
     };
 
     // 选择了某个 devops 实例
@@ -143,6 +149,7 @@ export default function VersionModal(props: IProps) {
                         placeholder="请选择绑定的 devops 实例"
                         disabled={isEdit}
                         options={devopsShiLiList}
+                        loading={fetching}
                         onSelect={handleSelect}
                     />
                 </Form.Item>

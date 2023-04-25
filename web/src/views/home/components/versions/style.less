@@ -3,23 +3,26 @@
     max-width: calc(100vw - 244px);
     margin-left: 12px;
     background-color: #FFF;
-    .ant-tabs-extra-content {
-        margin-left: 270px;
-    }
-    .ant-tabs-content-holder {
-        padding: 0 16px;
-    }
-    .ant-tabs-nav {
-        height: 52px;
-        margin-right: 16px;
-        .ant-tabs-nav-wrap {
-            margin: 12px 0 0 16px;
+    .top-box {
+        padding: 12px 12px 0;
+        display: flex;
+        justify-content: space-between;
+        .search-params {
+            flex: 1;
+            margin-right: 20px;
+            &-item {
+                margin-bottom: 12px;
+            }
+            .ant-select {
+                width: 180px;
+                margin-right: 12px;
+            }
+            .ant-picker-range {
+                width: 240px;
+            }
         }
-        .ant-tabs-nav-operations {
-            margin-top: 12px;
+        .left-btn {
+            margin-left: 12px;
         }
-    }
-    .btn-left {
-        margin-left: 12px;
     }
 }

@@ -1,13 +1,26 @@
 import { useEffect, useState } from 'react';
-import { Button, Empty, Spin, Tabs } from 'antd';
+import { Button, DatePicker, Empty, Select } from 'antd';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useSearchParams } from 'react-router-dom';
+import moment from 'moment';
+import 'moment/dist/locale/zh-cn';
 import API from '../../../../utils/api';
 import VersionModal from '../versionModal';
 import { IProject, IVersion } from 'typing';
 import TaskTable from '../taskTable';
 import ScheduleModal from '../scheduleModal';
+import {
+    disabledDate,
+    formatTime,
+    last7DaysRange,
+    lastDayRange,
+    parseTime,
+    todayRange,
+} from '../../../../utils/date';
 import './style.less';
+
+const Option = Select.Option;
+const RangePicker = DatePicker.RangePicker;
 
 interface IProps {
     project: IProject | undefined;
@@ -20,12 +33,18 @@ export default function Versions(props: IProps) {
     const { project, runTime, setRunTime } = props;
     const { projectId } = project || {};
     const [versionList, setVersionList] = useState<IVersion[]>([]);
+    const [versionId, setVersionId] = useState<number | undefined>(undefined);
     const [infoOpen, setInfoOpen] = useState<boolean>(false);
     const [scheduleOpen, setScheduleOpen] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [isDefault, setIsDefault] = useState<boolean>(false);
-    const [versionId, setVersionId] = useState<number | undefined>(undefined);
+    const [isDefaultVersion, setIsDefaultVersion] = useState<boolean>(false);
+    const [startTime, setStartTime] = useState<string | undefined>(
+        formatTime(moment().subtract(0, 'days'))
+    );
+    const [endTime, setEndTime] = useState<string | undefined>(
+        formatTime(moment().subtract(0, 'days'), true)
+    );
 
     useEffect(() => {
         if (projectId) {
@@ -35,7 +54,7 @@ export default function Versions(props: IProps) {
     }, [projectId]);
 
     useEffect(() => {
-        setIsDefault(versionList.some((item) => !item.closable));
+        setIsDefaultVersion(versionList.some((item) => !item.closable));
     }, [versionList]);
 
     // 获取版本列表
@@ -71,27 +90,17 @@ export default function Versions(props: IProps) {
             });
     };
 
-    const renderItems = () => {
-        return versionList.map((item: any) => {
-            return {
-                label: item.name,
-                closable: item.closable,
-                key: `${item.versionId}`,
-                children: (
-                    <TaskTable
-                        isDefault={!item.closable}
-                        versionId={versionId}
-                        runTime={runTime}
-                        setRunTime={setRunTime}
-                    />
-                ),
-            };
-        });
-    };
-
-    // 切换版本
-    const onChange = (newActiveKey: string) => {
-        setVersionId(Number(newActiveKey));
+    // 日期变化
+    const changeDate = (value: any) => {
+        // 清除选择后查询
+        if (value === null) {
+            setStartTime(undefined);
+            setEndTime(undefined);
+            setRunTime(new Date().getTime());
+        } else {
+            setStartTime(formatTime(value?.[0]));
+            setEndTime(formatTime(value?.[1], true));
+        }
     };
 
     // 新增按钮
@@ -109,37 +118,88 @@ export default function Versions(props: IProps) {
         setScheduleOpen(true);
     };
 
-    // 渲染右上角的操作区域
-    const renderButtons = () => {
-        return isDefault ? null : (
-            <>
-                <Button icon={<PlusOutlined />} onClick={handleAdd} />
-                {!!versionList.length && (
-                    <>
-                        <Button className="btn-left" icon={<EditOutlined />} onClick={handleEdit} />
-                        <Button className="btn-left" type="primary" onClick={handleSchedule}>
-                            调度
-                        </Button>
-                    </>
-                )}
-            </>
-        );
-    };
-
     return (
         <>
             <div className="version-box">
-                <Spin spinning={loading}>
-                    <Tabs
-                        hideAdd
-                        type="card"
-                        items={renderItems()}
-                        activeKey={`${versionId}`}
-                        tabBarExtraContent={renderButtons()}
-                        onChange={onChange}
+                <div className="top-box">
+                    <div className="search-params">
+                        {versionList.length ? (
+                            <>
+                                <Select
+                                    className="search-params-item"
+                                    value={versionId ? `${versionId}` : undefined}
+                                    onChange={(value: string) => setVersionId(Number(value))}
+                                    loading={loading}
+                                    placeholder="请选择版本"
+                                >
+                                    {versionList.map((version: IVersion) => {
+                                        return (
+                                            <Option
+                                                key={version.versionId}
+                                                value={`${version.versionId}`}
+                                            >
+                                                {version.name}
+                                            </Option>
+                                        );
+                                    })}
+                                </Select>
+                                <RangePicker
+                                    className="search-params-item"
+                                    disabledDate={disabledDate}
+                                    ranges={{
+                                        最近7天: last7DaysRange,
+                                        昨天: lastDayRange,
+                                        今天: todayRange,
+                                    }}
+                                    value={[parseTime(startTime) as any, parseTime(endTime) as any]}
+                                    onChange={changeDate}
+                                    onOpenChange={(open) =>
+                                        !open && setRunTime(new Date().getTime())
+                                    }
+                                    getPopupContainer={(triggerNode) =>
+                                        triggerNode.parentElement as any
+                                    }
+                                />
+                            </>
+                        ) : null}
+                    </div>
+
+                    {/* 右上角按钮区域 */}
+                    {isDefaultVersion ? null : (
+                        <>
+                            <Button icon={<PlusOutlined />} onClick={handleAdd} />
+                            {versionList.length ? (
+                                <>
+                                    <Button
+                                        className="left-btn"
+                                        icon={<EditOutlined />}
+                                        onClick={handleEdit}
+                                    />
+                                    <Button
+                                        className="left-btn"
+                                        type="primary"
+                                        onClick={handleSchedule}
+                                    >
+                                        调度
+                                    </Button>
+                                </>
+                            ) : null}
+                        </>
+                    )}
+                </div>
+
+                {versionList.length ? (
+                    <TaskTable
+                        isDefaultVersion={isDefaultVersion}
+                        versionId={versionId}
+                        startTime={startTime}
+                        endTime={endTime}
+                        runTime={runTime}
+                        setRunTime={setRunTime}
                     />
-                </Spin>
-                {!versionList.length && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+                ) : (
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
             </div>
 
             <VersionModal

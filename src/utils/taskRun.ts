@@ -47,8 +47,8 @@ const toLogin = async (page, runInfo: ITask) => {
          * TODO 开了验证码，账号密码错误，不弹出选择租户
          */
         const currentUrl = await page.url();
-        // 依据是否包含 login 或 uicfront 来判断是否需要登录，若跳转之后仍在登录页，说明登录出错
-        if (currentUrl.includes('login') || currentUrl.includes('uicfront')) {
+        // 依据是否包含 login 来判断是否需要登录，若跳转之后仍在登录页，说明登录出错
+        if (currentUrl.includes('login')) {
             throw new Error(`taskId: ${taskId}, 登录失败，仍在登录页面`);
         } else {
             console.log(`taskId: ${taskId}, 登录成功`);
