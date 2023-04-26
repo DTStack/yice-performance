@@ -33,7 +33,7 @@ export class TaskRunService {
     // 每分钟执行一次 https://docs.nestjs.com/techniques/task-scheduling#declarative-cron-jobs
     @Cron('0 * * * * *')
     async handleCron() {
-        this.checkCronForCurrentDate();
+        process.env.NODE_ENV === 'production' && this.checkCronForCurrentDate();
     }
     // 每五分钟执行一次
     @Cron('0 */5 * * * *')

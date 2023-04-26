@@ -54,7 +54,7 @@ const toLogin = async (page, runInfo: ITask) => {
             console.log(`taskId: ${taskId}, 登录成功`);
         }
     } catch (error) {
-        console.error(`taskId: ${taskId}, 登录出错`, `登录出错，${error?.toString()}`);
+        console.error(`taskId: ${taskId}, 登录出错`, error?.toString());
         throw error;
     }
 };
@@ -64,6 +64,7 @@ const changeTenant = async (page, taskId) => {
     try {
         // 等待指定的选择器匹配元素出现在页面中
         await page.waitForSelector('#change_ten_id', { visible: true });
+        console.log(`taskId: ${taskId}, 开始搜索并选择租户`);
 
         // 租户
         await page.click('.ant-select');
@@ -72,18 +73,18 @@ const changeTenant = async (page, taskId) => {
 
         // 搜索到的 demo 租户，点击查询到的第一条租户信息
         await sleep(process.env.RESPONSE_SLEEP);
+
         // v5.3.x
         try {
             await page.click('li.ant-select-dropdown-menu-item');
-        } catch (error) {
-            console.warn(`taskId: ${taskId}, 这不是 v5.3.x 的选择租户`, error?.toString());
-        }
+            console.log(`taskId: ${taskId}, 这是 v5.3.x 及之前版本的租户选择框`);
+        } catch (_error) {}
+
         // v6.0.x
         try {
             await page.click('.ant-select-item-option-content');
-        } catch (error) {
-            console.warn(`taskId: ${taskId}, 这不是 v6.0.x 的选择租户`, error?.toString());
-        }
+            console.log(`taskId: ${taskId}, 这是 v6.0.x 的租户选择框`);
+        } catch (_error) {}
 
         // 确定按钮，等待接口选择租户成功
         await page.click('button.ant-btn-primary');
@@ -113,7 +114,7 @@ const withLogin = async (runInfo: ITask) => {
         runResult = await lighthouse(url, getLhOptions(PORT), lhConfig);
         console.log(`taskId: ${taskId}, 检测完成，开始整理数据`);
     } catch (error) {
-        console.error(`taskId: ${taskId}, 检测出错`, `检测出错，${error?.toString()}`);
+        console.error(`taskId: ${taskId}, 检测出错`, `${error?.toString()}`);
         throw error;
     } finally {
         await page.close();

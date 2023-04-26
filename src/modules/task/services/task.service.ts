@@ -97,7 +97,7 @@ export class TaskService {
             .execute();
 
         // 删除文件
-        const whereParams = { isDelete: 0, taskIds };
+        const whereParams = { isDelete: 1, taskIds };
         const whereSql = `isDelete = :isDelete and taskId IN (:...taskIds)`;
         const [data] = await this.taskRepository
             .createQueryBuilder()
