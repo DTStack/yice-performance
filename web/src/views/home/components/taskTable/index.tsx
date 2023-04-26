@@ -21,6 +21,7 @@ import {
 } from '../../../../const';
 import ReportModal from '../reportModal';
 import './style.less';
+import { durationTime } from '../../../../utils/date';
 
 interface IPros {
     isDefault: boolean;
@@ -162,7 +163,7 @@ export default function TaskTable(props: IPros) {
             dataIndex: 'duration',
             key: 'duration',
             width: 120,
-            render: (text) => (text ? `${Math.round(text / 1000)} s` : '-'),
+            render: (text) => (text ? durationTime(text) : '-'),
         },
         {
             title: '开始检测时间',

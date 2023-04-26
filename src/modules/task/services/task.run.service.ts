@@ -291,8 +291,15 @@ export class TaskRunService {
         });
         result.forEach(async (task: any) => {
             // 任务运行超过五分钟
-            if (new Date().getTime() - new Date(task.startAt).getTime() > 5 * 60 * 1000) {
-                console.warn(`taskId: ${task.taskId}, 运行超过五分钟！`);
+            const duration = new Date().getTime() - new Date(task.startAt).getTime();
+            if (duration > 5 * 60 * 1000) {
+                await this.taskService.update(task?.taskId, {
+                    status: TASK_STATUS.FAIL,
+                    failReason: '运行超过五分钟，系统取消该任务',
+                    duration,
+                });
+                console.warn(`taskId: ${task.taskId}, 任务运行超过五分钟，系统已取消该任务！`);
+                this.scheduleControl();
 
                 const { projectId } = await this.versionRepository.findOne({
                     where: getWhere({ versionId: task.versionId }),
