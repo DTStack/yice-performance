@@ -21,7 +21,7 @@ export default function VersionModal(props: IProps) {
     const { open, isEdit, project, defaultVersionId, versionList, onCancel } = props;
     const { projectId, appName, devopsProjectIds } = project || {};
     const [form] = Form.useForm();
-    const [versionFetching, setVersionFetching] = useState<boolean>(false);
+    const [formLoading, setFormLoading] = useState<boolean>(false);
     const [shiliFetching, setShiliFetching] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
     const [devopsShiLiList, setDevopsShiLiList] = useState<any[]>([]);
@@ -35,7 +35,7 @@ export default function VersionModal(props: IProps) {
     }, [open]);
 
     const getVersion = () => {
-        setVersionFetching(true);
+        setFormLoading(true);
         const versionId = form.getFieldValue('versionId') || defaultVersionId;
         API.getVersion({ versionId })
             .then((res) => {
@@ -46,7 +46,7 @@ export default function VersionModal(props: IProps) {
                 }, 200);
             })
             .finally(() => {
-                setVersionFetching(false);
+                setFormLoading(false);
             });
     };
 
@@ -71,17 +71,22 @@ export default function VersionModal(props: IProps) {
 
     // 选择了某个 devops 实例
     const handleSelect = (value: any) => {
+        setFormLoading(true);
         const { label: name } = devopsShiLiList.find((item) => item.value === value) || {};
-        API.getDevopsUrl({ shiliId: value }).then(({ data = {} }) => {
-            const { portalfront: url, uicfront: loginUrl, username, password } = data;
-            form.setFieldsValue({
-                name,
-                url: `${url}/${appName}/#/`,
-                loginUrl: `${loginUrl}/#/login`,
-                username,
-                password,
+        API.getDevopsUrl({ shiliId: value })
+            .then(({ data = {} }) => {
+                const { portalfront: url, uicfront: loginUrl, username, password } = data;
+                form.setFieldsValue({
+                    name,
+                    url: `${url}/${appName}/#/`,
+                    loginUrl: `${loginUrl}/#/login`,
+                    username,
+                    password,
+                });
+            })
+            .finally(() => {
+                setFormLoading(false);
             });
-        });
     };
 
     const handleOk = () => {
@@ -154,7 +159,7 @@ export default function VersionModal(props: IProps) {
             onCancel={onCancel}
             footer={footerRender()}
         >
-            <Spin spinning={versionFetching}>
+            <Spin spinning={formLoading}>
                 <Form form={form} labelCol={{ span: 5 }} wrapperCol={{ span: 18 }} name="Form">
                     {isEdit ? (
                         <Form.Item
@@ -164,7 +169,7 @@ export default function VersionModal(props: IProps) {
                             initialValue={defaultVersionId ? `${defaultVersionId}` : undefined}
                         >
                             <Select
-                                loading={versionFetching}
+                                loading={formLoading}
                                 placeholder="请选择版本"
                                 onChange={getVersion}
                             >
