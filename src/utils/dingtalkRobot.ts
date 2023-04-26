@@ -24,7 +24,7 @@ class DingtalkRobot {
     // 发送消息的实现
     private send(title: string, text: string) {
         const webhook = process.env.ALARM_WEBHOOK;
-        if (!webhook) return;
+        if (!webhook || process.env.NODE_ENV !== 'production') return;
 
         const robot = new ChatBot({ webhook });
 

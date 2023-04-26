@@ -53,7 +53,7 @@ export class TaskService {
                 Object.assign(whereParams, { status });
             }
             if (startTime && endTime) {
-                whereSql += 'and startAt between :startTime and :endTime ';
+                whereSql += 'and createAt between :startTime and :endTime ';
                 Object.assign(whereParams, { startTime, endTime });
             }
 

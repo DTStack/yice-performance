@@ -69,13 +69,15 @@ export default function Versions(props: IProps) {
                 } else {
                     if (projectChanged || _versionList?.length === 1) {
                         let versionIdTemp: any;
-                        // 路由的 versionId 参数只使用一次
+                        // 路由的 versionId 参数如果不在当前返回的版本列表里，则不使用，场景是切换到其他项目了
+                        const _versionId = Number(searchParams.get('versionId'));
                         if (
-                            Number(searchParams.get('versionId')) &&
-                            sessionStorage.getItem('yice-versionId-used') !== 'yes'
+                            _versionId &&
+                            _versionList.some(
+                                (version: IVersion) => version.versionId === _versionId
+                            )
                         ) {
-                            versionIdTemp = Number(searchParams.get('versionId'));
-                            sessionStorage.setItem('yice-versionId-used', 'yes');
+                            versionIdTemp = _versionId;
                         } else {
                             versionIdTemp = _versionList?.[0]?.versionId;
                         }
