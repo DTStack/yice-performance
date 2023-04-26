@@ -3,7 +3,10 @@
  * @param fileName // 文件名 如 doc.png
  * @returns {*|string}
  */
-export function getImgUrl(fileName: string) {
+export function getImgUrl(fileName: string, url?: string) {
+    if (url) {
+        return new URL(url, import.meta.url).href;
+    }
     return new URL(`/src/assets/logo/${fileName}`, import.meta.url).href;
 }
 

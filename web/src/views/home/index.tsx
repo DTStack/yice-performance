@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Input, message } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import Projects from './components/projects';
-import { httpPattern } from '../../utils';
+import { getImgUrl, httpPattern } from '../../utils';
 import API from '../../utils/api';
 import Versions from './components/versions';
 import { IProject } from 'typing';
@@ -75,6 +75,10 @@ function Home() {
         <div className="home-content">
             <div className="top-content">
                 <div className="top-bg"></div>
+                <div className="logo">
+                    <img src={getImgUrl('', '/logo.png')} alt="" />
+                    <div>易测性能检测平台</div>
+                </div>
                 <Search
                     className="run-input"
                     placeholder="请输入待检测的地址，以 http(s) 开头"
