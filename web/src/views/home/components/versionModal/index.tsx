@@ -156,26 +156,31 @@ export default function VersionModal(props: IProps) {
         >
             <Spin spinning={versionFetching}>
                 <Form form={form} labelCol={{ span: 5 }} wrapperCol={{ span: 18 }} name="Form">
-                    <Form.Item
-                        name="versionId"
-                        label="版本"
-                        rules={[{ required: true }]}
-                        initialValue={`${defaultVersionId}`}
-                    >
-                        <Select
-                            loading={versionFetching}
-                            placeholder="请选择版本"
-                            onChange={getVersion}
+                    {isEdit ? (
+                        <Form.Item
+                            name="versionId"
+                            label="版本"
+                            rules={[{ required: true }]}
+                            initialValue={defaultVersionId ? `${defaultVersionId}` : undefined}
                         >
-                            {versionList.map((version: IVersion) => {
-                                return (
-                                    <Option key={version.versionId} value={`${version.versionId}`}>
-                                        {version.name}
-                                    </Option>
-                                );
-                            })}
-                        </Select>
-                    </Form.Item>
+                            <Select
+                                loading={versionFetching}
+                                placeholder="请选择版本"
+                                onChange={getVersion}
+                            >
+                                {versionList.map((version: IVersion) => {
+                                    return (
+                                        <Option
+                                            key={version.versionId}
+                                            value={`${version.versionId}`}
+                                        >
+                                            {version.name}
+                                        </Option>
+                                    );
+                                })}
+                            </Select>
+                        </Form.Item>
+                    ) : null}
                     <Form.Item name="devopsShiLiId" label="绑定实例">
                         <Select
                             allowClear

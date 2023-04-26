@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, DatePicker, Empty, Select } from 'antd';
+import { Button, DatePicker, Empty, Select, Tooltip } from 'antd';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useSearchParams } from 'react-router-dom';
 import moment from 'moment';
@@ -176,14 +176,18 @@ export default function Versions(props: IProps) {
                     {/* 右上角按钮区域 */}
                     {isDefault ? null : (
                         <>
-                            <Button icon={<PlusOutlined />} onClick={handleAdd} />
+                            <Tooltip title="添加版本">
+                                <Button icon={<PlusOutlined />} onClick={handleAdd} />
+                            </Tooltip>
                             {versionList.length ? (
                                 <>
-                                    <Button
-                                        className="left-btn"
-                                        icon={<EditOutlined />}
-                                        onClick={handleEdit}
-                                    />
+                                    <Tooltip title="编辑版本">
+                                        <Button
+                                            className="left-btn"
+                                            icon={<EditOutlined />}
+                                            onClick={handleEdit}
+                                        />
+                                    </Tooltip>
                                     <Button
                                         className="left-btn"
                                         type="primary"
