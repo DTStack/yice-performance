@@ -46,17 +46,21 @@ export class VersionController {
     @HttpCode(HttpStatus.OK)
     @Post('createVersion')
     async createVersion(@Body() versionDto: VersionDto) {
-        const { name, projectId, devopsShiLiId } = versionDto;
+        const { name, projectId } = versionDto;
+
+        // 由于可能针对某个实例绑定多个页面，就会有多个版本绑定同一个实例，这里的限制暂时去掉
+        /* const { name, projectId, devopsShiLiId } = versionDto;
         if (devopsShiLiId) {
-            const version = await this.versionService.findOne({ devopsShiLiId });
+            const version = await this.versionService.findOne({ projectId, devopsShiLiId });
             if (version?.versionId) {
-                throw new HttpException('当前实例已经被绑定，请重新选择', HttpStatus.OK);
+                throw new HttpException('当前项目已经被绑定过该实例，请重新选择', HttpStatus.OK);
             }
-        }
+        } */
+
         if (name && projectId) {
             const version = await this.versionService.findOne({ name, projectId });
             if (version) {
-                throw new HttpException('当前项目下名称重复，请重新输入名称', HttpStatus.OK);
+                throw new HttpException('当前项目下名称重复，请重新输入', HttpStatus.OK);
             }
         }
 
