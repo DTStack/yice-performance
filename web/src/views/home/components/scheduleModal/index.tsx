@@ -1,23 +1,26 @@
 import { useEffect, useState } from 'react';
-import { Modal, Form, Input, message, Button, Tooltip, Checkbox } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Modal, Form, Input, message, Button, Checkbox, Spin, Select } from 'antd';
 import API from '../../../../utils/api';
-import { IProject } from 'typing';
+import { IProject, IVersion } from 'typing';
 import './style.less';
+
+const Option = Select.Option;
+const { Search } = Input;
 
 interface IProps {
     open: boolean;
-    versionId: number | undefined;
-    versionName: string | undefined;
     project: IProject | undefined;
-    onCancel: () => void;
+    defaultVersionId: number | undefined;
+    versionList: IVersion[];
     setRunTime: (runTime: number) => void;
+    onCancel: () => void;
 }
 
 export default function ScheduleModal(props: IProps) {
-    const { open, versionId, versionName, project, onCancel, setRunTime } = props;
+    const { open, project, defaultVersionId, versionList, onCancel, setRunTime } = props;
     const [form] = Form.useForm();
-    const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
+    const [versionFetching, setVersionFetching] = useState<boolean>(false);
+    const [saving, setSaving] = useState<boolean>(false);
     const [runLoading, setRunLoading] = useState<boolean>(false);
 
     useEffect(() => {
@@ -28,16 +31,24 @@ export default function ScheduleModal(props: IProps) {
     }, [open]);
 
     const getVersion = () => {
-        API.getVersion({ versionId }).then((res) => {
-            setTimeout(() => {
-                form.setFieldsValue(res.data || {});
-            }, 200);
-        });
+        setVersionFetching(true);
+        const versionId = form.getFieldValue('versionId') || defaultVersionId;
+        API.getVersion({ versionId })
+            .then((res) => {
+                const { cron, isFreeze } = res.data || {};
+                setTimeout(() => {
+                    form.setFieldsValue({ cron, isFreeze });
+                }, 200);
+            })
+            .finally(() => {
+                setVersionFetching(false);
+            });
     };
 
     // 立即运行按钮
     const handleRun = () => {
         setRunLoading(true);
+        const versionId = form.getFieldValue('versionId') || defaultVersionId;
         API.createTask({ versionId })
             .then(() => {
                 setRunTime(new Date().getTime());
@@ -51,15 +62,16 @@ export default function ScheduleModal(props: IProps) {
 
     // 确定按钮
     const handleOk = () => {
+        const versionId = form.getFieldValue('versionId') || defaultVersionId;
         form.validateFields().then((values) => {
-            setConfirmLoading(true);
+            setSaving(true);
             API.updateScheduleConf({ projectId: project?.projectId, versionId, ...values })
                 .then(() => {
                     message.success('保存成功！');
                     onCancel();
                 })
                 .finally(() => {
-                    setConfirmLoading(false);
+                    setSaving(false);
                 });
         });
     };
@@ -67,7 +79,7 @@ export default function ScheduleModal(props: IProps) {
     // 预览最近的20个计划周期
     const handlePreviewCron = () => {
         form.validateFields().then((values) => {
-            setConfirmLoading(true);
+            setSaving(true);
             API.previewCron(values)
                 .then((res) => {
                     const { data: list = [], isSecond } = res?.data || {};
@@ -88,9 +100,15 @@ export default function ScheduleModal(props: IProps) {
                     });
                 })
                 .finally(() => {
-                    setConfirmLoading(false);
+                    setSaving(false);
                 });
         });
+    };
+
+    // 输入框的回车事件
+    const handleInputEnter = (e: any) => {
+        // 中文输入法输入时回车，keyCode 是 229；光标在输入框直接回车，keyCode 是 13
+        !saving && e.keyCode === 13 && handleOk();
     };
 
     const renderButtons = () => {
@@ -102,7 +120,7 @@ export default function ScheduleModal(props: IProps) {
 
                 <div>
                     <Button onClick={onCancel}>取消</Button>
-                    <Button type="primary" loading={confirmLoading} onClick={handleOk}>
+                    <Button type="primary" loading={saving} onClick={handleOk}>
                         确定
                     </Button>
                 </div>
@@ -128,33 +146,56 @@ export default function ScheduleModal(props: IProps) {
     return (
         <Modal
             width={500}
-            title={`${versionName}调度信息`}
+            title="子产品调度信息"
             open={open}
             forceRender
             destroyOnClose
             footer={renderButtons()}
             onCancel={onCancel}
         >
-            <Form
-                className="schedule-form"
-                form={form}
-                labelCol={{ span: 5 }}
-                wrapperCol={{ span: 14 }}
-                name="Form"
-            >
-                <Form.Item name="cron" label="Cron表达式" rules={[{ required: true }]}>
-                    <Input placeholder="请输入Cron表达式" autoFocus maxLength={64} />
-                </Form.Item>
-                <Form.Item name="isFreeze" label="调度冻结" valuePropName="checked" required>
-                    <Checkbox>冻结</Checkbox>
-                </Form.Item>
-
-                <Tooltip title={tooltip} placement="bottom">
-                    <QuestionCircleOutlined />
-                </Tooltip>
-
-                <Button onClick={handlePreviewCron}>预览</Button>
-            </Form>
+            <Spin spinning={versionFetching}>
+                <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} name="Form">
+                    <Form.Item
+                        name="versionId"
+                        label="版本"
+                        rules={[{ required: true }]}
+                        initialValue={`${defaultVersionId}`}
+                    >
+                        <Select
+                            loading={versionFetching}
+                            placeholder="请选择版本"
+                            onChange={getVersion}
+                        >
+                            {versionList.map((version: IVersion) => {
+                                return (
+                                    <Option key={version.versionId} value={`${version.versionId}`}>
+                                        {version.name}
+                                    </Option>
+                                );
+                            })}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="cron"
+                        label="Cron表达式"
+                        rules={[{ required: true }]}
+                        tooltip={tooltip}
+                    >
+                        <Search
+                            placeholder="请输入Cron表达式"
+                            autoFocus
+                            maxLength={64}
+                            enterButton="预览"
+                            loading={saving}
+                            onSearch={handlePreviewCron} // 按钮事件
+                            onPressEnter={handleInputEnter}
+                        />
+                    </Form.Item>
+                    <Form.Item name="isFreeze" label="调度冻结" valuePropName="checked" required>
+                        <Checkbox>冻结</Checkbox>
+                    </Form.Item>
+                </Form>
+            </Spin>
         </Modal>
     );
 }

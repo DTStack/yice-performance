@@ -36,6 +36,9 @@ export class VersionController {
     @Get('getVersion')
     async getVersion(@Query() query: getVersionReqDto) {
         const { versionId } = query;
+        if (!versionId) {
+            throw new HttpException('版本id不能为空', HttpStatus.OK);
+        }
         return await this.versionService.findOne({ versionId });
     }
 

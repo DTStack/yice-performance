@@ -1,25 +1,29 @@
 import { useEffect, useState } from 'react';
-import { Modal, Form, Input, message, Select, Button } from 'antd';
+import { Modal, Form, Input, message, Select, Button, Spin } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { httpPattern } from '../../../../utils';
 import API from '../../../../utils/api';
-import { IProject } from 'typing';
+import { IProject, IVersion } from 'typing';
 import './style.less';
+
+const Option = Select.Option;
 
 interface IProps {
     open: boolean;
     isEdit: boolean;
     project: IProject | undefined;
-    versionId: number | undefined;
+    defaultVersionId: number | undefined;
+    versionList: IVersion[];
     onCancel: (needFetch: any) => void;
 }
 
 export default function VersionModal(props: IProps) {
-    const { open, isEdit, project, versionId, onCancel } = props;
+    const { open, isEdit, project, defaultVersionId, versionList, onCancel } = props;
     const { projectId, appName, devopsProjectIds } = project || {};
     const [form] = Form.useForm();
-    const [fetching, setFetching] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [versionFetching, setVersionFetching] = useState<boolean>(false);
+    const [shiliFetching, setShiliFetching] = useState<boolean>(false);
+    const [saving, setSaving] = useState<boolean>(false);
     const [devopsShiLiList, setDevopsShiLiList] = useState<any[]>([]);
 
     useEffect(() => {
@@ -31,16 +35,24 @@ export default function VersionModal(props: IProps) {
     }, [open]);
 
     const getVersion = () => {
-        API.getVersion({ versionId }).then((res) => {
-            setTimeout(() => {
-                form.setFieldsValue(res.data || {});
-            }, 200);
-        });
+        setVersionFetching(true);
+        const versionId = form.getFieldValue('versionId') || defaultVersionId;
+        API.getVersion({ versionId })
+            .then((res) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { versionId: _versionId, ...version } = res.data || {};
+                setTimeout(() => {
+                    form.setFieldsValue(version);
+                }, 200);
+            })
+            .finally(() => {
+                setVersionFetching(false);
+            });
     };
 
     // 获取项目下的 devops 实例列表
     const getShiLis = () => {
-        setFetching(true);
+        setShiliFetching(true);
         API.getShiLis({ devopsProjectIds })
             .then((res) => {
                 setDevopsShiLiList(
@@ -53,7 +65,7 @@ export default function VersionModal(props: IProps) {
                 );
             })
             .finally(() => {
-                setFetching(false);
+                setShiliFetching(false);
             });
     };
 
@@ -74,7 +86,7 @@ export default function VersionModal(props: IProps) {
 
     const handleOk = () => {
         form.validateFields().then((values) => {
-            setLoading(true);
+            setSaving(true);
             // 去除值为空字符串的字段
             const params = Object.keys(values)
                 .filter((key) => values[key] !== '')
@@ -83,20 +95,20 @@ export default function VersionModal(props: IProps) {
             API[isEdit ? 'updateVersion' : 'createVersion']({
                 ...params,
                 projectId,
-                versionId,
             })
                 .then(() => {
                     message.success('保存成功！');
                     onCancel(true);
                 })
                 .finally(() => {
-                    setLoading(false);
+                    setSaving(false);
                 });
         });
     };
 
     // 删除版本
     const handleDelete = () => {
+        const versionId = form.getFieldValue('versionId') || defaultVersionId;
         Modal.confirm({
             title: '是否删除该版本？',
             icon: <ExclamationCircleOutlined />,
@@ -112,7 +124,7 @@ export default function VersionModal(props: IProps) {
     // 输入框的回车事件
     const handleInputEnter = (e: any) => {
         // 中文输入法输入时回车，keyCode 是 229；光标在输入框直接回车，keyCode 是 13
-        !loading && e.keyCode === 13 && handleOk();
+        !saving && e.keyCode === 13 && handleOk();
     };
 
     const footerRender = () => {
@@ -126,7 +138,7 @@ export default function VersionModal(props: IProps) {
                     ) : null}
                 </div>
                 <Button onClick={onCancel}>取消</Button>
-                <Button type="primary" loading={loading} onClick={handleOk}>
+                <Button type="primary" loading={saving} onClick={handleOk}>
                     确定
                 </Button>
             </div>
@@ -142,44 +154,66 @@ export default function VersionModal(props: IProps) {
             onCancel={onCancel}
             footer={footerRender()}
         >
-            <Form form={form} labelCol={{ span: 5 }} wrapperCol={{ span: 18 }} name="Form">
-                <Form.Item name="devopsShiLiId" label="绑定实例">
-                    <Select
-                        allowClear
-                        placeholder="请选择绑定的 devops 实例"
-                        disabled={isEdit}
-                        options={devopsShiLiList}
-                        loading={fetching}
-                        onSelect={handleSelect}
-                    />
-                </Form.Item>
-                <Form.Item name="name" label="版本名称" rules={[{ required: true }]}>
-                    <Input
-                        allowClear
-                        placeholder="请输入版本名称"
-                        onPressEnter={handleInputEnter}
-                    />
-                </Form.Item>
-                <Form.Item
-                    name="url"
-                    label="检测地址"
-                    rules={[
-                        { required: true },
-                        { pattern: httpPattern, message: '请输入以 http(s) 开头的检测地址' },
-                    ]}
-                >
-                    <Input allowClear placeholder="请输入检测地址" />
-                </Form.Item>
-                <Form.Item name="loginUrl" label="登录地址">
-                    <Input allowClear placeholder="请输入登录地址" />
-                </Form.Item>
-                <Form.Item name="username" label="用户名">
-                    <Input allowClear placeholder="请输入用户名" />
-                </Form.Item>
-                <Form.Item name="password" label="用户密码">
-                    <Input allowClear placeholder="请输入用户密码" />
-                </Form.Item>
-            </Form>
+            <Spin spinning={versionFetching}>
+                <Form form={form} labelCol={{ span: 5 }} wrapperCol={{ span: 18 }} name="Form">
+                    <Form.Item
+                        name="versionId"
+                        label="版本"
+                        rules={[{ required: true }]}
+                        initialValue={`${defaultVersionId}`}
+                    >
+                        <Select
+                            loading={versionFetching}
+                            placeholder="请选择版本"
+                            onChange={getVersion}
+                        >
+                            {versionList.map((version: IVersion) => {
+                                return (
+                                    <Option key={version.versionId} value={`${version.versionId}`}>
+                                        {version.name}
+                                    </Option>
+                                );
+                            })}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="devopsShiLiId" label="绑定实例">
+                        <Select
+                            allowClear
+                            placeholder="请选择绑定的 devops 实例"
+                            disabled={isEdit}
+                            options={devopsShiLiList}
+                            loading={shiliFetching}
+                            onSelect={handleSelect}
+                        />
+                    </Form.Item>
+                    <Form.Item name="name" label="版本名称" rules={[{ required: true }]}>
+                        <Input
+                            allowClear
+                            placeholder="请输入版本名称"
+                            onPressEnter={handleInputEnter}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        name="url"
+                        label="检测地址"
+                        rules={[
+                            { required: true },
+                            { pattern: httpPattern, message: '请输入以 http(s) 开头的检测地址' },
+                        ]}
+                    >
+                        <Input allowClear placeholder="请输入检测地址" />
+                    </Form.Item>
+                    <Form.Item name="loginUrl" label="登录地址">
+                        <Input allowClear placeholder="请输入登录地址" />
+                    </Form.Item>
+                    <Form.Item name="username" label="用户名">
+                        <Input allowClear placeholder="请输入用户名" />
+                    </Form.Item>
+                    <Form.Item name="password" label="用户密码">
+                        <Input allowClear placeholder="请输入用户密码" />
+                    </Form.Item>
+                </Form>
+            </Spin>
         </Modal>
     );
 }

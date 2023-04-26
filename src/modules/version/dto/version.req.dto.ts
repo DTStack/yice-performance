@@ -8,7 +8,7 @@ export class getVersionsReqDto extends QueryDto {
 
 export class getVersionReqDto extends QueryDto {
     @ApiPropertyOptional({ required: false, description: '版本id' })
-    versionId?: number;
+    versionId: number;
     @ApiPropertyOptional({ required: false, description: '绑定的devops实例id' })
     devopsShiLiId?: number;
     @ApiPropertyOptional({ required: false, description: '项目id' })

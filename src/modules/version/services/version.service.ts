@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { VersionDto } from '../dto/version.dto';
 import { Version } from '../entities/version.entity';
 import { getWhere, isSecond, previewCron } from '@/utils';
-import { getVersionReqDto } from '../dto/version.req.dto';
 import { Task } from '@/modules/task/entities/task.entity';
 import { TASK_STATUS } from '@/const';
 
@@ -24,7 +23,7 @@ export class VersionService {
         });
     }
 
-    async findOne(query: getVersionReqDto) {
+    async findOne(query) {
         const result = await this.versionRepository.findOneBy(getWhere(query));
         return result ? { ...result, isFreeze: !!result.isFreeze } : null;
     }
