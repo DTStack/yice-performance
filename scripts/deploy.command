@@ -9,7 +9,7 @@ pnpm build
 
 
 echo -e '3、本地资源开始压缩'
-gtar -czf yice-performance.tar.gz dist pm2 static web/dist .env scripts/start.sh package.json pnpm-lock.yaml
+gtar -czf yice-performance.tar.gz dist pm2 static/README.md web/dist .env scripts/start.sh package.json pnpm-lock.yaml
 
 
 echo -e '\n4、压缩包开始上传到远程服务器'
