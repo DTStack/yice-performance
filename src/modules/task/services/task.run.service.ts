@@ -163,7 +163,7 @@ export class TaskRunService {
                 } catch (error) {
                     status = TASK_STATUS.FAIL;
                     failReason = error;
-                    console.log('performance save error', error?.toString());
+                    console.error('performance save error', error?.toString());
                 }
                 await this.taskService.update(taskId, {
                     score,
@@ -173,12 +173,12 @@ export class TaskRunService {
                     failReason,
                 });
             } else {
-                console.log(
+                console.warn(
                     `taskId: ${taskId}, 任务不是运行中的状态，可能是由于被手动取消了，故本次检测结果不做记录`
                 );
             }
         } catch (error) {
-            console.log('successCallback error', error);
+            console.error('successCallback error', error);
         }
     }
 
@@ -192,7 +192,7 @@ export class TaskRunService {
                 duration,
             });
         } catch (error) {
-            console.log('failCallback error', error);
+            console.error('failCallback error', error);
         }
     }
 
@@ -292,7 +292,7 @@ export class TaskRunService {
         result.forEach(async (task: any) => {
             // 任务运行超过五分钟
             if (new Date().getTime() - new Date(task.startAt).getTime() > 5 * 60 * 1000) {
-                console.log(`taskId: ${task.taskId}, 运行超过五分钟！`);
+                console.warn(`taskId: ${task.taskId}, 运行超过五分钟！`);
 
                 const { projectId } = await this.versionRepository.findOne({
                     where: getWhere({ versionId: task.versionId }),

@@ -72,7 +72,7 @@ export class TaskService {
                 pageSize: +pageSize,
             };
         } catch (error) {
-            console.log('getTasks error', error);
+            console.error('getTasks error', error);
         }
     }
 

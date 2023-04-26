@@ -27,18 +27,18 @@ instance.interceptors.response.use(
     (res) => {
         if (res.status === 200) {
             if (res.data.code !== 200) {
-                console.log('code error not 200', res);
+                console.error('code error not 200', res);
                 message.error(res.data.message);
                 return Promise.reject(res);
             }
             return Promise.resolve(res.data);
         } else {
-            console.log('status error', res);
+            console.error('status error', res);
             return Promise.reject(res);
         }
     },
     (error) => {
-        console.log('response error', error);
+        console.error('response error', error);
         message.error(error.message);
         return Promise.reject(error);
     }

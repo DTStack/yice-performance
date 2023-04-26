@@ -54,7 +54,7 @@ const toLogin = async (page, runInfo: ITask) => {
             console.log(`taskId: ${taskId}, 登录成功`);
         }
     } catch (error) {
-        console.log(`taskId: ${taskId}, 登录出错`, error);
+        console.error(`taskId: ${taskId}, 登录出错`, `登录出错，${error?.toString()}`);
         throw error;
     }
 };
@@ -76,13 +76,13 @@ const changeTenant = async (page, taskId) => {
         try {
             await page.click('li.ant-select-dropdown-menu-item');
         } catch (error) {
-            console.log(`taskId: ${taskId}, 这不是 v5.3.x 的选择租户`, error?.toString());
+            console.warn(`taskId: ${taskId}, 这不是 v5.3.x 的选择租户`, error?.toString());
         }
         // v6.0.x
         try {
             await page.click('.ant-select-item-option-content');
         } catch (error) {
-            console.log(`taskId: ${taskId}, 这不是 v6.0.x 的选择租户`, error?.toString());
+            console.warn(`taskId: ${taskId}, 这不是 v6.0.x 的选择租户`, error?.toString());
         }
 
         // 确定按钮，等待接口选择租户成功
@@ -91,7 +91,7 @@ const changeTenant = async (page, taskId) => {
 
         console.log(`taskId: ${taskId}, 选择租户成功`);
     } catch (error) {
-        console.log(`taskId: ${taskId}, 选择租户出错`, error);
+        console.error(`taskId: ${taskId}, 选择租户出错`, `选择租户出错，${error?.toString()}`);
         throw error;
     }
 };
@@ -111,9 +111,9 @@ const withLogin = async (runInfo: ITask) => {
 
         console.log(`taskId: ${taskId}, 准备工作完成，开始检测`);
         runResult = await lighthouse(url, getLhOptions(PORT), lhConfig);
-        console.log(`taskId: ${taskId}, 检测完成`);
+        console.log(`taskId: ${taskId}, 检测完成，开始整理数据`);
     } catch (error) {
-        console.log(`taskId: ${taskId}, 检测出错`, error);
+        console.error(`taskId: ${taskId}, 检测出错`, `检测出错，${error?.toString()}`);
         throw error;
     } finally {
         await page.close();
@@ -131,9 +131,9 @@ const withOutLogin = async (runInfo: ITask) => {
         console.log(`taskId: ${taskId}, 开始检测`);
         chrome = await chromeLauncher.launch(chromeLauncherOptions);
         runResult = await lighthouse(url, getLhOptions(chrome.port), lhConfig);
-        console.log(`taskId: ${taskId}, 检测完成`);
+        console.log(`taskId: ${taskId}, 检测完成，开始整理数据`);
     } catch (error) {
-        console.log(`taskId: ${taskId}, 检测失败`, error);
+        console.error(`taskId: ${taskId}, 检测失败`, `检测失败，${error?.toString()}`);
         throw error;
     } finally {
         await chrome.kill();
@@ -198,7 +198,7 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         const failReason = error.toString().substring(0, 10240);
         const duration = Number((new Date().getTime() - start).toFixed(2));
         await failCallback(task, failReason, duration);
-        console.log(`taskId: ${taskId}, taskRun error`, failReason);
+        console.error(`taskId: ${taskId}, taskRun error`, `taskRun error, ${failReason}`);
         throw error;
     } finally {
         completeCallback();
