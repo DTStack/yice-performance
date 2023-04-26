@@ -24,7 +24,7 @@ export class TaskService {
             const {
                 pageSize = 20,
                 current = 1,
-                isDefaultVersion,
+                isDefault,
                 versionId,
                 triggerType = [],
                 isUseful = [],
@@ -35,7 +35,7 @@ export class TaskService {
             let whereSql = 'isDelete = 0 ';
             const whereParams = { isDelete: 0 };
 
-            if (isDefaultVersion !== 'true') {
+            if (isDefault !== 'true') {
                 whereSql += 'and versionId= :versionId ';
                 Object.assign(whereParams, { versionId });
             }

@@ -5,7 +5,7 @@ import { QueryDto } from '@/modules/base.req.dto';
 export class TaskReqDto extends QueryDto {
     @ApiPropertyOptional({ required: false, description: '是否默认的版本，即汇总' })
     @IsOptional()
-    isDefaultVersion?: string;
+    isDefault?: string;
 
     @ApiPropertyOptional({ required: false, description: '任务绑定的版本id' })
     @IsOptional()

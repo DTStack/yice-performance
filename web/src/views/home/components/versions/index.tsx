@@ -38,7 +38,7 @@ export default function Versions(props: IProps) {
     const [scheduleOpen, setScheduleOpen] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [isDefaultVersion, setIsDefaultVersion] = useState<boolean>(false);
+    const [isDefault, setIsDefault] = useState<boolean>(false);
     const [startTime, setStartTime] = useState<string | undefined>(
         formatTime(moment().subtract(0, 'days'))
     );
@@ -49,27 +49,26 @@ export default function Versions(props: IProps) {
     useEffect(() => {
         if (projectId) {
             setVersionId(undefined);
+            setIsDefault(false);
             getVersions(true);
         }
     }, [projectId]);
-
-    useEffect(() => {
-        setIsDefaultVersion(versionList.some((item) => !item.closable));
-    }, [versionList]);
 
     // 获取版本列表
     const getVersions = (projectChanged = false) => {
         setLoading(true);
         API.getVersions({ projectId })
             .then((res) => {
-                setVersionList(res.data || []);
+                const _versionList = res.data || [];
+                setVersionList(_versionList);
 
                 // 版本全部删除后清除 versionId
-                if (!res.data?.length) {
+                if (!_versionList?.length) {
                     setVersionId(undefined);
+                    setIsDefault(false);
                 } else {
-                    if (projectChanged || res.data?.length === 1) {
-                        let versionIdTemp;
+                    if (projectChanged || _versionList?.length === 1) {
+                        let versionIdTemp: any;
                         // 路由的 versionId 参数只使用一次
                         if (
                             Number(searchParams.get('versionId')) &&
@@ -78,16 +77,26 @@ export default function Versions(props: IProps) {
                             versionIdTemp = Number(searchParams.get('versionId'));
                             sessionStorage.setItem('yice-versionId-used', 'yes');
                         } else {
-                            versionIdTemp = res.data?.[0]?.versionId;
+                            versionIdTemp = _versionList?.[0]?.versionId;
                         }
 
                         setVersionId(versionIdTemp);
+                        setIsDefault(
+                            _versionList.find((item: IVersion) => item.versionId === versionIdTemp)
+                                ?.isDefault || false
+                        );
                     }
                 }
             })
             .finally(() => {
                 setLoading(false);
             });
+    };
+
+    // 版本变化
+    const handleVersionChange = (value: string, option: any) => {
+        setVersionId(Number(value));
+        setIsDefault(option?.isDefault || false);
     };
 
     // 日期变化
@@ -128,7 +137,7 @@ export default function Versions(props: IProps) {
                                 <Select
                                     className="search-params-item"
                                     value={versionId ? `${versionId}` : undefined}
-                                    onChange={(value: string) => setVersionId(Number(value))}
+                                    onChange={handleVersionChange}
                                     loading={loading}
                                     placeholder="请选择版本"
                                 >
@@ -165,7 +174,7 @@ export default function Versions(props: IProps) {
                     </div>
 
                     {/* 右上角按钮区域 */}
-                    {isDefaultVersion ? null : (
+                    {isDefault ? null : (
                         <>
                             <Button icon={<PlusOutlined />} onClick={handleAdd} />
                             {versionList.length ? (
@@ -190,7 +199,7 @@ export default function Versions(props: IProps) {
 
                 {versionList.length ? (
                     <TaskTable
-                        isDefaultVersion={isDefaultVersion}
+                        isDefault={isDefault}
                         versionId={versionId}
                         startTime={startTime}
                         endTime={endTime}

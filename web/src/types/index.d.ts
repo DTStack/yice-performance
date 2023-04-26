@@ -16,7 +16,7 @@ declare module 'typing' {
         loginUrl?: string;
         username?: string;
         password?: string;
-        closable?: boolean;
+        isDefault: boolean;
         cron?: string;
         isFreeze?: number;
     }

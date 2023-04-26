@@ -23,7 +23,7 @@ import ReportModal from '../reportModal';
 import './style.less';
 
 interface IPros {
-    isDefaultVersion: boolean;
+    isDefault: boolean;
     versionId: number | undefined;
     startTime: string | undefined;
     endTime: string | undefined;
@@ -32,7 +32,7 @@ interface IPros {
 }
 
 export default function TaskTable(props: IPros) {
-    const { isDefaultVersion, versionId, startTime, endTime, runTime, setRunTime } = props;
+    const { isDefault, versionId, startTime, endTime, runTime, setRunTime } = props;
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [current, setCurrent] = useState<number>(1);
@@ -57,7 +57,7 @@ export default function TaskTable(props: IPros) {
     const fetchData = () => {
         setLoading(true);
         const params = {
-            isDefaultVersion,
+            isDefault,
             versionId,
             current,
             pageSize,
@@ -304,7 +304,7 @@ export default function TaskTable(props: IPros) {
             },
         },
     ];
-    if (isDefaultVersion) {
+    if (isDefault) {
         columns.splice(1, 0, {
             title: '版本名称',
             dataIndex: 'versionName',
@@ -375,8 +375,8 @@ export default function TaskTable(props: IPros) {
                 pagination={pagination}
                 rowSelection={rowSelection}
                 scroll={{
-                    x: isDefaultVersion ? 1280 : 1400,
-                    y: 'calc(100vh - 16vh - 50px - 32px - 68px - 24px - 32px - 47px)',
+                    x: isDefault ? 1280 : 1400,
+                    y: 'calc(100vh - 16vh - 50px - 32px - 56px - 24px - 32px - 47px)',
                 }}
                 onChange={handleTableChange}
             />
