@@ -63,6 +63,11 @@ export default {
         return instance.get('/performance/getPerformancesByTaskId', { params });
     },
 
+    // 图表相关
+    getProjectChart(params: any) {
+        return instance.get('/chart/getProjectChart', { params });
+    },
+
     // devops 相关
     getShiLis(params?: any) {
         return instance.get('/devops/getShiLis', { params });

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, DatePicker, Empty, Select, Tooltip } from 'antd';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, LineChartOutlined, PlusOutlined } from '@ant-design/icons';
 import { useSearchParams } from 'react-router-dom';
 // import moment from 'moment';
 import 'moment/dist/locale/zh-cn';
@@ -17,6 +17,7 @@ import {
     parseTime,
     todayRange,
 } from '../../../../utils/date';
+import ChartModal from '../chartModal';
 import './style.less';
 
 const Option = Select.Option;
@@ -35,8 +36,9 @@ export default function Versions(props: IProps) {
     const [versionList, setVersionList] = useState<IVersion[]>([]);
     const [versionId, setVersionId] = useState<number | undefined>(undefined);
     const [infoOpen, setInfoOpen] = useState<boolean>(false);
-    const [scheduleOpen, setScheduleOpen] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<boolean>(false);
+    const [scheduleOpen, setScheduleOpen] = useState<boolean>(false);
+    const [chartOpen, setChartOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [isDefault, setIsDefault] = useState<boolean>(false);
     const [startTime, setStartTime] = useState<string | undefined>(
@@ -126,6 +128,10 @@ export default function Versions(props: IProps) {
         setIsEdit(true);
         setInfoOpen(true);
     };
+    // 性能趋势按钮
+    const handleChart = () => {
+        setChartOpen(true);
+    };
     // 调度按钮
     const handleSchedule = () => {
         setScheduleOpen(true);
@@ -192,6 +198,13 @@ export default function Versions(props: IProps) {
                                             onClick={handleEdit}
                                         />
                                     </Tooltip>
+                                    <Tooltip title="性能趋势">
+                                        <Button
+                                            className="left-btn"
+                                            icon={<LineChartOutlined />}
+                                            onClick={handleChart}
+                                        />
+                                    </Tooltip>
                                     <Button
                                         className="left-btn"
                                         type="primary"
@@ -230,6 +243,13 @@ export default function Versions(props: IProps) {
                     // 新增的第一个版本设置为默认的 versionId
                     needFetch && getVersions(!versionList.length);
                 }}
+            />
+
+            <ChartModal
+                open={chartOpen}
+                project={project}
+                versionList={versionList}
+                onCancel={() => setChartOpen(false)}
             />
 
             <ScheduleModal

@@ -14,6 +14,7 @@ import { PerformanceModule } from './modules/performance/performance.module';
 import { BuildModule } from './modules/build/build.module';
 import { VersionModule } from './modules/version/version.module';
 import { DevopsModule } from './modules/devops/devops.module';
+import { ChartModule } from './modules/chart/chart.module';
 
 @Module({
     imports: [
@@ -47,6 +48,7 @@ import { DevopsModule } from './modules/devops/devops.module';
         BuildModule,
         VersionModule,
         DevopsModule,
+        ChartModule,
 
         // 托管页面的静态资源
         ServeStaticModule.forRoot({

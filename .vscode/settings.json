@@ -28,5 +28,14 @@
     "[nginx]": {
         "editor.defaultFormatter": "ahmadalli.vscode-nginx-conf"
     },
-    "cSpell.words": ["Inno", "Kbps", "KHTML", "portalfront", "Shili", "uicfront", "yice"]
+    "cSpell.words": [
+        "antv",
+        "Inno",
+        "Kbps",
+        "KHTML",
+        "portalfront",
+        "Shili",
+        "uicfront",
+        "yice"
+    ]
 }
