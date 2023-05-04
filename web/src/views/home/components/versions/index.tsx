@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, DatePicker, Empty, Select, Tooltip } from 'antd';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useSearchParams } from 'react-router-dom';
-import moment from 'moment';
+// import moment from 'moment';
 import 'moment/dist/locale/zh-cn';
 import API from '../../../../utils/api';
 import VersionModal from '../versionModal';
@@ -40,10 +40,12 @@ export default function Versions(props: IProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [isDefault, setIsDefault] = useState<boolean>(false);
     const [startTime, setStartTime] = useState<string | undefined>(
-        formatTime(moment().subtract(0, 'days'))
+        // formatTime(moment().subtract(0, 'days'))
+        undefined
     );
     const [endTime, setEndTime] = useState<string | undefined>(
-        formatTime(moment().subtract(0, 'days'), true)
+        // formatTime(moment().subtract(0, 'days'), true)
+        undefined
     );
 
     useEffect(() => {
