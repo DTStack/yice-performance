@@ -95,6 +95,9 @@ DROP TABLE IF EXISTS `build`;
 CREATE TABLE `build` (
   `buildId` int NOT NULL AUTO_INCREMENT,
   `projectId` int NULL COMMENT '项目id',
+  `repository` varchar(64) NULL COMMENT '仓库名',
+  `branch` varchar(256) NULL COMMENT '分支名',
+  `version` varchar(64) NULL COMMENT '数栈版本',
   `duration` int NULL COMMENT '构建时长，单位毫秒',
   `fileSize` int NULL COMMENT '构建后的文件大小，单位 KB',
   `isDelete` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0 未删除, 1 已删除',

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Build } from '../entities/build.entity';
@@ -21,11 +21,39 @@ export class BuildService {
     }
 
     async create(buildDto: BuildDto) {
-        const { branch, duration, fileSize } = buildDto;
-        const appName = branch?.split('/')[0];
+        const { repository, branch, duration, fileSize } = buildDto;
+        let appName = '';
+        if (repository.includes('studio')) {
+            appName = branch?.split('/')[0];
+        } else if (repository.includes('dt-')) {
+            const appList = [
+                { repository: 'dt-batch-works', appName: 'batch' },
+                { repository: 'dt-stream-works', appName: 'stream' },
+                { repository: 'dt-console', appName: 'console' },
+                { repository: 'dt-data-api', appName: 'dataApi' },
+                { repository: 'dt-data-assets', appName: 'dataAssets' },
+                { repository: 'dt-tag-engine', appName: 'tag' },
+                { repository: 'dt-easy-index', appName: 'easyIndex' },
+                { repository: 'dt-portal-front', appName: 'portal' },
+            ];
+            appName = appList.find((app) => repository.includes(app.repository))?.appName || '';
+        }
+        if (!appName) {
+            throw new HttpException('repository, branch 不符合规则，此次数据不录入', HttpStatus.OK);
+        }
+
+        const version = branch.split('_')?.filter((item) => item.includes('.x'))?.[0];
+
         const { projectId } = await this.projectRepository.findOneBy(getWhere({ appName }));
 
-        const build = this.buildRepository.create({ projectId, duration, fileSize });
+        const build = this.buildRepository.create({
+            projectId,
+            repository,
+            branch,
+            version,
+            duration,
+            fileSize,
+        });
         const result = await this.buildRepository.save(build);
         return result;
     }
