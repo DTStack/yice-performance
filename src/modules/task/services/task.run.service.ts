@@ -45,7 +45,7 @@ export class TaskRunService {
     async tryAgain(taskId: number) {
         const currentTask = await this.taskService.findOne(taskId);
         if (!currentTask?.versionId) {
-            throw new HttpException('当前检查记录已经删除，不允许再次检测', HttpStatus.OK);
+            throw new HttpException('当前检测记录已经删除，不允许再次检测', HttpStatus.OK);
         }
 
         const { versionId, versionName, url } = currentTask;
@@ -54,7 +54,7 @@ export class TaskRunService {
         const version = await this.versionRepository.findOneBy(getWhere({ versionId }));
         if (!version?.versionId) {
             throw new HttpException(
-                '当前检查记录对应的版本已经删除，不允许再次检测',
+                '当前检测记录对应的版本已经删除，不允许再次检测',
                 HttpStatus.OK
             );
         }
@@ -240,14 +240,14 @@ export class TaskRunService {
                     // 如果该版本已删除，不允许再次检测
                     await this.taskService.update(task?.taskId, {
                         status: TASK_STATUS.FAIL,
-                        failReason: '当前检查记录对应的版本已经删除，不允许再次检测',
+                        failReason: '当前检测记录对应的版本已经删除，不允许再次检测',
                     });
                 }
             }
         }
     }
 
-    // 检查版本的 cron 符合当前时间运行的则创建任务
+    // 检测版本的 cron 符合当前时间运行的则创建任务
     private async checkCronForCurrentDate() {
         const versionResult = await this.versionRepository.find({
             where: getWhere({ isFreeze: 0 }),
@@ -284,7 +284,7 @@ export class TaskRunService {
         this.scheduleControl();
     }
 
-    // 检查任务的运行时长，超过的则让任务失败
+    // 检测任务的运行时长，超过的则让任务失败
     private async checkTimeoutForCurrentDate() {
         const result = await this.taskRepository.find({
             where: getWhere({ status: TASK_STATUS.RUNNING }),

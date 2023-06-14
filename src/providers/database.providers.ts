@@ -1,3 +1,5 @@
+// 暂未使用
+
 import path from 'path';
 import { DataSource } from 'typeorm';
 import dbConfig from '@/configs/db.config';

@@ -1,3 +1,4 @@
+// 暂未使用
 export default {
     type: 'mysql',
     host: '127.0.0.1',
