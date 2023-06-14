@@ -1,0 +1,70 @@
+# https://docs.gitlab.cn/jh/ci/quick_start/
+
+before_script:
+  - echo $CI_COMMIT_REF_NAME
+  - whoami
+  - pnpm i --reporter=silent
+
+stages:
+  - prettier
+  - eslint
+  - stylelint
+  - test
+  - build
+  - web-build
+
+# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
+prettier:
+  stage: prettier
+  script:
+    - pnpm prettier;
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
+
+# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
+eslint:
+  stage: eslint
+  needs: [prettier]
+  script:
+    - pnpm eslint;
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
+
+# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
+stylelint:
+  stage: stylelint
+  needs: [prettier]
+  script:
+    - pnpm stylelint;
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
+
+# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
+test:
+  stage: test
+  needs: [prettier, eslint, stylelint]
+  script:
+    - pnpm test;
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
+
+# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
+build:
+  stage: build
+  needs: [prettier, eslint, stylelint, test]
+  script:
+    - pnpm build;
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
+
+# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
+web-build:
+  stage: web-build
+  needs: [prettier, eslint, stylelint, test]
+  script:
+    - cd web
+    - pnpm install --frozen-lockfile
+    - pnpm build
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
+
