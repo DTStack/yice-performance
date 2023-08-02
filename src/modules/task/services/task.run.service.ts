@@ -2,19 +2,20 @@
  * 任务调度
  */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Cron } from '@nestjs/schedule';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TaskDto } from '../dto/task.dto';
-import { Task } from '../entities/task.entity';
-import { taskRun } from '@/utils/taskRun';
-import { TaskService } from '../services/task.service';
-import { Performance } from '@/modules/performance/entities/performance.entity';
+
 import { TASK_STATUS } from '@/const';
+import { Performance } from '@/modules/performance/entities/performance.entity';
+import { Project } from '@/modules/project/entities/project.entity';
 import { Version } from '@/modules/version/entities/version.entity';
 import { canCreateTask, formatDate, getWhere } from '@/utils';
-import { Project } from '@/modules/project/entities/project.entity';
 import DingtalkRobot from '@/utils/dingtalkRobot';
+import { taskRun } from '@/utils/taskRun';
+import { TaskDto } from '../dto/task.dto';
+import { Task } from '../entities/task.entity';
+import { TaskService } from '../services/task.service';
 
 @Injectable()
 export class TaskRunService {

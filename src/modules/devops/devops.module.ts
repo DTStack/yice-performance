@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
+
 import { DevopsController } from './controllers/devops.controller';
 import { DevopsService } from './services/devops.service';
 

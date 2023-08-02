@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Modal, Spin, Select, Tabs, DatePicker, Button, Empty } from 'antd';
-import API from '../../../../utils/api';
+import { Button, DatePicker, Empty, Modal, Select, Spin, Tabs } from 'antd';
 import { IProject, ITask, IVersion } from 'typing';
-import ProjectChart from '../projectChart';
+
+import API from '../../../../utils/api';
 import {
     disabledDate,
     formatTime,
-    last30DaysRange,
     last7DaysRange,
+    last30DaysRange,
     lastDayRange,
     parseTime,
     todayRange,
 } from '../../../../utils/date';
+import ProjectChart from '../projectChart';
 import './style.less';
 
 const Option = Select.Option;

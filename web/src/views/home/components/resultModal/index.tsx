@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Modal, Descriptions, Button, Tooltip } from 'antd';
-import API from '../../../../utils/api';
-import { getScoreColor } from '../../../../const';
-import './style.less';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Button, Descriptions, Modal, Tooltip } from 'antd';
+
+import { getScoreColor } from '../../../../const';
+import API from '../../../../utils/api';
+import './style.less';
 
 interface IProps {
     open: boolean;

@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
+
 import { QueryDto } from '@/modules/base.req.dto';
 
 export class TaskReqDto extends QueryDto {

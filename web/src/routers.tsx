@@ -1,10 +1,9 @@
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
-import Layout from './views/layout';
 import NotFound from './components/notFound';
-
-import Home from './views/home';
 import About from './views/about';
+import Home from './views/home';
+import Layout from './views/layout';
 
 export default function Routers() {
     return (

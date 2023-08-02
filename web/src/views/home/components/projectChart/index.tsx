@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import * as echarts from 'echarts';
 import { ITask } from 'typing';
+
 import './style.less';
 
 interface IProps {

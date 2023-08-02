@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { TASK_STATUS } from '@/const';
+import { Task } from '@/modules/task/entities/task.entity';
+import { getWhere, isSecond, previewCron } from '@/utils';
 import { VersionDto } from '../dto/version.dto';
 import { Version } from '../entities/version.entity';
-import { getWhere, isSecond, previewCron } from '@/utils';
-import { Task } from '@/modules/task/entities/task.entity';
-import { TASK_STATUS } from '@/const';
 
 @Injectable()
 export class VersionService {

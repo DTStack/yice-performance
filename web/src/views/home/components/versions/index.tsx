@@ -1,24 +1,25 @@
 import { useEffect, useState } from 'react';
-import { Button, DatePicker, Empty, Select, Tooltip } from 'antd';
-import { EditOutlined, LineChartOutlined, PlusOutlined } from '@ant-design/icons';
 import { useSearchParams } from 'react-router-dom';
+import { EditOutlined, LineChartOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, DatePicker, Empty, Select, Tooltip } from 'antd';
+import { IProject, IVersion } from 'typing';
 // import moment from 'moment';
 import 'moment/dist/locale/zh-cn';
+
 import API from '../../../../utils/api';
-import VersionModal from '../versionModal';
-import { IProject, IVersion } from 'typing';
-import TaskTable from '../taskTable';
-import ScheduleModal from '../scheduleModal';
 import {
     disabledDate,
     formatTime,
-    last30DaysRange,
     last7DaysRange,
+    last30DaysRange,
     lastDayRange,
     parseTime,
     todayRange,
 } from '../../../../utils/date';
 import ChartModal from '../chartModal';
+import ScheduleModal from '../scheduleModal';
+import TaskTable from '../taskTable';
+import VersionModal from '../versionModal';
 import './style.less';
 
 const Option = Select.Option;

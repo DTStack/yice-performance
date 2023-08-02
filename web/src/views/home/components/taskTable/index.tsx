@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Popconfirm, Tooltip, message, Button, Modal } from 'antd';
-import moment from 'moment';
-import type { ColumnsType } from 'antd/es/table';
 import {
     CheckCircleOutlined,
     ClockCircleOutlined,
     CloseCircleOutlined,
+    CopyOutlined,
     ExclamationCircleOutlined,
     MinusCircleOutlined,
-    CopyOutlined,
     SyncOutlined,
 } from '@ant-design/icons';
+import { Button, message, Modal, Popconfirm, Table, Tag, Tooltip } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import copy from 'copy-to-clipboard';
-import API from '../../../../utils/api';
+import moment from 'moment';
+
 import {
     getScoreColor,
     TASK_STATUS,
     TASK_STATUS_TEXT,
     TASK_TRIGGER_TYPE_TEXT,
 } from '../../../../const';
+import API from '../../../../utils/api';
+import { durationTime } from '../../../../utils/date';
 import ResultModal from '../resultModal';
 import './style.less';
-import { durationTime } from '../../../../utils/date';
 
 interface IPros {
     isDefault: boolean;

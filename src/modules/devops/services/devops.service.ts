@@ -1,5 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+
 // import { catchError, pluck, throwError } from 'rxjs';
 import { getHistoriesReqDto } from '../dto/devops.req.dto';
 

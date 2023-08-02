@@ -1,4 +1,5 @@
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
+
 import './style.less';
 
 function About() {

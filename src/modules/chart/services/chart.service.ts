@@ -4,13 +4,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { projectChartReqDto } from '../dto/chart.req.dto';
+
+import { TASK_STATUS } from '@/const';
 import { Project } from '@/modules/project/entities/project.entity';
+import { TaskDto } from '@/modules/task/dto/task.dto';
 import { Task } from '@/modules/task/entities/task.entity';
 import { Version } from '@/modules/version/entities/version.entity';
 import { formatDate, getWhere } from '@/utils';
-import { TaskDto } from '@/modules/task/dto/task.dto';
-import { TASK_STATUS } from '@/const';
+import { projectChartReqDto } from '../dto/chart.req.dto';
 
 @Injectable()
 export class ChartService {

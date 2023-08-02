@@ -1,5 +1,6 @@
-import { Controller, Get, Query, HttpStatus, HttpCode } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
+
 import { PerformanceService } from '../services/performance.service';
 
 @Controller('performance')

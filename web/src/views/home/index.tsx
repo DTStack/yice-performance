@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Input, message } from 'antd';
 import { useSearchParams } from 'react-router-dom';
-import Projects from './components/projects';
+import { Input, message } from 'antd';
+import { IProject } from 'typing';
+
 import { getImgUrl, httpPattern } from '../../utils';
 import API from '../../utils/api';
+import Projects from './components/projects';
 import Versions from './components/versions';
-import { IProject } from 'typing';
 import './style.less';
 
 const { Search } = Input;

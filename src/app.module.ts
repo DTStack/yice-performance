@@ -1,20 +1,20 @@
+import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { ClassSerializerInterceptor, Module } from '@nestjs/common';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { ValidationPipe } from './pipe/validation/validation.pipe';
-import { TransformInterceptor } from './interceptors/transform.interceptor';
 
-import { ProjectModule } from './modules/project/project.module';
-import { TaskModule } from './modules/task/task.module';
-import { PerformanceModule } from './modules/performance/performance.module';
+import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { BuildModule } from './modules/build/build.module';
-import { VersionModule } from './modules/version/version.module';
-import { DevopsModule } from './modules/devops/devops.module';
 import { ChartModule } from './modules/chart/chart.module';
 import { DatabaseModule } from './modules/database.module';
+import { DevopsModule } from './modules/devops/devops.module';
+import { PerformanceModule } from './modules/performance/performance.module';
+import { ProjectModule } from './modules/project/project.module';
+import { TaskModule } from './modules/task/task.module';
+import { VersionModule } from './modules/version/version.module';
+import { ValidationPipe } from './pipe/validation/validation.pipe';
 
 @Module({
     imports: [

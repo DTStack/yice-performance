@@ -1,6 +1,7 @@
 // import { useNavigate } from 'react-router-dom';
-import { IProject } from 'typing';
 import { Menu } from 'antd';
+import { IProject } from 'typing';
+
 import { getImgUrl } from '../../../../utils';
 import './style.less';
 

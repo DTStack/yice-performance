@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as compression from 'compression';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { HttpExceptionFilter } from './filters/http-exception.filter';
 
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { AppModule } from './app.module';
 const packageJson = require('../package.json');
 

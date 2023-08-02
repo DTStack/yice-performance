@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Build } from '../entities/build.entity';
-import { BuildDto } from '../dto/build.dto';
+
 import { Project } from '@/modules/project/entities/project.entity';
 import { getWhere } from '@/utils';
+import { BuildDto } from '../dto/build.dto';
+import { Build } from '../entities/build.entity';
 
 @Injectable()
 export class BuildService {

@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+
 import { QueryDto } from '@/modules/base.req.dto';
 
 export class getVersionsReqDto extends QueryDto {

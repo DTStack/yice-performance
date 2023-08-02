@@ -1,18 +1,19 @@
 import {
+    Body,
     Controller,
     Get,
+    HttpCode,
+    HttpException,
+    HttpStatus,
     Post,
     Query,
-    HttpStatus,
-    HttpCode,
-    Body,
-    HttpException,
 } from '@nestjs/common';
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
-import { VersionDto } from '../dto/version.dto';
-import { VersionService } from '../services/version.service';
-import { getVersionsReqDto, getVersionReqDto } from '../dto/version.req.dto';
+
 import { isSecond } from '@/utils';
+import { VersionDto } from '../dto/version.dto';
+import { getVersionReqDto, getVersionsReqDto } from '../dto/version.req.dto';
+import { VersionService } from '../services/version.service';
 
 @Controller('version')
 export class VersionController {

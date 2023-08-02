@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Modal, Form, Input, message, Select, Button, Spin } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Button, Form, Input, message, Modal, Select, Spin } from 'antd';
+import { IProject, IVersion } from 'typing';
+
 import { httpPattern } from '../../../../utils';
 import API from '../../../../utils/api';
-import { IProject, IVersion } from 'typing';
 import './style.less';
 
 const Option = Select.Option;

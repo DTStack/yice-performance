@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { getWhere } from '@/utils';
 import { ProjectDto } from '../dto/project.dto';
 import { Project } from '../entities/project.entity';
-import { getWhere } from '@/utils';
 
 @Injectable()
 export class ProjectService {

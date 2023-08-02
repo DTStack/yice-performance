@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Modal, Form, Input, message, Button, Checkbox, Spin, Select } from 'antd';
-import API from '../../../../utils/api';
+import { Button, Checkbox, Form, Input, message, Modal, Select, Spin } from 'antd';
 import { IProject, IVersion } from 'typing';
+
+import API from '../../../../utils/api';
 import './style.less';
 
 const Option = Select.Option;
