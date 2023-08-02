@@ -12,6 +12,7 @@ import ScheduleModal from '../scheduleModal';
 import {
     disabledDate,
     formatTime,
+    last30DaysRange,
     last7DaysRange,
     lastDayRange,
     parseTime,
@@ -166,6 +167,7 @@ export default function Versions(props: IProps) {
                                     className="search-params-item"
                                     disabledDate={disabledDate}
                                     ranges={{
+                                        最近30天: last30DaysRange,
                                         最近7天: last7DaysRange,
                                         昨天: lastDayRange,
                                         今天: todayRange,
