@@ -218,7 +218,10 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         return result;
     } catch (error) {
         // 错误处理
-        const failReason = error.toString().substring(0, 10240);
+        let failReason = error.toString().substring(0, 10240);
+        if (failReason.includes('#username') && failReason.includes('TimeoutError')) {
+            failReason = `等待用户名输入框超时，${failReason}`;
+        }
         const duration = Number((new Date().getTime() - start).toFixed(2));
         await failCallback(task, failReason, duration);
         throw error;
