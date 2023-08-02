@@ -185,7 +185,7 @@ export default function TaskTable(props: IPros) {
             title: '任务状态',
             dataIndex: 'status',
             key: 'status',
-            width: 120,
+            width: 130,
             fixed: 'right',
             filters: TASK_STATUS_TEXT,
             render: (status, record) => {

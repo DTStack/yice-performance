@@ -24,6 +24,7 @@ export default function VersionModal(props: IProps) {
     const [formLoading, setFormLoading] = useState<boolean>(false);
     const [shiliFetching, setShiliFetching] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
+    const [devopsShiLiId, setDevopsShiLiId] = useState<number | undefined>(undefined);
     const [devopsShiLiList, setDevopsShiLiList] = useState<any[]>([]);
 
     useEffect(() => {
@@ -41,6 +42,7 @@ export default function VersionModal(props: IProps) {
             .then((res) => {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { versionId: _versionId, ...version } = res.data || {};
+                setDevopsShiLiId(res?.data?.devopsShiLiId);
                 setTimeout(() => {
                     form.setFieldsValue(version);
                 }, 200);
@@ -72,6 +74,7 @@ export default function VersionModal(props: IProps) {
     // 选择了某个 devops 实例
     const handleSelect = (value: any) => {
         setFormLoading(true);
+        setDevopsShiLiId(value);
         const { label: name } = devopsShiLiList.find((item) => item.value === value) || {};
         API.getDevopsUrl({ shiliId: value })
             .then(({ data = {} }) => {
@@ -150,6 +153,10 @@ export default function VersionModal(props: IProps) {
         );
     };
 
+    const devopsShiLiIdDeleted = !devopsShiLiList.map((item) => item.value).includes(devopsShiLiId);
+    const validateStatus = devopsShiLiIdDeleted ? 'error' : '';
+    const help = devopsShiLiIdDeleted ? '当前绑定的 devops 实例已被删除' : '';
+
     return (
         <Modal
             title="子产品版本信息"
@@ -186,11 +193,15 @@ export default function VersionModal(props: IProps) {
                             </Select>
                         </Form.Item>
                     ) : null}
-                    <Form.Item name="devopsShiLiId" label="绑定实例">
+                    <Form.Item
+                        name="devopsShiLiId"
+                        label="绑定实例"
+                        validateStatus={validateStatus}
+                        help={help}
+                    >
                         <Select
                             allowClear
                             placeholder="请选择绑定的 devops 实例"
-                            disabled={isEdit}
                             options={devopsShiLiList}
                             loading={shiliFetching}
                             onSelect={handleSelect}
