@@ -11,7 +11,7 @@ interface IProps {
     onCancel: any;
 }
 
-function ReportModal(props: IProps) {
+function ResultModal(props: IProps) {
     const { open, taskInfo, onCancel } = props;
     const { taskId, score, duration, reportPath } = taskInfo;
     const [performances, setPerformances] = useState<any[]>([]);
@@ -72,7 +72,7 @@ function ReportModal(props: IProps) {
 
     return (
         <Modal
-            title="查看报告"
+            title="查看结果"
             open={open}
             onCancel={onCancel}
             footer={[
@@ -131,7 +131,7 @@ function ReportModal(props: IProps) {
                     );
                 })}
 
-                <Descriptions.Item label="查看报告原件" span={2}>
+                <Descriptions.Item label="查看报告" span={2}>
                     <a target="_blank" href={_reportPath} rel="noreferrer">
                         {_reportPath}
                     </a>
@@ -141,4 +141,4 @@ function ReportModal(props: IProps) {
     );
 }
 
-export default ReportModal;
+export default ResultModal;

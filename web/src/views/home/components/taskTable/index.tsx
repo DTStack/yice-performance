@@ -19,7 +19,7 @@ import {
     TASK_STATUS_TEXT,
     TASK_TRIGGER_TYPE_TEXT,
 } from '../../../../const';
-import ReportModal from '../reportModal';
+import ResultModal from '../resultModal';
 import './style.less';
 import { durationTime } from '../../../../utils/date';
 
@@ -43,7 +43,7 @@ export default function TaskTable(props: IPros) {
     const [status, setStatus] = useState<number[] | undefined>(undefined);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [taskInfo, setTaskInfo] = useState<any>({});
-    const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
+    const [resultModalOpen, setResultModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         versionId && fetchData();
@@ -101,10 +101,10 @@ export default function TaskTable(props: IPros) {
             });
     };
 
-    // 查看报告
-    const handleReport = (item: any) => {
+    // 查看结果
+    const handleResult = (item: any) => {
         setTaskInfo(item);
-        setReportModalOpen(true);
+        setResultModalOpen(true);
     };
 
     // 再次检测
@@ -291,8 +291,8 @@ export default function TaskTable(props: IPros) {
                 } else if (status === TASK_STATUS.SUCCESS) {
                     return (
                         <div>
-                            <a style={{ marginRight: 12 }} onClick={() => handleReport(record)}>
-                                查看报告
+                            <a style={{ marginRight: 12 }} onClick={() => handleResult(record)}>
+                                查看结果
                             </a>
                             {tryAgainBtn}
                         </div>
@@ -391,10 +391,10 @@ export default function TaskTable(props: IPros) {
                 </div>
             ) : null}
 
-            <ReportModal
-                open={reportModalOpen}
+            <ResultModal
+                open={resultModalOpen}
                 taskInfo={taskInfo}
-                onCancel={() => setReportModalOpen(false)}
+                onCancel={() => setResultModalOpen(false)}
             />
         </>
     );

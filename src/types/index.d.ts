@@ -1,3 +1,5 @@
+declare module 'dotenv/config';
+
 declare module 'typing' {
     /**
      * 检测任务所需要的字段
@@ -17,7 +19,7 @@ declare module 'typing' {
         reportPath?: string;
         /** 检测任务是否有效 0 无效, 1 有效 */
         isUseful: number;
-        /** 检测任务的状态 0 等待中, 1 检测中, 2 检测失败, 3 检测成功, 4 取消检测 */
+        /** 检测任务的状态 0 等待中, 1 检测中, 2 检测失败, 3 检测完成, 4 取消检测 */
         status: number;
     }
 

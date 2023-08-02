@@ -114,7 +114,7 @@ export default function ScheduleModal(props: IProps) {
     const renderButtons = () => {
         return (
             <div className="btn-box">
-                <Button type="primary" loading={runLoading} onClick={handleRun}>
+                <Button loading={runLoading} onClick={handleRun}>
                     立即运行
                 </Button>
 

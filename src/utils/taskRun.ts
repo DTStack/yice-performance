@@ -28,7 +28,7 @@ const toLogin = async (page, runInfo: ITask) => {
     try {
         await page.goto(loginUrl);
         // 等待指定的选择器匹配元素出现在页面中
-        await page.waitForSelector('#username', { visible: true });
+        await page.waitForSelector('#username', { visible: true, timeout: 20_000 });
 
         // 用户名、密码、验证码
         const usernameInput = await page.$('#username');
@@ -41,10 +41,10 @@ const toLogin = async (page, runInfo: ITask) => {
         // 登录按钮
         await page.click('.c-login__container__form__btn');
         // await page.waitForNavigation();
-        await sleep(Number(process.env.RESPONSE_SLEEP || 0) * 2);
+        await sleep(Number(process.env.RESPONSE_SLEEP ?? 5) * 2);
 
         /**
-         * TODO 开了验证码，账号密码错误，不弹出选择租户
+         * TODO 开了验证码，账号密码错误，则不会弹出选择租户
          */
         const currentUrl = await page.url();
         // 依据是否包含 login 来判断是否需要登录，若跳转之后仍在登录页，说明登录出错
@@ -54,8 +54,15 @@ const toLogin = async (page, runInfo: ITask) => {
             console.log(`taskId: ${taskId}, 登录成功`);
         }
     } catch (error) {
-        console.error(`taskId: ${taskId}, 登录出错`, error?.toString());
-        throw error;
+        const currentUrl = await page.url();
+        if (currentUrl.includes('/portal/#/')) {
+            // 通过非用户名密码方式登录，已进入 portal 页面，比如默认登录方式设置为单点登录
+            console.log(`taskId: ${taskId}, 通过非用户名密码方式登录，已进入 portal 页面`);
+            return 'not-uic';
+        } else {
+            console.error(`taskId: ${taskId}, 登录出错`, error?.toString());
+            throw error;
+        }
     }
 };
 
@@ -106,9 +113,11 @@ const withLogin = async (runInfo: ITask) => {
     let runResult;
     try {
         // 登录
-        await toLogin(page, runInfo);
-        // 选择租户
-        await changeTenant(page, taskId);
+        const result = await toLogin(page, runInfo);
+        if (result !== 'not-uic') {
+            // 选择租户
+            await changeTenant(page, taskId);
+        }
 
         console.log(`taskId: ${taskId}, 准备工作完成，开始检测`);
 
@@ -117,7 +126,7 @@ const withLogin = async (runInfo: ITask) => {
 
         console.log(`taskId: ${taskId}, 检测完成，开始整理数据`);
     } catch (error) {
-        console.error(`taskId: ${taskId}, 检测出错`, `${error?.toString()}`);
+        console.error(`taskId: ${taskId}, 检测失败`, `${error?.toString()}`);
         throw error;
     } finally {
         // 检测结束关闭标签页、无头浏览器
@@ -212,7 +221,6 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         const failReason = error.toString().substring(0, 10240);
         const duration = Number((new Date().getTime() - start).toFixed(2));
         await failCallback(task, failReason, duration);
-        console.error(`taskId: ${taskId}, taskRun error`, `taskRun error, ${failReason}`);
         throw error;
     } finally {
         completeCallback();

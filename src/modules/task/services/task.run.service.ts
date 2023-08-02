@@ -33,12 +33,10 @@ export class TaskRunService {
     // 每分钟执行一次 https://docs.nestjs.com/techniques/task-scheduling#declarative-cron-jobs
     @Cron('0 * * * * *')
     async handleCron() {
-        process.env.NODE_ENV === 'production' && this.checkCronForCurrentDate();
-    }
-    // 每五分钟执行一次
-    @Cron('0 */5 * * * *')
-    async handleTimeout() {
-        this.checkTimeoutForCurrentDate();
+        if (process.env.NODE_ENV === 'production') {
+            this.checkCronForCurrentDate();
+            this.checkTimeoutForCurrentDate();
+        }
     }
 
     // 再次检测
@@ -247,7 +245,7 @@ export class TaskRunService {
         }
     }
 
-    // 检测版本的 cron 符合当前时间运行的则创建任务
+    // 检测版本的 cron，符合当前时间运行的则创建任务
     private async checkCronForCurrentDate() {
         const versionResult = await this.versionRepository.find({
             where: getWhere({ isFreeze: 0 }),
@@ -290,15 +288,17 @@ export class TaskRunService {
             where: getWhere({ status: TASK_STATUS.RUNNING }),
         });
         result.forEach(async (task: any) => {
-            // 任务运行超过五分钟
+            // 任务运行超过一定时间
             const duration = new Date().getTime() - new Date(task.startAt).getTime();
-            if (duration > 5 * 60 * 1000) {
+            const taskTimeout = Number(process.env.RESPONSE_SLEEP ?? 5);
+            if (duration > taskTimeout * 60 * 1000) {
+                const failReason = `任务运行超过${taskTimeout}分钟，系统已取消该任务`;
                 await this.taskService.update(task?.taskId, {
                     status: TASK_STATUS.FAIL,
-                    failReason: '运行超过五分钟，系统取消该任务',
+                    failReason,
                     duration,
                 });
-                console.warn(`taskId: ${task.taskId}, 任务运行超过五分钟，系统已取消该任务！`);
+                console.warn(`taskId: ${task.taskId}, ${failReason}！`);
                 this.scheduleControl();
 
                 const { projectId } = await this.versionRepository.findOne({

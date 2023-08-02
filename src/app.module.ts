@@ -2,7 +2,6 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
 import { join } from 'path';
 import { ValidationPipe } from './pipe/validation/validation.pipe';
@@ -15,33 +14,14 @@ import { BuildModule } from './modules/build/build.module';
 import { VersionModule } from './modules/version/version.module';
 import { DevopsModule } from './modules/devops/devops.module';
 import { ChartModule } from './modules/chart/chart.module';
+import { DatabaseModule } from './modules/database.module';
 
 @Module({
     imports: [
-        TypeOrmModule.forRoot({
-            type: 'mysql',
-            host: '127.0.0.1',
-            port: 3306,
-            username: 'root',
-            password: '123456',
-            database: 'yice-performance',
-            entities: [join(__dirname, '/**/*.entity{.ts,.js}')],
-            timezone: '+08:00', // 东八区
-            cache: {
-                duration: 60000, // 1分钟的缓存
-            },
-            extra: {
-                poolMax: 32,
-                poolMin: 16,
-                queueTimeout: 60000,
-                pollPingInterval: 60, // 每隔60秒连接
-                pollTimeout: 60, // 连接有效60秒
-            },
-            // logging: true, // 打印真实 sql
-            // autoLoadEntities: true, // 自动链接被 forFeature 注册的实体
-            // synchronize: true, // 实体与表同步 调试模式下开始。不然会有强替换导致数据丢失
+        DatabaseModule,
+        ConfigModule.forRoot({
+            isGlobal: true,
         }),
-        ConfigModule.forRoot({ isGlobal: true }),
         ProjectModule,
         TaskModule,
         PerformanceModule,

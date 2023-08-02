@@ -59,7 +59,7 @@ CREATE TABLE `task` (
   `score` int NULL COMMENT '检测得分',
   `duration` int NULL COMMENT '检测耗时，单位毫秒',
   `reportPath` varchar(256) NULL COMMENT '检测结果html文件的相对路径',
-  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '检测任务的状态 0 等待中, 1 检测中, 2 检测失败, 3 检测成功, 4 取消检测',
+  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '检测任务的状态 0 等待中, 1 检测中, 2 检测失败, 3 检测完成, 4 取消检测',
   `failReason` varchar(10240) NULL COMMENT '检测失败报错信息',
   `triggerType` tinyint(1) NOT NULL DEFAULT 1 COMMENT '任务触发方式 0 系统触发, 1 用户手动触发',
   `isUseful` tinyint(1) NOT NULL DEFAULT 1 COMMENT '任务是否有效 0 无效, 1 有效',
