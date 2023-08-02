@@ -278,7 +278,10 @@ export default function Versions(props: IProps) {
                 defaultVersionId={versionId}
                 versionList={versionList}
                 setRunTime={setRunTime}
-                onCancel={() => setScheduleOpen(false)}
+                onCancel={(flag) => {
+                    setScheduleOpen(false);
+                    flag === 'fetch-versionList' && getVersions();
+                }}
             />
         </>
     );

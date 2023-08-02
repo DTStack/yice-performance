@@ -14,7 +14,7 @@ interface IProps {
     defaultVersionId: number | undefined;
     versionList: IVersion[];
     setRunTime: (runTime: number) => void;
-    onCancel: () => void;
+    onCancel: (flag?: any) => void;
 }
 
 export default function ScheduleModal(props: IProps) {
@@ -69,7 +69,7 @@ export default function ScheduleModal(props: IProps) {
             API.updateScheduleConf({ projectId: project?.projectId, versionId, ...values })
                 .then(() => {
                     message.success('保存成功！');
-                    onCancel();
+                    onCancel('fetch-versionList');
                 })
                 .finally(() => {
                     setSaving(false);

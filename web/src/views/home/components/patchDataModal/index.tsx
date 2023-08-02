@@ -55,14 +55,20 @@ export default function PatchDataModal(props: IProps) {
                     name="versionIds"
                     label="版本"
                     rules={[{ required: true, message: '请选择版本' }]}
-                    initialValue={versionList.map((item) => item.versionId)}
+                    initialValue={versionList
+                        .filter((item) => item.isFreeze === 0)
+                        .map((item) => item.versionId)}
                 >
                     <Select
                         mode="multiple"
                         allowClear
                         placeholder="请选择版本"
                         options={versionList.map((item) => {
-                            return { label: item.name, value: item.versionId };
+                            return {
+                                label: item.name,
+                                value: item.versionId,
+                                disabled: item.isFreeze !== 0,
+                            };
                         })}
                     />
                 </Form.Item>
