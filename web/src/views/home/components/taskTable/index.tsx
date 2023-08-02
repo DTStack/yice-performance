@@ -266,12 +266,20 @@ export default function TaskTable(props: IPros) {
 
                 if (status === TASK_STATUS.WAITING) {
                     return (
-                        <Popconfirm
-                            title="该任务将重新加入任务队列，是否继续？"
-                            onConfirm={() => handleTryRun(record)}
-                        >
-                            <a>尝试运行</a>
-                        </Popconfirm>
+                        <>
+                            <Popconfirm
+                                title="该任务将重新加入任务队列，是否继续？"
+                                onConfirm={() => handleTryRun(record)}
+                            >
+                                <a>尝试运行</a>
+                            </Popconfirm>
+                            <Popconfirm
+                                title={<div>取消检测后可以再次检测，是否继续？</div>}
+                                onConfirm={() => handleCancel(record)}
+                            >
+                                <a style={{ marginLeft: 12 }}>取消检测</a>
+                            </Popconfirm>
+                        </>
                     );
                 } else if (status === TASK_STATUS.RUNNING) {
                     return (

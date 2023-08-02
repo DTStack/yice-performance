@@ -124,13 +124,6 @@ export class TaskRunService {
 
     // 取消检测
     async cancel(taskId: number, taskDto: TaskDto) {
-        // 取消检测时判断任务是否还是运行中
-        const { status } = taskDto;
-        const { status: latestStatus } = await this.taskService.findOne(taskId);
-        if (status === TASK_STATUS.CANCEL && latestStatus !== TASK_STATUS.RUNNING) {
-            throw new HttpException('当前任务不在检测中，不能取消检测', HttpStatus.OK);
-        }
-
         // 手动取消任务只会修改任务状态，任务实际不会停止
         const result = await this.taskRepository.update(taskId, taskDto);
         this.scheduleControl();

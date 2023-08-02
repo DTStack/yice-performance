@@ -52,17 +52,19 @@ export class TaskController {
     @HttpCode(HttpStatus.OK)
     @Post('updateTask')
     async updateTask(@Body() taskDto: TaskDto) {
-        const { taskId } = taskDto;
+        const { taskId, status } = taskDto;
         if (!taskId) {
             throw new HttpException('请传入任务id', HttpStatus.OK);
         }
-
-        // 取消检测时判断任务是否还是运行中
-        const { status } = taskDto;
         const { status: latestStatus } = await this.taskService.findOne(taskId);
+
+        // 取消检测时判断任务状态是否处于等待检测或检测中
         if (status === TASK_STATUS.CANCEL) {
-            if (latestStatus !== TASK_STATUS.RUNNING) {
-                throw new HttpException('当前任务不在检测中，不能取消检测', HttpStatus.OK);
+            if (![TASK_STATUS.WAITING, TASK_STATUS.RUNNING].includes(latestStatus)) {
+                throw new HttpException(
+                    '当前任务状态非等待检测或检测中，不能取消检测',
+                    HttpStatus.OK
+                );
             } else {
                 return await this.taskRunService.cancel(taskId, taskDto);
             }
