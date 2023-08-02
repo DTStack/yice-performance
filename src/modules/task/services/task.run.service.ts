@@ -73,6 +73,9 @@ export class TaskRunService {
     // 尝试运行 - 手动触发调度
     async scheduleControlByHand(taskId: number) {
         const task = await this.taskService.findOne(taskId);
+        if (task.status === TASK_STATUS.RUNNING) {
+            throw new HttpException('当前任务已经在运行，请耐心等待结果', HttpStatus.OK);
+        }
         const runTask = await this.taskRepository.findOneBy(
             getWhere({ status: TASK_STATUS.RUNNING })
         );
@@ -231,7 +234,7 @@ export class TaskRunService {
                     // 如果该版本已删除，不允许再次检测
                     await this.taskService.update(task?.taskId, {
                         status: TASK_STATUS.FAIL,
-                        failReason: '当前检测记录对应的版本已经删除，不允许再次检测',
+                        failReason: '当前检测记录对应的版本已被删除，不允许再次检测',
                     });
                 }
             }
