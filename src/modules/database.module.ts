@@ -15,7 +15,7 @@ import { join } from 'path';
                 username: config.get('DB_USERNAME'),
                 password: config.get('DB_PASSWORD'),
                 database: config.get('DB_DATABASE'),
-                logging: false, // 打印真实 sql
+                // logging: true, // 打印真实 sql
                 entities: [join(__dirname, '**/*.entity{.ts,.js}')],
                 timezone: '+08:00', // 东八区
                 cache: {

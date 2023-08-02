@@ -119,7 +119,6 @@ export default function ChartModal(props: IProps) {
                             }}
                             value={[parseTime(startTime) as any, parseTime(endTime) as any]}
                             onChange={changeDate}
-                            onOpenChange={(open) => !open && getProjectChart()}
                             getPopupContainer={(triggerNode) => triggerNode.parentElement as any}
                         />
                     </>

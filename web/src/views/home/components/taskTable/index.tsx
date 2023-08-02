@@ -81,10 +81,13 @@ export default function TaskTable(props: IPros) {
 
     // 尝试运行
     const handleTryRun = (item: any) => {
-        API.tryRunTask({ taskId: item.taskId }).then(() => {
-            message.success('操作成功！');
-            fetchData();
-        });
+        API.tryRunTask({ taskId: item.taskId })
+            .then(() => {
+                message.success('操作成功！');
+            })
+            .finally(() => {
+                fetchData();
+            });
     };
 
     // 取消检测
