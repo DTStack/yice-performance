@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Modal, Spin, Select, Tabs, DatePicker, Button } from 'antd';
+import { Modal, Spin, Select, Tabs, DatePicker, Button, Empty } from 'antd';
 import API from '../../../../utils/api';
 import { IProject, ITask, IVersion } from 'typing';
 import ProjectChart from '../projectChart';
@@ -68,7 +68,11 @@ export default function ChartModal(props: IProps) {
     const renderProjectChart = () => {
         return (
             <Spin spinning={projectChartLoading}>
-                <ProjectChart data={projectChartData} />
+                {!projectChartLoading && !!projectChartData.length ? (
+                    <ProjectChart data={projectChartData} />
+                ) : (
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
             </Spin>
         );
     };
