@@ -34,6 +34,9 @@ export default {
     previewCron(data: any) {
         return instance.post('/version/previewCron', data);
     },
+    patchData(data: any) {
+        return instance.post('/version/patchData', data);
+    },
 
     // 任务相关
     getTasks(params: any) {

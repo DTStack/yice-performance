@@ -17,6 +17,7 @@ import {
     todayRange,
 } from '../../../../utils/date';
 import ChartModal from '../chartModal';
+import PatchDataModal from '../patchDataModal';
 import ScheduleModal from '../scheduleModal';
 import TaskTable from '../taskTable';
 import VersionModal from '../versionModal';
@@ -41,6 +42,7 @@ export default function Versions(props: IProps) {
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [scheduleOpen, setScheduleOpen] = useState<boolean>(false);
     const [chartOpen, setChartOpen] = useState<boolean>(false);
+    const [patchDataOpen, setPatchDataOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [isDefault, setIsDefault] = useState<boolean>(false);
     const [startTime, setStartTime] = useState<string | undefined>(
@@ -134,6 +136,10 @@ export default function Versions(props: IProps) {
     const handleChart = () => {
         setChartOpen(true);
     };
+    // 补数据按钮
+    const handlePatchData = () => {
+        setPatchDataOpen(true);
+    };
     // 调度按钮
     const handleSchedule = () => {
         setScheduleOpen(true);
@@ -208,6 +214,9 @@ export default function Versions(props: IProps) {
                                             onClick={handleChart}
                                         />
                                     </Tooltip>
+                                    <Button className="left-btn" onClick={handlePatchData}>
+                                        补数据
+                                    </Button>
                                     <Button
                                         className="left-btn"
                                         type="primary"
@@ -253,6 +262,14 @@ export default function Versions(props: IProps) {
                 project={project}
                 versionList={versionList}
                 onCancel={() => setChartOpen(false)}
+            />
+
+            <PatchDataModal
+                open={patchDataOpen}
+                project={project}
+                versionList={versionList}
+                setRunTime={setRunTime}
+                onCancel={() => setPatchDataOpen(false)}
             />
 
             <ScheduleModal

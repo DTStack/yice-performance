@@ -6,7 +6,7 @@ import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { TASK_STATUS } from '@/const';
+import { TASK_STATUS, TASK_TRIGGER_TYPE } from '@/const';
 import { Performance } from '@/modules/performance/entities/performance.entity';
 import { Project } from '@/modules/project/entities/project.entity';
 import { Version } from '@/modules/version/entities/version.entity';
@@ -196,7 +196,7 @@ export class TaskRunService {
      * 1、查询是否有正在运行的任务
      * 2、没有则运行等待中的第一个任务，有则不进行下一步处理
      */
-    private async scheduleControl() {
+    async scheduleControl() {
         const runTask = await this.taskRepository.findOneBy(
             getWhere({ status: TASK_STATUS.RUNNING })
         );
@@ -264,7 +264,7 @@ export class TaskRunService {
                     projectList.find((project: any) => project.projectId === version.projectId)
                         ?.name
                 }-${version.name}`,
-                triggerType: 0,
+                triggerType: TASK_TRIGGER_TYPE.SYSTEM,
             };
         });
 

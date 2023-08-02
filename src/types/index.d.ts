@@ -38,4 +38,16 @@ declare module 'typing' {
         /** 单项耗时 */
         duration: number;
     }
+
+    /**
+     * 补数据的入参
+     */
+    export interface IPatchDataBody {
+        /** 项目id */
+        projectId: number;
+        /** 版本id集合 */
+        versionIds: number[];
+        /** 补数据次数 */
+        time: number;
+    }
 }

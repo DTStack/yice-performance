@@ -9,6 +9,7 @@ import {
     Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { IPatchDataBody } from 'typing';
 
 import { isSecond } from '@/utils';
 import { VersionDto } from '../dto/version.dto';
@@ -101,5 +102,12 @@ export class VersionController {
     @Post('previewCron')
     async previewCron(@Body() { cron }) {
         return await this.versionService.previewCron(cron);
+    }
+
+    @ApiOperation({ summary: '补数据' })
+    @HttpCode(HttpStatus.OK)
+    @Post('patchData')
+    async patchData(@Body() body: IPatchDataBody) {
+        return await this.versionService.patchData(body);
     }
 }

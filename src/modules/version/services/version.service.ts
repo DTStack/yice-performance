@@ -1,9 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { IPatchDataBody } from 'typing';
 
-import { TASK_STATUS } from '@/const';
+import { TASK_STATUS, TASK_TRIGGER_TYPE } from '@/const';
+import { Project } from '@/modules/project/entities/project.entity';
 import { Task } from '@/modules/task/entities/task.entity';
+import { TaskRunService } from '@/modules/task/services/task.run.service';
 import { getWhere, isSecond, previewCron } from '@/utils';
 import { VersionDto } from '../dto/version.dto';
 import { Version } from '../entities/version.entity';
@@ -14,7 +17,10 @@ export class VersionService {
         @InjectRepository(Version)
         private readonly versionRepository: Repository<Version>,
         @InjectRepository(Task)
-        private readonly taskRepository: Repository<Task>
+        private readonly taskRepository: Repository<Task>,
+        @InjectRepository(Project)
+        private readonly projectRepository: Repository<Project>,
+        private readonly taskRunService: TaskRunService
     ) {}
 
     async findAll(projectId: number): Promise<Version[]> {
@@ -60,5 +66,52 @@ export class VersionService {
     async previewCron(cron: string) {
         const data = await previewCron(cron);
         return { data, isSecond: isSecond(cron) };
+    }
+
+    async patchData(body: IPatchDataBody) {
+        const { projectId, versionIds, time } = body;
+
+        const whereParams = { isDelete: 0, isFreeze: 0, versionIds };
+        const whereSql = `isDelete = :isDelete and isFreeze = :isFreeze and versionId IN (:...versionIds)`;
+        const versionList = await this.versionRepository
+            .createQueryBuilder()
+            .where(whereSql, whereParams)
+            .orderBy({ versionId: 'ASC' })
+            .printSql()
+            .getMany();
+
+        const { name: projectName } = await this.projectRepository.findOneBy(
+            getWhere({ projectId })
+        );
+
+        const taskList = versionList
+            .map((version: any) => {
+                delete version.isDelete;
+                delete version.createAt;
+                delete version.updateAt;
+
+                const list = [];
+                for (let i = 0; i < time; i++) {
+                    list.push({
+                        ...version,
+                        versionName: `${projectName}-${version.name}`,
+                        triggerType: TASK_TRIGGER_TYPE.PATCH_DATA,
+                    });
+                }
+                return list;
+            })
+            .flat(Infinity);
+
+        // 批量创建任务
+        const result = await this.taskRepository
+            .createQueryBuilder()
+            .insert()
+            .into(Task)
+            .values(taskList)
+            .execute();
+
+        this.taskRunService.scheduleControl();
+
+        return result;
     }
 }
