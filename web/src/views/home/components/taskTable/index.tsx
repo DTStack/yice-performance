@@ -8,7 +8,7 @@ import {
     CloseCircleOutlined,
     ExclamationCircleOutlined,
     MinusCircleOutlined,
-    QuestionCircleOutlined,
+    CopyOutlined,
     SyncOutlined,
 } from '@ant-design/icons';
 import copy from 'copy-to-clipboard';
@@ -223,19 +223,15 @@ export default function TaskTable(props: IPros) {
                 return status === TASK_STATUS.FAIL ? (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {failReason ? (
-                            <>
-                                <Tooltip title="点击复制原因">
-                                    <span
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => copy(failReason)}
-                                    >
-                                        {tag}
-                                    </span>
-                                </Tooltip>
-                                <Tooltip title={failReason}>
-                                    <QuestionCircleOutlined />
-                                </Tooltip>
-                            </>
+                            <Tooltip title={failReason}>
+                                <span
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => copy(failReason)}
+                                >
+                                    {tag}
+                                    <CopyOutlined />
+                                </span>
+                            </Tooltip>
                         ) : (
                             tag
                         )}
