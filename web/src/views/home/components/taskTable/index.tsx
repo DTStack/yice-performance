@@ -381,7 +381,7 @@ export default function TaskTable(props: IPros) {
                 rowSelection={rowSelection}
                 scroll={{
                     x: isDefault ? 1280 : 1400,
-                    y: 'calc(100vh - 16vh - 50px - 32px - 56px - 24px - 32px - 47px)',
+                    y: 'calc(100vh - 90px - 32px - 56px - 24px - 32px - 47px)',
                 }}
                 onChange={handleTableChange}
             />

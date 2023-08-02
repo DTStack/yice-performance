@@ -4,48 +4,53 @@
     display: flex;
     flex-direction: column;
     .top-content {
-        height: calc(16vh + 50px);
         .top-bg {
             width: 100%;
-            height: calc(16vh + 50px);
+            height: 90px;
             background-image: url("../../assets/top-bg.png");
             background-position: top;
         }
-        .logo {
+        .top-row {
+            width: calc(100% - 40px);
             display: flex;
             align-items: center;
+            justify-content: space-between;
             position: absolute;
             top: 20px;
             left: 20px;
-            img {
-                width: 50px;
-                height: 50px;
-            }
-            div {
-                color: #FFF;
-                font-size: 28px;
-                font-weight: 600;
-                font-family: cursive;
-                margin-left: 20px;
-            }
-        }
-        .run-input {
-            width: 820px;
-            position: absolute;
-            top: calc(12vh + 25px);
-            left: 50%;
-            right: 50%;
-            transform: translate(-50%, -50%);
-            .ant-input-group {
-                .ant-input {
+            .logo {
+                display: flex;
+                align-items: center;
+                img {
+                    width: 50px;
                     height: 50px;
                 }
-                .ant-btn {
-                    width: 140px;
-                    height: 50px;
+                div {
+                    color: #FFF;
+                    font-size: 28px;
+                    font-weight: 600;
+                    font-family: cursive;
+                    margin-left: 20px;
                 }
-                .ant-input:focus, .ant-input-focused {
-                    box-shadow: none;
+            }
+            .run-input {
+                width: 360px;
+                .ant-input-group {
+                    .ant-input {
+                        height: 36px;
+                        border-radius: 4px 0 0 4px;
+                    }
+                    .ant-input-group-addon {
+                        border-radius: 0 4px 4px 0;
+                        .ant-btn {
+                            width: 80px;
+                            height: 36px;
+                            border-radius: 0 4px 4px 0;
+                        }
+                    }
+                    .ant-input:focus, .ant-input-focused {
+                        box-shadow: none;
+                    }
                 }
             }
         }

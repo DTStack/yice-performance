@@ -75,21 +75,22 @@ function Home() {
         <div className="home-content">
             <div className="top-content">
                 <div className="top-bg"></div>
-                <div className="logo">
-                    <img src={getImgUrl('', '/logo.png')} alt="" />
-                    <div>易测性能检测平台</div>
+                <div className="top-row">
+                    <div className="logo">
+                        <img src={getImgUrl('', '/logo.png')} alt="" />
+                        <div>易测性能检测平台</div>
+                    </div>
+                    <Search
+                        className="run-input"
+                        placeholder="请输入待检测的地址，以 http(s) 开头"
+                        enterButton="GO"
+                        value={search}
+                        loading={running}
+                        onChange={(e) => setSearch((e?.target as any)?.value)}
+                        onSearch={handleRun} // 按钮事件
+                        onPressEnter={handleInputEnter}
+                    />
                 </div>
-                <Search
-                    className="run-input"
-                    placeholder="请输入待检测的地址，以 http(s) 开头"
-                    enterButton="开始检测"
-                    autoFocus
-                    value={search}
-                    loading={running}
-                    onChange={(e) => setSearch((e?.target as any)?.value)}
-                    onSearch={handleRun} // 按钮事件
-                    onPressEnter={handleInputEnter}
-                />
             </div>
 
             <div className="content">
