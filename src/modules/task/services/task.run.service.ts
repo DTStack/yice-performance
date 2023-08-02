@@ -179,12 +179,12 @@ export class TaskRunService {
     // 任务运行失败的回调
     private async failCallback(task, failReason, duration) {
         try {
-            DingtalkRobot.failure(task);
             await this.taskService.update(task?.taskId, {
                 status: TASK_STATUS.FAIL,
                 failReason,
                 duration,
             });
+            DingtalkRobot.failure(task);
         } catch (error) {
             console.error('failCallback error', error);
         }

@@ -21,7 +21,7 @@ class DingtalkRobot {
         this.send(title, text);
     }
 
-    // 发送消息的实现
+    // 发送消息的具体实现
     private send(title: string, text: string) {
         const webhook = process.env.ALARM_WEBHOOK;
         if (!webhook || process.env.NODE_ENV !== 'production') return;
