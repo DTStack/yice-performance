@@ -224,7 +224,7 @@ export default function TaskTable(props: IPros) {
                     </Tag>
                 );
 
-                return status === TASK_STATUS.FAIL ? (
+                return [TASK_STATUS.CANCEL, TASK_STATUS.FAIL].includes(status) ? (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {failReason ? (
                             <Tooltip title={failReason}>
