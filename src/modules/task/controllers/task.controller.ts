@@ -12,7 +12,7 @@ import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 
 import { TASK_STATUS } from '@/const';
 import { TaskDto } from '../dto/task.dto';
-import { batchDeleteReqDto, TaskReqDto } from '../dto/task.req.dto';
+import { batchReqDto, TaskReqDto } from '../dto/task.req.dto';
 import { TaskRunService } from '../services/task.run.service';
 import { TaskService } from '../services/task.service';
 
@@ -77,13 +77,23 @@ export class TaskController {
     @ApiOperation({ summary: '批量操作' })
     @HttpCode(HttpStatus.OK)
     @Post('batchTask')
-    async batchTask(@Body() taskDto: batchDeleteReqDto) {
-        const { taskIds = [] } = taskDto;
+    async batchTask(@Body() taskDto: batchReqDto) {
+        const { taskIds = [], operation } = taskDto;
         if (!taskIds?.length) {
             throw new HttpException('请传入任务id集合', HttpStatus.OK);
         }
+        if (!operation) {
+            throw new HttpException('请传入批量操作类型', HttpStatus.OK);
+        }
 
-        return await this.taskService.batchTask(taskIds);
+        // 批量删除
+        if (operation === 'delete') {
+            return await this.taskService.batchDeleteTask(taskIds);
+        }
+        // 批量取消
+        if (operation === 'cancel') {
+            return await this.taskService.batchCancelTask(taskIds);
+        }
     }
 
     @ApiOperation({ summary: '再次检测' })

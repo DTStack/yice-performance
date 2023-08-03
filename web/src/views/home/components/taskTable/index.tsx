@@ -329,19 +329,39 @@ export default function TaskTable(props: IPros) {
         });
     }
 
+    // 批量取消
+    const handleBatchCancel = () => {
+        const hasCanNotCancel = taskList
+            .filter((task: any) => selectedRowKeys.includes(task.taskId))
+            .some((task: any) => ![TASK_STATUS.WAITING, TASK_STATUS.RUNNING].includes(task.status));
+
+        Modal.confirm({
+            title: `确定要取消运行选中的 ${selectedRowKeys.length} 条数据吗？${
+                hasCanNotCancel ? '（只有等待中和检测中的任务会被取消）' : ''
+            }`,
+            icon: <ExclamationCircleOutlined />,
+            onOk() {
+                API.batchTask({ taskIds: selectedRowKeys, operation: 'cancel' }).then(() => {
+                    message.success('操作成功！');
+                    setRunTime(new Date().getTime());
+                    setSelectedRowKeys([]);
+                });
+            },
+        });
+    };
     // 批量删除
-    const handleDelete = () => {
-        const hasRunningTask = taskList
+    const handleBatchDelete = () => {
+        const hasRunning = taskList
             .filter((task: any) => selectedRowKeys.includes(task.taskId))
             .some((task: any) => task.status === TASK_STATUS.RUNNING);
 
         Modal.confirm({
             title: `确定要删除选中的 ${selectedRowKeys.length} 条数据吗？${
-                hasRunningTask ? '（运行中的任务不会被删除）' : ''
+                hasRunning ? '（运行中的任务不会被删除）' : ''
             }`,
             icon: <ExclamationCircleOutlined />,
             onOk() {
-                API.batchTask({ taskIds: selectedRowKeys }).then(() => {
+                API.batchTask({ taskIds: selectedRowKeys, operation: 'delete' }).then(() => {
                     message.success('操作成功！');
                     setRunTime(new Date().getTime());
                     setSelectedRowKeys([]);
@@ -393,7 +413,10 @@ export default function TaskTable(props: IPros) {
             {taskList.length ? (
                 <div className="select-content">
                     <div className="count">当前选中：{selectedRowKeys.length}</div>
-                    <Button danger disabled={!selectedRowKeys.length} onClick={handleDelete}>
+                    <Button disabled={!selectedRowKeys.length} onClick={handleBatchCancel}>
+                        批量取消
+                    </Button>
+                    <Button danger disabled={!selectedRowKeys.length} onClick={handleBatchDelete}>
                         批量删除
                     </Button>
                 </div>

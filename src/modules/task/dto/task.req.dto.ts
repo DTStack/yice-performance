@@ -33,7 +33,9 @@ export class TaskReqDto extends QueryDto {
     endTime?: string;
 }
 
-export class batchDeleteReqDto {
-    @ApiPropertyOptional({ required: false, description: '任务id集合' })
+export class batchReqDto {
+    @ApiPropertyOptional({ required: true, description: '任务id集合' })
     taskIds: number[];
+    @ApiPropertyOptional({ required: true, description: '批量操作类型 delete 删除, cancel 取消' })
+    operation: string;
 }
