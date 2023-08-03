@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 
 import { TASK_STATUS } from '@/const';
 import { Performance } from '@/modules/performance/entities/performance.entity';
+import { Version } from '@/modules/version/entities/version.entity';
 import { getWhere } from '@/utils';
 import { TaskDto } from '../dto/task.dto';
 import { TaskReqDto } from '../dto/task.req.dto';
@@ -18,6 +19,8 @@ export class TaskService {
     constructor(
         @InjectRepository(Task)
         private readonly taskRepository: Repository<Task>,
+        @InjectRepository(Version)
+        private readonly versionRepository: Repository<Version>,
         @InjectRepository(Performance)
         private readonly performanceRepository: Repository<Performance>
     ) {}
@@ -28,6 +31,7 @@ export class TaskService {
                 pageSize = 20,
                 current = 1,
                 isDefault,
+                projectId,
                 versionId,
                 triggerType = [],
                 isUseful = [],
@@ -35,12 +39,25 @@ export class TaskService {
                 startTime = '',
                 endTime = '',
             } = query;
+
+            let versionIds = [];
+            // 从项目维度查询任务列表
+            if (projectId !== undefined && versionId === undefined) {
+                const result = await this.versionRepository.find({
+                    where: getWhere({ projectId }),
+                });
+                versionIds = result.map((task: TaskDto) => task.versionId);
+            } else {
+                // 从版本维度查询任务列表
+                versionIds = [versionId];
+            }
+
             const whereParams = { isDelete: 0 };
             let whereSql = 'isDelete = :isDelete ';
 
             if (isDefault !== 'true') {
-                whereSql += 'and versionId= :versionId ';
-                Object.assign(whereParams, { versionId });
+                whereSql += 'and versionId IN (:...versionIds) ';
+                Object.assign(whereParams, { versionIds });
             }
             if (triggerType?.length) {
                 whereSql += 'and triggerType IN (:...triggerType) ';

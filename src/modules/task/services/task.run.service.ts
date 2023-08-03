@@ -279,7 +279,7 @@ export class TaskRunService {
         this.scheduleControl();
     }
 
-    // 检测任务的运行时长，超过的则让任务失败
+    // 检测任务的运行时长，超时的则让任务失败
     private async checkTaskIsTimeout() {
         const result = await this.taskRepository.find({
             where: getWhere({ status: TASK_STATUS.RUNNING }),

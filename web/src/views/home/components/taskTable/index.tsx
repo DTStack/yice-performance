@@ -26,6 +26,7 @@ import './style.less';
 
 interface IPros {
     isDefault: boolean;
+    projectId: number | undefined;
     versionId: number | undefined;
     startTime: string | undefined;
     endTime: string | undefined;
@@ -34,7 +35,7 @@ interface IPros {
 }
 
 export default function TaskTable(props: IPros) {
-    const { isDefault, versionId, startTime, endTime, runTime, setRunTime } = props;
+    const { isDefault, projectId, versionId, startTime, endTime, runTime, setRunTime } = props;
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [current, setCurrent] = useState<number>(1);
@@ -47,7 +48,7 @@ export default function TaskTable(props: IPros) {
     const [resultModalOpen, setResultModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        versionId && fetchData();
+        (projectId || versionId) && fetchData();
     }, [versionId, current, pageSize, triggerType, status]);
 
     useEffect(() => {
@@ -60,6 +61,7 @@ export default function TaskTable(props: IPros) {
         setLoading(true);
         const params = {
             isDefault,
+            projectId,
             versionId,
             current,
             pageSize,
@@ -131,6 +133,19 @@ export default function TaskTable(props: IPros) {
             key: 'taskId',
             width: 90,
             fixed: 'left',
+        },
+        {
+            title: '版本名称',
+            dataIndex: 'versionName',
+            key: 'versionName',
+            width: 140,
+            fixed: 'left',
+            ellipsis: { showTitle: false },
+            render: (text) => (
+                <Tooltip placement="topLeft" title={text}>
+                    {text}
+                </Tooltip>
+            ),
         },
         {
             title: '检测地址',
@@ -313,21 +328,6 @@ export default function TaskTable(props: IPros) {
             },
         },
     ];
-    if (isDefault) {
-        columns.splice(1, 0, {
-            title: '版本名称',
-            dataIndex: 'versionName',
-            key: 'versionName',
-            width: 140,
-            fixed: 'left',
-            ellipsis: { showTitle: false },
-            render: (text) => (
-                <Tooltip placement="topLeft" title={text}>
-                    {text}
-                </Tooltip>
-            ),
-        });
-    }
 
     // 批量取消
     const handleBatchCancel = () => {
@@ -404,7 +404,7 @@ export default function TaskTable(props: IPros) {
                 pagination={pagination}
                 rowSelection={rowSelection}
                 scroll={{
-                    x: isDefault ? 1280 : 1400,
+                    x: 1400,
                     y: 'calc(100vh - 225px - 32px - 56px - 24px - 32px - 47px)',
                 }}
                 onChange={handleTableChange}

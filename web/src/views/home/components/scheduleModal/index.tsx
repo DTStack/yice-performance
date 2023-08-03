@@ -147,7 +147,7 @@ export default function ScheduleModal(props: IProps) {
     return (
         <Modal
             width={500}
-            title="子产品调度信息"
+            title="子产品版本调度信息"
             open={open}
             forceRender
             destroyOnClose

@@ -8,9 +8,13 @@ export class TaskReqDto extends QueryDto {
     @IsOptional()
     isDefault?: string;
 
+    @ApiPropertyOptional({ required: false, description: '项目id' })
+    @IsOptional()
+    projectId: number;
+
     @ApiPropertyOptional({ required: false, description: '任务绑定的版本id' })
     @IsOptional()
-    versionId: number;
+    versionId?: number;
 
     @ApiPropertyOptional({ required: false, description: '任务触发方式' })
     @IsOptional()

@@ -23,7 +23,6 @@ import TaskTable from '../taskTable';
 import VersionModal from '../versionModal';
 import './style.less';
 
-const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
 
 interface IProps {
@@ -56,7 +55,6 @@ export default function Versions(props: IProps) {
 
     useEffect(() => {
         if (projectId) {
-            setVersionId(undefined);
             setIsDefault(false);
             getVersions(true);
         }
@@ -105,7 +103,7 @@ export default function Versions(props: IProps) {
 
     // 版本变化
     const handleVersionChange = (value: string, option: any) => {
-        setVersionId(Number(value));
+        setVersionId(value ? Number(value) : undefined);
         setIsDefault(option?.isDefault || false);
     };
 
@@ -157,19 +155,16 @@ export default function Versions(props: IProps) {
                                     value={versionId ? `${versionId}` : undefined}
                                     onChange={handleVersionChange}
                                     loading={loading}
+                                    allowClear
                                     placeholder="请选择版本"
-                                >
-                                    {versionList.map((version: IVersion) => {
-                                        return (
-                                            <Option
-                                                key={version.versionId}
-                                                value={`${version.versionId}`}
-                                            >
-                                                {version.name}
-                                            </Option>
-                                        );
+                                    options={versionList.map((item: IVersion) => {
+                                        return {
+                                            label: item.name,
+                                            value: `${item.versionId}`,
+                                            isDefault: item.isDefault,
+                                        };
                                     })}
-                                </Select>
+                                />
                                 <RangePicker
                                     className="search-params-item"
                                     disabledDate={disabledDate}
@@ -233,6 +228,7 @@ export default function Versions(props: IProps) {
                 {versionList.length ? (
                     <TaskTable
                         isDefault={isDefault}
+                        projectId={projectId}
                         versionId={versionId}
                         startTime={startTime}
                         endTime={endTime}
