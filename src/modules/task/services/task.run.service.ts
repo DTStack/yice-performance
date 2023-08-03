@@ -36,8 +36,8 @@ export class TaskRunService {
     async handleCron() {
         if (process.env.NODE_ENV === 'production') {
             this.checkCronForCurrentDate();
-            this.checkTimeoutForCurrentDate();
         }
+        this.checkTaskIsTimeout();
     }
 
     // 再次检测
@@ -280,14 +280,14 @@ export class TaskRunService {
     }
 
     // 检测任务的运行时长，超过的则让任务失败
-    private async checkTimeoutForCurrentDate() {
+    private async checkTaskIsTimeout() {
         const result = await this.taskRepository.find({
             where: getWhere({ status: TASK_STATUS.RUNNING }),
         });
         result.forEach(async (task: any) => {
             // 任务运行超过一定时间
             const duration = new Date().getTime() - new Date(task.startAt).getTime();
-            const taskTimeout = Number(process.env.RESPONSE_SLEEP ?? 5);
+            const taskTimeout = Number(process.env.TASK_TIMEOUT ?? 5);
             if (duration > taskTimeout * 60 * 1000) {
                 const failReason = `任务运行超过${taskTimeout}分钟，系统已取消该任务`;
                 await this.taskService.update(task?.taskId, {
@@ -295,7 +295,7 @@ export class TaskRunService {
                     failReason,
                     duration,
                 });
-                console.warn(`taskId: ${task.taskId}, ${failReason}！`);
+                console.log(`taskId: ${task.taskId}, ${failReason}！`);
                 this.scheduleControl();
 
                 const { projectId } = await this.versionRepository.findOne({
