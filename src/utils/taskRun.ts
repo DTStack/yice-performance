@@ -78,8 +78,9 @@ const changeTenant = async (page, taskId) => {
         const tenantInput = await page.$('input#change_ten_id');
         await tenantInput.type('demo');
 
+        const sleepTime = Number(process.env.RESPONSE_SLEEP ?? 5);
         // 搜索到的 demo 租户，点击查询到的第一条租户信息
-        await sleep(process.env.RESPONSE_SLEEP);
+        await sleep(sleepTime);
 
         // v5.3.x
         try {
@@ -95,7 +96,7 @@ const changeTenant = async (page, taskId) => {
 
         // 确定按钮，等待接口选择租户成功
         await page.click('button.ant-btn-primary');
-        await sleep(process.env.RESPONSE_SLEEP);
+        await sleep(sleepTime);
 
         console.log(`taskId: ${taskId}, 选择租户成功`);
     } catch (error) {
