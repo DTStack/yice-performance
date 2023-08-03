@@ -57,15 +57,12 @@ export class TaskController {
         if (!taskId) {
             throw new HttpException('请传入任务id', HttpStatus.OK);
         }
-        const { status: latestStatus } = await this.taskService.findOne(taskId);
 
-        // 取消检测时判断任务状态是否处于等待检测或检测中
+        // 取消检测时判断任务状态是否处于等待检测，检测中的任务不可取消
+        const { status: latestStatus } = await this.taskService.findOne(taskId);
         if (status === TASK_STATUS.CANCEL) {
-            if (![TASK_STATUS.WAITING, TASK_STATUS.RUNNING].includes(latestStatus)) {
-                throw new HttpException(
-                    '当前任务状态非等待检测或检测中，不能取消检测',
-                    HttpStatus.OK
-                );
+            if (![TASK_STATUS.WAITING].includes(latestStatus)) {
+                throw new HttpException('当前任务状态不是等待中，不能取消检测', HttpStatus.OK);
             } else {
                 return await this.taskRunService.cancel(taskId, taskDto);
             }
@@ -86,13 +83,13 @@ export class TaskController {
             throw new HttpException('请传入批量操作类型', HttpStatus.OK);
         }
 
-        // 批量删除
-        if (operation === 'delete') {
-            return await this.taskService.batchDeleteTask(taskIds);
-        }
         // 批量取消
         if (operation === 'cancel') {
             return await this.taskService.batchCancelTask(taskIds);
+        }
+        // 批量删除
+        if (operation === 'delete') {
+            return await this.taskService.batchDeleteTask(taskIds);
         }
     }
 

@@ -106,6 +106,21 @@ export class TaskService {
         return result;
     }
 
+    // 批量操作 - 取消
+    async batchCancelTask(taskIds: number[]) {
+        const result = await this.taskRepository
+            .createQueryBuilder()
+            .update(Task)
+            .set({ status: TASK_STATUS.CANCEL, failReason: '批量手动取消检测' })
+            .where('taskId IN (:...taskIds) and status IN (:...status)', {
+                taskIds,
+                status: [TASK_STATUS.WAITING],
+            })
+            .execute();
+
+        return result;
+    }
+
     // 批量操作 - 删除
     async batchDeleteTask(taskIds: number[]) {
         const result = await this.taskRepository
@@ -141,21 +156,6 @@ export class TaskService {
             .update(Performance)
             .set({ isDelete: 1 })
             .where('taskId IN (:...taskIds) ', { taskIds })
-            .execute();
-
-        return result;
-    }
-
-    // 批量操作 - 取消
-    async batchCancelTask(taskIds: number[]) {
-        const result = await this.taskRepository
-            .createQueryBuilder()
-            .update(Task)
-            .set({ status: TASK_STATUS.CANCEL, failReason: '批量手动取消检测' })
-            .where('taskId IN (:...taskIds) and status IN (:...status)', {
-                taskIds,
-                status: [TASK_STATUS.WAITING, TASK_STATUS.RUNNING],
-            })
             .execute();
 
         return result;

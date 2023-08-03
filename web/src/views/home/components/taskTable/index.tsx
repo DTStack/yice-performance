@@ -301,14 +301,7 @@ export default function TaskTable(props: IPros) {
                         </>
                     );
                 } else if (status === TASK_STATUS.RUNNING) {
-                    return (
-                        <Popconfirm
-                            title={<div>取消检测后可以再次检测，是否继续？</div>}
-                            onConfirm={() => handleCancel(record)}
-                        >
-                            <a>取消检测</a>
-                        </Popconfirm>
-                    );
+                    return '--';
                 } else if (status === TASK_STATUS.FAIL) {
                     return tryAgainBtn;
                 } else if (status === TASK_STATUS.SUCCESS) {
@@ -333,11 +326,11 @@ export default function TaskTable(props: IPros) {
     const handleBatchCancel = () => {
         const hasCanNotCancel = taskList
             .filter((task: any) => selectedRowKeys.includes(task.taskId))
-            .some((task: any) => ![TASK_STATUS.WAITING, TASK_STATUS.RUNNING].includes(task.status));
+            .some((task: any) => ![TASK_STATUS.WAITING].includes(task.status));
 
         Modal.confirm({
             title: `确定要取消运行选中的 ${selectedRowKeys.length} 条数据吗？${
-                hasCanNotCancel ? '（只有等待中和检测中的任务会被取消）' : ''
+                hasCanNotCancel ? '（只有等待中的任务可以被取消）' : ''
             }`,
             icon: <ExclamationCircleOutlined />,
             onOk() {
