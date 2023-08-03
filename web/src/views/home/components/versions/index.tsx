@@ -178,22 +178,24 @@ export default function Versions(props: IProps) {
                                         onChange={handleInputChange}
                                         onPressEnter={handleInputEnter}
                                     />
-                                ) : null}
-                                <Select
-                                    className="search-params-item"
-                                    value={versionId ? `${versionId}` : undefined}
-                                    onChange={handleVersionChange}
-                                    loading={loading}
-                                    allowClear
-                                    placeholder="请选择版本"
-                                    options={versionList.map((item: IVersion) => {
-                                        return {
-                                            label: item.name,
-                                            value: `${item.versionId}`,
-                                            isDefault: item.isDefault,
-                                        };
-                                    })}
-                                />
+                                ) : (
+                                    <Select
+                                        className="search-params-item"
+                                        value={versionId ? `${versionId}` : undefined}
+                                        onChange={handleVersionChange}
+                                        loading={loading}
+                                        allowClear
+                                        placeholder="请选择版本"
+                                        options={versionList.map((item: IVersion) => {
+                                            return {
+                                                label: item.name,
+                                                value: `${item.versionId}`,
+                                                isDefault: item.isDefault,
+                                            };
+                                        })}
+                                    />
+                                )}
+
                                 <RangePicker
                                     className="search-params-item"
                                     disabledDate={disabledDate}
