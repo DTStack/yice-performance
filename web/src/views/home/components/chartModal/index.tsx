@@ -32,6 +32,8 @@ export default function ChartModal(props: IProps) {
     const [projectChartData, setProjectChartData] = useState<ITask[]>([]);
     const [startTime, setStartTime] = useState<string | undefined>(undefined);
     const [endTime, setEndTime] = useState<string | undefined>(undefined);
+    // echarts 顶部选择展示的版本
+    const [legendSelected, setLegendSelected] = useState({});
 
     useEffect(() => {
         if (open) {
@@ -71,7 +73,11 @@ export default function ChartModal(props: IProps) {
         return (
             <Spin spinning={projectChartLoading}>
                 {!projectChartLoading && !!projectChartData.length ? (
-                    <ProjectChart data={projectChartData} />
+                    <ProjectChart
+                        data={projectChartData}
+                        legendSelected={legendSelected}
+                        setLegendSelected={setLegendSelected}
+                    />
                 ) : (
                     <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}

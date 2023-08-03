@@ -6,10 +6,12 @@ import './style.less';
 
 interface IProps {
     data: ITask[];
+    legendSelected: any;
+    setLegendSelected: (legendSelected: any) => void;
 }
 
 export default function ProjectChart(props: IProps) {
-    const { data = [] } = props;
+    const { data = [], legendSelected = {}, setLegendSelected } = props;
 
     useEffect(() => {
         renderChart(data);
@@ -21,18 +23,23 @@ export default function ProjectChart(props: IProps) {
         const versionIds = Array.from(new Set(data.map((task: ITask) => task.versionId)));
         const versionNames = Array.from(new Set(data.map((task: ITask) => task.versionName)));
 
-        const legendSelected = {};
-        versionNames.forEach((name: any, idx: number) => {
-            legendSelected[name] = idx < 2;
-        });
+        let legendSelectedTemp = {};
+        if (Object.keys(legendSelected)?.length) {
+            legendSelectedTemp = legendSelected;
+        } else {
+            versionNames.forEach((name: any, idx: number) => {
+                legendSelectedTemp[name] = idx < 2;
+            });
+        }
 
         const option = {
             tooltip: {
                 trigger: 'axis',
             },
+            // echarts 顶部选择展示的版本
             legend: {
                 data: versionNames,
-                selected: legendSelected,
+                selected: legendSelectedTemp,
             },
             grid: {
                 left: '3%',
@@ -75,7 +82,11 @@ export default function ProjectChart(props: IProps) {
             }),
         };
         productChart.setOption(option);
-        // console.log(111, JSON.stringify(option));
+
+        // echarts 顶部展示的版本变化
+        productChart.on('legendselectchanged', function (params: any) {
+            setLegendSelected?.(params?.selected || {});
+        });
     };
 
     return <div id="container" className="product-container"></div>;
