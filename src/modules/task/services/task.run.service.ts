@@ -37,6 +37,7 @@ export class TaskRunService {
         if (process.env.NODE_ENV === 'production') {
             this.checkCronForCurrentDate();
         }
+        this.checkHasWaitingTask();
         this.checkTaskIsTimeout();
     }
 
@@ -279,7 +280,23 @@ export class TaskRunService {
         this.scheduleControl();
     }
 
-    // 检测任务的运行时长，超时的则让任务失败
+    // 检查是否有任务在等待中
+    private async checkHasWaitingTask() {
+        // 1、是否有运行中的任务
+        const runningResult = await this.taskRepository.find({
+            where: getWhere({ status: TASK_STATUS.RUNNING }),
+        });
+
+        // 2、没有运行中的任务则查询是否有等待中的任务，有则进行任务调度
+        if (!runningResult.length) {
+            const waitingResult = await this.taskRepository.find({
+                where: getWhere({ status: TASK_STATUS.WAITING }),
+            });
+            waitingResult.length && this.scheduleControl();
+        }
+    }
+
+    // 检查任务的运行时长，超时的则让任务失败
     private async checkTaskIsTimeout() {
         const result = await this.taskRepository.find({
             where: getWhere({ status: TASK_STATUS.RUNNING }),
