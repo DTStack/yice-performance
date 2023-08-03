@@ -16,6 +16,10 @@ export class TaskReqDto extends QueryDto {
     @IsOptional()
     versionId?: number;
 
+    @ApiPropertyOptional({ required: false, description: '任务绑定的版本名称' })
+    @IsOptional()
+    versionName?: string;
+
     @ApiPropertyOptional({ required: false, description: '任务触发方式' })
     @IsOptional()
     triggerType?: number[];

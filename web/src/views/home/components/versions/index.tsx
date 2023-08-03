@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { EditOutlined, LineChartOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Empty, Select, Tooltip } from 'antd';
+import { Button, DatePicker, Empty, Input, Select, Tooltip } from 'antd';
 import { IProject, IVersion } from 'typing';
 // import moment from 'moment';
 import 'moment/dist/locale/zh-cn';
@@ -44,6 +44,10 @@ export default function Versions(props: IProps) {
     const [patchDataOpen, setPatchDataOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [isDefault, setIsDefault] = useState<boolean>(false);
+    const [searchVersionName, setSearchVersionName] = useState<string | undefined>(undefined);
+    const [searchVersionNameTemp, setSearchVersionNameTemp] = useState<string | undefined>(
+        undefined
+    );
     const [startTime, setStartTime] = useState<string | undefined>(
         // formatTime(moment().subtract(0, 'days'))
         undefined
@@ -55,6 +59,10 @@ export default function Versions(props: IProps) {
 
     useEffect(() => {
         if (projectId) {
+            // 切换项目要清空版本名称的输入
+            setSearchVersionName(undefined);
+            setSearchVersionNameTemp(undefined);
+
             setIsDefault(false);
             getVersions(true);
         }
@@ -143,6 +151,16 @@ export default function Versions(props: IProps) {
         setScheduleOpen(true);
     };
 
+    // 版本名称输入框内容变化
+    const handleInputChange = (e: any) => {
+        setSearchVersionNameTemp(e?.target?.value);
+    };
+    // 输入框的回车事件
+    const handleInputEnter = (e: any) => {
+        // 中文输入法输入时回车，keyCode 是 229；光标在输入框直接回车，keyCode 是 13
+        e.keyCode === 13 && setSearchVersionName(searchVersionNameTemp);
+    };
+
     return (
         <>
             <div className="version-box">
@@ -150,6 +168,17 @@ export default function Versions(props: IProps) {
                     <div className="search-params">
                         {versionList.length ? (
                             <>
+                                {isDefault ? (
+                                    <Input
+                                        className="search-params-item"
+                                        value={searchVersionNameTemp}
+                                        maxLength={100}
+                                        allowClear
+                                        placeholder="搜索版本名称"
+                                        onChange={handleInputChange}
+                                        onPressEnter={handleInputEnter}
+                                    />
+                                ) : null}
                                 <Select
                                     className="search-params-item"
                                     value={versionId ? `${versionId}` : undefined}
@@ -230,6 +259,7 @@ export default function Versions(props: IProps) {
                         isDefault={isDefault}
                         projectId={projectId}
                         versionId={versionId}
+                        versionName={searchVersionName}
                         startTime={startTime}
                         endTime={endTime}
                         runTime={runTime}

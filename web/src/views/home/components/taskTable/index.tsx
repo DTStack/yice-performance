@@ -28,6 +28,7 @@ interface IPros {
     isDefault: boolean;
     projectId: number | undefined;
     versionId: number | undefined;
+    versionName: string | undefined;
     startTime: string | undefined;
     endTime: string | undefined;
     runTime: number;
@@ -35,7 +36,16 @@ interface IPros {
 }
 
 export default function TaskTable(props: IPros) {
-    const { isDefault, projectId, versionId, startTime, endTime, runTime, setRunTime } = props;
+    const {
+        isDefault,
+        projectId,
+        versionId,
+        versionName,
+        startTime,
+        endTime,
+        runTime,
+        setRunTime,
+    } = props;
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [current, setCurrent] = useState<number>(1);
@@ -49,7 +59,7 @@ export default function TaskTable(props: IPros) {
 
     useEffect(() => {
         (projectId || versionId) && fetchData();
-    }, [versionId, current, pageSize, triggerType, status]);
+    }, [versionId, versionName, current, pageSize, triggerType, status]);
 
     useEffect(() => {
         if (runTime !== 0) {
@@ -63,6 +73,7 @@ export default function TaskTable(props: IPros) {
             isDefault,
             projectId,
             versionId,
+            versionName,
             current,
             pageSize,
             triggerType,
