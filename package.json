@@ -68,7 +68,6 @@
         "@types/lodash": "^4.14.191",
         "@types/node": "18.11.18",
         "@types/supertest": "^2.0.11",
-        "conventional-changelog-cli": "^2.2.2",
         "cz-conventional-changelog": "^3.3.0",
         "eslint": "8.22.0",
         "eslint-config-prettier": "8.5.0",
