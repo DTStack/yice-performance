@@ -10,7 +10,7 @@ const APP_PORT = process.env.APP_PORT || 4000;
 const API_PREFIX = process.env.API_PREFIX || 'api/v1';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { cors: true });
 
     // 给请求添加prefix
     app.setGlobalPrefix(API_PREFIX);
