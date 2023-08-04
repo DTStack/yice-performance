@@ -91,7 +91,14 @@ export class TaskService {
                 .getManyAndCount();
 
             return {
-                data,
+                data: data.map((item) => {
+                    return item.status === TASK_STATUS.RUNNING
+                        ? {
+                              ...item,
+                              duration: new Date().getTime() - new Date(item.startAt).getTime(),
+                          }
+                        : item;
+                }),
                 total,
                 current: +current,
                 pageSize: +pageSize,
