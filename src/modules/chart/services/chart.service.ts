@@ -38,7 +38,7 @@ export class ChartService {
                 Object.assign(whereParams, { versionIds });
             }
             if (startTime && endTime) {
-                whereSql += 'and createAt between :startTime and :endTime ';
+                whereSql += 'and startAt between :startTime and :endTime ';
                 Object.assign(whereParams, { startTime, endTime });
             }
 
@@ -50,13 +50,13 @@ export class ChartService {
                 .getManyAndCount();
 
             return data?.map((task: TaskDto) => {
-                const { taskId, versionId, versionName, score, createAt } = task;
+                const { taskId, versionId, versionName, score, startAt } = task;
                 return {
                     taskId,
                     versionId,
                     versionName,
                     score,
-                    createAt: formatDate(createAt, 'YYYY-MM-DD HH:mm'),
+                    startAt: formatDate(startAt, 'YYYY-MM-DD HH:mm'),
                 };
             });
         } catch (error) {

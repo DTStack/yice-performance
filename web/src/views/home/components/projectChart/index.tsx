@@ -57,7 +57,7 @@ export default function ProjectChart(props: IProps) {
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data: Array.from(new Set(data.map((task: ITask) => task.createAt))),
+                data: Array.from(new Set(data.map((task: ITask) => task.startAt))),
             },
             yAxis: {
                 type: 'value',
