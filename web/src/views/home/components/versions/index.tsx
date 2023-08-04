@@ -269,6 +269,7 @@ export default function Versions(props: IProps) {
                 {versionList.length ? (
                     <TaskTable
                         isDefault={isDefault}
+                        versionListLoading={loading}
                         projectId={projectId}
                         versionId={versionId}
                         searchStr={searchStr}

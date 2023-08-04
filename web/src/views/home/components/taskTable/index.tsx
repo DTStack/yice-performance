@@ -26,6 +26,8 @@ import './style.less';
 
 interface IPros {
     isDefault: boolean;
+    // versionList 接口请求时，表格也需要 loading
+    versionListLoading: boolean;
     projectId: number | undefined;
     versionId: number | undefined | null;
     searchStr: string | undefined;
@@ -37,8 +39,17 @@ interface IPros {
 }
 
 export default function TaskTable(props: IPros) {
-    const { isDefault, projectId, versionId, searchStr, startTime, endTime, runTime, setRunTime } =
-        props;
+    const {
+        isDefault,
+        versionListLoading,
+        projectId,
+        versionId,
+        searchStr,
+        startTime,
+        endTime,
+        runTime,
+        setRunTime,
+    } = props;
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [current, setCurrent] = useState<number>(1);
@@ -269,7 +280,7 @@ export default function TaskTable(props: IPros) {
                 return (
                     <div className="action-title">
                         <span>操作</span>
-                        <SyncOutlined spin={loading} onClick={fetchData} />
+                        <SyncOutlined spin={versionListLoading || loading} onClick={fetchData} />
                     </div>
                 );
             },
@@ -395,7 +406,7 @@ export default function TaskTable(props: IPros) {
                 className="task-table"
                 rowKey="taskId"
                 size="middle"
-                loading={loading}
+                loading={versionListLoading || loading}
                 columns={columns}
                 dataSource={taskList}
                 pagination={pagination}
