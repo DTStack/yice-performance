@@ -6,6 +6,7 @@ echo -e '\n2、node 资源开始打包'
 pnpm build
 
 
+# gtar 是给 macos 使用的，和 tar 区别不大，可以通过 brew install gnu-tar 安装
 echo -e '3、本地资源开始压缩'
 gtar -czf yice-performance.tar.gz dist pm2/config.* static/README.md web/dist .env scripts/start.sh package.json pnpm-lock.yaml
 
