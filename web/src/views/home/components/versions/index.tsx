@@ -158,7 +158,14 @@ export default function Versions(props: IProps) {
     // 输入框的回车事件
     const handleInputEnter = (e: any) => {
         // 中文输入法输入时回车，keyCode 是 229；光标在输入框直接回车，keyCode 是 13
-        e.keyCode === 13 && setSearchVersionName(searchVersionNameTemp);
+        if (e.keyCode === 13) {
+            if (searchVersionNameTemp === undefined) {
+                setSearchVersionNameTemp('');
+            } else if (searchVersionNameTemp === '') {
+                setSearchVersionNameTemp(undefined);
+            }
+            setSearchVersionName(searchVersionNameTemp);
+        }
     };
 
     return (
