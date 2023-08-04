@@ -55,9 +55,7 @@ export default function PatchDataModal(props: IProps) {
                     name="versionIds"
                     label="版本"
                     rules={[{ required: true, message: '请选择版本' }]}
-                    initialValue={versionList
-                        .filter((item) => item.isFreeze === 0)
-                        .map((item) => item.versionId)}
+                    initialValue={versionList.map((item) => item.versionId)}
                 >
                     <Select
                         mode="multiple"

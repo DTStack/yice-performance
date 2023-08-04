@@ -71,8 +71,8 @@ export class VersionService {
     async patchData(body: IPatchDataBody) {
         const { projectId, versionIds, time } = body;
 
-        const whereParams = { isDelete: 0, isFreeze: 0, versionIds };
-        const whereSql = `isDelete = :isDelete and isFreeze = :isFreeze and versionId IN (:...versionIds)`;
+        const whereParams = { isDelete: 0, versionIds };
+        const whereSql = `isDelete = :isDelete and versionId IN (:...versionIds)`;
         const versionList = await this.versionRepository
             .createQueryBuilder()
             .where(whereSql, whereParams)

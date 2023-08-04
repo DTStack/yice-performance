@@ -156,6 +156,7 @@ export default function VersionModal(props: IProps) {
 
     const devopsShiLiIdDeleted =
         devopsShiLiList.length &&
+        devopsShiLiId &&
         !devopsShiLiList.map((item) => item.value).includes(devopsShiLiId);
     const validateStatus = devopsShiLiIdDeleted ? 'error' : '';
     const help = devopsShiLiIdDeleted ? '当前绑定的 devops 实例已被删除' : '';
