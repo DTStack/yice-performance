@@ -100,8 +100,8 @@ export class VersionController {
     @ApiQuery({ name: 'cron', required: true })
     @HttpCode(HttpStatus.OK)
     @Post('previewCron')
-    async previewCron(@Body() { cron }) {
-        return await this.versionService.previewCron(cron);
+    async previewCron(@Body() { cron, num }) {
+        return await this.versionService.previewCron(cron, num);
     }
 
     @ApiOperation({ summary: '补数据' })

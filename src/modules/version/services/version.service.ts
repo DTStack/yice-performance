@@ -63,8 +63,8 @@ export class VersionService {
         return result;
     }
 
-    async previewCron(cron: string) {
-        const data = await previewCron(cron);
+    async previewCron(cron: string, num: number) {
+        const data = await previewCron(cron, num);
         return { data, isSecond: isSecond(cron) };
     }
 

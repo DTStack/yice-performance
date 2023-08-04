@@ -77,15 +77,16 @@ export default function ScheduleModal(props: IProps) {
         });
     };
 
-    // 预览最近的20个计划周期
+    // 预览最近的 n 个计划周期
     const handlePreviewCron = () => {
         form.validateFields().then((values) => {
+            const num = 10;
             setSaving(true);
-            API.previewCron(values)
+            API.previewCron({ ...values, num })
                 .then((res) => {
                     const { data: list = [], isSecond } = res?.data || {};
                     Modal[isSecond ? 'warning' : 'info']({
-                        title: `最近的20个计划周期${
+                        title: `最近的${num}个计划周期${
                             isSecond ? '，当前属于秒级调度，将不允许保存' : ''
                         }`,
                         okText: isSecond ? '这就去改' : '知道了',
@@ -131,15 +132,16 @@ export default function ScheduleModal(props: IProps) {
 
     const tooltip = (
         <>
+            <div>0 0 2-3 * * * 每天的两点和三点(建议)</div>
             <div>0 10 * * * * 每小时的第10分钟</div>
-            <div>0 */12 0-2 * * * 零点到两点每12分钟</div>
+            <div>0 */20 0-2 * * * 零点到两点每20分钟</div>
             <div>0 30 11 * * 1-5 周一至周五的 11:30</div>
             <a
                 href="https://docs.nestjs.com/techniques/task-scheduling#declarative-cron-jobs"
                 target="_blank"
                 rel="noreferrer"
             >
-                nestjs cron jobs
+                文档：nestjs cron jobs
             </a>
         </>
     );
@@ -183,7 +185,7 @@ export default function ScheduleModal(props: IProps) {
                         tooltip={tooltip}
                     >
                         <Search
-                            placeholder="请输入Cron表达式"
+                            placeholder="请输入Cron表达式，如 0 0 2-3 * * *"
                             autoFocus
                             maxLength={64}
                             enterButton="预览"
