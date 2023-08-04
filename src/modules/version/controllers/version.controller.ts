@@ -49,16 +49,6 @@ export class VersionController {
     @Post('createVersion')
     async createVersion(@Body() versionDto: VersionDto) {
         const { name, projectId } = versionDto;
-
-        // 由于可能针对某个实例绑定多个页面，就会有多个版本绑定同一个实例，这里的限制暂时去掉
-        /* const { name, projectId, devopsShiLiId } = versionDto;
-        if (devopsShiLiId) {
-            const version = await this.versionService.findOne({ projectId, devopsShiLiId });
-            if (version?.versionId) {
-                throw new HttpException('当前项目已经被绑定过该实例，请重新选择', HttpStatus.OK);
-            }
-        } */
-
         if (name && projectId) {
             const version = await this.versionService.findOne({ name, projectId });
             if (version) {
@@ -67,7 +57,12 @@ export class VersionController {
         }
 
         delete versionDto.versionId;
-        return await this.versionService.create(versionDto);
+
+        // 项目新增版本后，默认 cron 为 0 0 2-3 * * *
+        return await this.versionService.create({
+            ...versionDto,
+            cron: process.env.TASK_DEFAULT_CRON || '0 0 2-3 * * *',
+        });
     }
 
     @ApiOperation({ summary: '更新版本' })
