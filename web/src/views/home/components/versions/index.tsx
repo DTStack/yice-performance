@@ -36,7 +36,7 @@ export default function Versions(props: IProps) {
     const { project, runTime, setRunTime } = props;
     const { projectId } = project || {};
     const [versionList, setVersionList] = useState<IVersion[]>([]);
-    const [versionId, setVersionId] = useState<number | undefined>(undefined);
+    const [versionId, setVersionId] = useState<number | undefined | null>(undefined);
     const [infoOpen, setInfoOpen] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [scheduleOpen, setScheduleOpen] = useState<boolean>(false);
@@ -82,8 +82,8 @@ export default function Versions(props: IProps) {
                     setIsDefault(false);
                 } else {
                     if (projectChanged || _versionList?.length === 1) {
-                        let versionIdTemp: any;
-                        // 路由的 versionId 参数如果不在当前返回的版本列表里，则不使用，场景是切换到其他项目了
+                        let versionIdTemp = versionId;
+                        // 路由的 versionId 参数在当前返回的版本列表里，则使用；反之不使用，对应的场景是已经切换到其他项目了
                         const _versionId = Number(searchParams.get('versionId'));
                         if (
                             _versionId &&
@@ -93,14 +93,23 @@ export default function Versions(props: IProps) {
                         ) {
                             versionIdTemp = _versionId;
                         } else {
-                            versionIdTemp = _versionList?.[0]?.versionId;
+                            // 为了保证默认不选择版本时，切换项目也能触发 taskTable 的 versionId 变化监听，从而请求任务列表
+                            if (versionIdTemp === undefined) {
+                                versionIdTemp = null;
+                            } else if (versionIdTemp === null) {
+                                versionIdTemp = undefined;
+                            } else {
+                                versionIdTemp = null;
+                            }
                         }
 
+                        // 在汇总页，仅有一个版本，此时要把 versionId 传给后端
+                        const _isDefault =
+                            _versionList?.length === 1 &&
+                            _versionList.some((item: IVersion) => item.isDefault);
+                        _isDefault && (versionIdTemp = _versionList?.[0]?.versionId);
                         setVersionId(versionIdTemp);
-                        setIsDefault(
-                            _versionList.find((item: IVersion) => item.versionId === versionIdTemp)
-                                ?.isDefault || false
-                        );
+                        setIsDefault(_isDefault);
                     }
                 }
             })
@@ -283,7 +292,6 @@ export default function Versions(props: IProps) {
                 open={infoOpen}
                 isEdit={isEdit}
                 project={project}
-                defaultVersionId={versionId}
                 versionList={versionList}
                 onCancel={(needFetch: boolean) => {
                     setInfoOpen(false);
@@ -310,7 +318,6 @@ export default function Versions(props: IProps) {
             <ScheduleModal
                 open={scheduleOpen}
                 project={project}
-                defaultVersionId={versionId}
                 versionList={versionList}
                 setRunTime={setRunTime}
                 onCancel={(flag) => {

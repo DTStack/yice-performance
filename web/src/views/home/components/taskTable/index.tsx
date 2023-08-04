@@ -27,7 +27,7 @@ import './style.less';
 interface IPros {
     isDefault: boolean;
     projectId: number | undefined;
-    versionId: number | undefined;
+    versionId: number | undefined | null;
     versionName: string | undefined;
     startTime: string | undefined;
     endTime: string | undefined;

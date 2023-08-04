@@ -13,13 +13,12 @@ interface IProps {
     open: boolean;
     isEdit: boolean;
     project: IProject | undefined;
-    defaultVersionId: number | undefined;
     versionList: IVersion[];
     onCancel: (needFetch: any) => void;
 }
 
 export default function VersionModal(props: IProps) {
-    const { open, isEdit, project, defaultVersionId, versionList, onCancel } = props;
+    const { open, isEdit, project, versionList, onCancel } = props;
     const { projectId, appName, devopsProjectIds } = project || {};
     const [form] = Form.useForm();
     const [formLoading, setFormLoading] = useState<boolean>(false);
@@ -27,6 +26,7 @@ export default function VersionModal(props: IProps) {
     const [saving, setSaving] = useState<boolean>(false);
     const [devopsShiLiId, setDevopsShiLiId] = useState<number | undefined>(undefined);
     const [devopsShiLiList, setDevopsShiLiList] = useState<any[]>([]);
+    const defaultVersionId = versionList[0]?.versionId;
 
     useEffect(() => {
         if (open) {

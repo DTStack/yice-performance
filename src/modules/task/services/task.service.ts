@@ -42,8 +42,8 @@ export class TaskService {
             } = query;
 
             let versionIds = [];
-            // 从项目维度查询任务列表
-            if (projectId !== undefined && versionId === undefined) {
+            // 以项目维度查询任务列表
+            if (projectId !== undefined && !versionId) {
                 const result = await this.versionRepository.find({
                     where: getWhere({ projectId }),
                 });
