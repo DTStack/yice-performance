@@ -44,10 +44,7 @@ export default function Versions(props: IProps) {
     const [patchDataOpen, setPatchDataOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [isDefault, setIsDefault] = useState<boolean>(false);
-    const [searchVersionName, setSearchVersionName] = useState<string | undefined>(undefined);
-    const [searchVersionNameTemp, setSearchVersionNameTemp] = useState<string | undefined>(
-        undefined
-    );
+    const [searchStr, setSearchStr] = useState<string | undefined>(undefined);
     const [startTime, setStartTime] = useState<string | undefined>(
         // formatTime(moment().subtract(0, 'days'))
         undefined
@@ -60,8 +57,7 @@ export default function Versions(props: IProps) {
     useEffect(() => {
         if (projectId) {
             // 切换项目要清空版本名称的输入
-            setSearchVersionName(undefined);
-            setSearchVersionNameTemp(undefined);
+            setSearchStr(undefined);
 
             setIsDefault(false);
             getVersions(true);
@@ -162,19 +158,17 @@ export default function Versions(props: IProps) {
 
     // 版本名称输入框内容变化
     const handleInputChange = (e: any) => {
-        setSearchVersionNameTemp(e?.target?.value);
+        const value = e?.target?.value;
+        setSearchStr(value);
+        // allowClear, clear 事件的响应
+        if (e.type === 'click' && value === '') {
+            setRunTime(new Date().getTime());
+        }
     };
     // 输入框的回车事件
     const handleInputEnter = (e: any) => {
         // 中文输入法输入时回车，keyCode 是 229；光标在输入框直接回车，keyCode 是 13
-        if (e.keyCode === 13) {
-            if (searchVersionNameTemp === undefined) {
-                setSearchVersionNameTemp('');
-            } else if (searchVersionNameTemp === '') {
-                setSearchVersionNameTemp(undefined);
-            }
-            setSearchVersionName(searchVersionNameTemp);
-        }
+        e.keyCode === 13 && setRunTime(new Date().getTime());
     };
 
     return (
@@ -187,10 +181,10 @@ export default function Versions(props: IProps) {
                                 {isDefault ? (
                                     <Input
                                         className="search-params-item"
-                                        value={searchVersionNameTemp}
+                                        value={searchStr}
                                         maxLength={100}
                                         allowClear
-                                        placeholder="搜索版本名称"
+                                        placeholder="搜索 taskId 或版本名称"
                                         onChange={handleInputChange}
                                         onPressEnter={handleInputEnter}
                                     />
@@ -277,7 +271,7 @@ export default function Versions(props: IProps) {
                         isDefault={isDefault}
                         projectId={projectId}
                         versionId={versionId}
-                        versionName={searchVersionName}
+                        searchStr={searchStr}
                         startTime={startTime}
                         endTime={endTime}
                         runTime={runTime}

@@ -33,7 +33,7 @@ export class TaskService {
                 isDefault,
                 projectId,
                 versionId,
-                versionName,
+                searchStr,
                 triggerType = [],
                 isUseful = [],
                 status = [],
@@ -60,9 +60,12 @@ export class TaskService {
                 whereSql += 'and versionId IN (:...versionIds) ';
                 Object.assign(whereParams, { versionIds });
             }
-            if (versionName !== undefined) {
-                whereSql += 'and versionName LIKE :versionName ';
-                Object.assign(whereParams, { versionName: `%${versionName}%` });
+            if (searchStr !== undefined) {
+                whereSql += 'and versionName LIKE :searchVersionName or taskId = :searchTaskId ';
+                Object.assign(whereParams, {
+                    searchVersionName: `%${searchStr}%`,
+                    searchTaskId: searchStr,
+                });
             }
             if (triggerType?.length) {
                 whereSql += 'and triggerType IN (:...triggerType) ';

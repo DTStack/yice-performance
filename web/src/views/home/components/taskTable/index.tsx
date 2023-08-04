@@ -28,24 +28,17 @@ interface IPros {
     isDefault: boolean;
     projectId: number | undefined;
     versionId: number | undefined | null;
-    versionName: string | undefined;
+    searchStr: string | undefined;
     startTime: string | undefined;
     endTime: string | undefined;
+    // runTime 变化可以触发获取任务列表接口
     runTime: number;
     setRunTime: (runTime: number) => void;
 }
 
 export default function TaskTable(props: IPros) {
-    const {
-        isDefault,
-        projectId,
-        versionId,
-        versionName,
-        startTime,
-        endTime,
-        runTime,
-        setRunTime,
-    } = props;
+    const { isDefault, projectId, versionId, searchStr, startTime, endTime, runTime, setRunTime } =
+        props;
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [current, setCurrent] = useState<number>(1);
@@ -59,7 +52,7 @@ export default function TaskTable(props: IPros) {
 
     useEffect(() => {
         (projectId || versionId) && fetchData();
-    }, [versionId, versionName, current, pageSize, triggerType, status]);
+    }, [versionId, current, pageSize, triggerType, status]);
 
     useEffect(() => {
         if (runTime !== 0) {
@@ -73,7 +66,7 @@ export default function TaskTable(props: IPros) {
             isDefault,
             projectId,
             versionId,
-            versionName,
+            searchStr,
             current,
             pageSize,
             triggerType,
