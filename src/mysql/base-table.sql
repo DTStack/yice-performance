@@ -18,8 +18,8 @@ CREATE TABLE `project` (
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '项目表';
 
 
-INSERT INTO project (devopsProjectIds, name, appName) values ('7,15', '离线', 'batch'), ('9,15', '实时', 'stream'), ('12,15', '控制台', 'console'), ('1,15', 'API', 'dataApi'), ('13,15', '资产', 'dataAssets'), ('3,15', '标签', 'tag'), ('2,15', '指标', 'easyIndex'), ('16,15', '数据湖', 'dataLake'), ('11,15', 'portal', 'portal');
 INSERT INTO project (name, appName) values ('汇总', 'default');
+INSERT INTO project (devopsProjectIds, name, appName) values ('7,15', '离线', 'batch'), ('9,15', '实时', 'stream'), ('12,15', '控制台', 'console'), ('1,15', 'API', 'dataApi'), ('13,15', '资产', 'dataAssets'), ('3,15', '标签', 'tag'), ('2,15', '指标', 'easyIndex'), ('11,15', 'portal', 'portal'), ('16,15', '数据湖', 'dataLake');
 
 
 -- ----------------------------

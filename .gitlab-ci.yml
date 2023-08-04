@@ -19,7 +19,7 @@ prettier:
   script:
     - pnpm prettier;
   rules:
-    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
 
 # 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
 eslint:
@@ -28,7 +28,7 @@ eslint:
   script:
     - pnpm eslint;
   rules:
-    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
 
 # 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
 stylelint:
@@ -37,7 +37,7 @@ stylelint:
   script:
     - pnpm stylelint;
   rules:
-    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
 
 # 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
 test:
@@ -46,7 +46,7 @@ test:
   script:
     - pnpm test;
   rules:
-    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
 
 # 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
 build:
@@ -55,7 +55,7 @@ build:
   script:
     - pnpm build;
   rules:
-    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
 
 # 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
 web-build:
@@ -66,5 +66,4 @@ web-build:
     - pnpm install --frozen-lockfile
     - pnpm build
   rules:
-    - if: $CI_COMMIT_REF_NAME =~ /master/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /master/
-
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
