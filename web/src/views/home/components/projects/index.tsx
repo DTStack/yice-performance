@@ -1,5 +1,5 @@
 // import { useNavigate } from 'react-router-dom';
-import { Menu } from 'antd';
+import { Empty, Menu } from 'antd';
 import { IProject } from 'typing';
 
 import { getImgUrl } from '../../../../utils';
@@ -30,7 +30,7 @@ export default function Projects(props: IProps) {
 
     return (
         <div className="project-box">
-            {projectId ? (
+            {projectId && !!items.length ? (
                 <Menu
                     onClick={handleClick}
                     style={{ width: 200 }}
@@ -38,7 +38,9 @@ export default function Projects(props: IProps) {
                     mode="inline"
                     items={items}
                 />
-            ) : null}
+            ) : (
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            )}
         </div>
     );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Input, message } from 'antd';
+import { Empty, Input, message } from 'antd';
 import { IProject } from 'typing';
 
 import { getImgUrl, httpPattern } from '../../utils';
@@ -95,14 +95,20 @@ function Home() {
             </div>
 
             <div className="content">
-                <div className="box">
-                    <Projects
-                        projectId={project?.projectId}
-                        projectList={projectList}
-                        setProject={(project: IProject) => handleSelectProject(project)}
-                    />
+                <div className={projectList.length ? 'box' : 'box empty'}>
+                    {projectList.length ? (
+                        <>
+                            <Projects
+                                projectId={project?.projectId}
+                                projectList={projectList}
+                                setProject={(project: IProject) => handleSelectProject(project)}
+                            />
 
-                    <Versions project={project} runTime={runTime} setRunTime={setRunTime} />
+                            <Versions project={project} runTime={runTime} setRunTime={setRunTime} />
+                        </>
+                    ) : (
+                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    )}
                 </div>
             </div>
         </div>

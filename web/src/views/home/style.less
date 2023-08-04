@@ -58,9 +58,14 @@
     .content {
         flex: 1;
         .box {
-            height: 100%;
-            padding: 16px;
+            height: calc(100% - 32px);
+            margin: 16px;
             display: flex;
+            justify-content: center;
+            &.empty {
+                background-color: #FFF;
+                box-shadow: 0 0 6px 0 #EEE;
+            }
         }
     }
 }
