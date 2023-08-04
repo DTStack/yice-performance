@@ -1,10 +1,8 @@
 echo -e '1、web 资源开始打包'
-cd web
-pnpm build
+pnpm build:web
 
 
 echo -e '\n2、node 资源开始打包'
-cd ..
 pnpm build
 
 
