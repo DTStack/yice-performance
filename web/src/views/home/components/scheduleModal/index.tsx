@@ -12,17 +12,17 @@ interface IProps {
     open: boolean;
     project: IProject | undefined;
     versionList: IVersion[];
+    defaultVersionId: number | null | undefined;
     setRunTime: (runTime: number) => void;
     onCancel: (flag?: any) => void;
 }
 
 export default function ScheduleModal(props: IProps) {
-    const { open, project, versionList, onCancel, setRunTime } = props;
+    const { open, project, versionList, defaultVersionId, onCancel, setRunTime } = props;
     const [form] = Form.useForm();
     const [versionFetching, setVersionFetching] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
     const [runLoading, setRunLoading] = useState<boolean>(false);
-    const defaultVersionId = versionList[0]?.versionId;
 
     useEffect(() => {
         if (open) {

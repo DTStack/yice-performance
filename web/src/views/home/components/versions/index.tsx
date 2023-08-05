@@ -288,6 +288,7 @@ export default function Versions(props: IProps) {
                 isEdit={isEdit}
                 project={project}
                 versionList={versionList}
+                defaultVersionId={versionId ?? versionList[0]?.versionId}
                 onCancel={(needFetch: boolean) => {
                     setInfoOpen(false);
                     // 新增的第一个版本设置为默认的 versionId
@@ -314,6 +315,7 @@ export default function Versions(props: IProps) {
                 open={scheduleOpen}
                 project={project}
                 versionList={versionList}
+                defaultVersionId={versionId ?? versionList[0]?.versionId}
                 setRunTime={setRunTime}
                 onCancel={(flag) => {
                     setScheduleOpen(false);
