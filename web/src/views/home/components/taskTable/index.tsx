@@ -216,6 +216,13 @@ export default function TaskTable(props: IPros) {
                 TASK_TRIGGER_TYPE_TEXT.find((item) => item.value === triggerType)?.text,
         },
         {
+            title: '创建时间',
+            dataIndex: 'createAt',
+            key: 'createAt',
+            width: 200,
+            render: (text) => (text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : '-'),
+        },
+        {
             title: '任务状态',
             dataIndex: 'status',
             key: 'status',
@@ -412,7 +419,7 @@ export default function TaskTable(props: IPros) {
                 pagination={pagination}
                 rowSelection={rowSelection}
                 scroll={{
-                    x: 1400,
+                    x: 1600,
                     y: 'calc(100vh - 160px - 32px - 56px - 24px - 32px - 47px)',
                 }}
                 onChange={handleTableChange}
