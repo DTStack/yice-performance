@@ -25,7 +25,7 @@ declare module 'typing' {
     export interface ITask {
         taskId: number;
         versionId?: number;
-        versionName?: string;
+        versionName: string;
         url?: string;
         startAt?: Date;
         createAt?: Date;

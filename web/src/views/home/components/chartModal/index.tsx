@@ -49,7 +49,24 @@ export default function ChartModal(props: IProps) {
         setProjectChartLoading(true);
         API.getProjectChart({ projectId: project?.projectId, startTime, endTime })
             .then((res) => {
-                setProjectChartData(res.data || []);
+                const data = res.data || [];
+
+                // 默认选择靠前的两个版本进行展示
+                const selectedVersionNames = Object.keys(legendSelected).filter(
+                    (item) => legendSelected[item]
+                );
+                const versionNames = Array.from(
+                    new Set(data.map((task: ITask) => task.versionName))
+                );
+                const legendSelectedTemp = {};
+                if (!selectedVersionNames.length) {
+                    versionNames.forEach((name: any, idx: number) => {
+                        legendSelectedTemp[name] = idx < 2;
+                    });
+                    setLegendSelected(legendSelectedTemp);
+                }
+
+                setProjectChartData(data);
             })
             .finally(() => {
                 setProjectChartLoading(false);
@@ -72,7 +89,7 @@ export default function ChartModal(props: IProps) {
     const renderProjectChart = () => {
         return (
             <Spin spinning={projectChartLoading}>
-                {!projectChartLoading && !!projectChartData.length ? (
+                {projectChartData.length ? (
                     <ProjectChart
                         data={projectChartData}
                         legendSelected={legendSelected}
