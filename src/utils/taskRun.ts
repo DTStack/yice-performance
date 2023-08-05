@@ -36,7 +36,7 @@ const toLogin = async (page, runInfo: ITask) => {
         const passwordInput = await page.$('#password');
         await passwordInput.type(password);
         const codeInput = await page.$('.c-login__container__form__code__input');
-        await codeInput.type('bz4x');
+        await codeInput?.type('bz4x');
 
         // 登录按钮
         await page.click('.c-login__container__form__btn');

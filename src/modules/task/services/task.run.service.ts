@@ -131,7 +131,6 @@ export class TaskRunService {
     async cancel(taskId: number, taskDto: TaskDto) {
         // 手动取消任务只会修改任务状态，任务实际不会停止
         const result = await this.taskRepository.update(taskId, taskDto);
-        this.scheduleControl();
         return result;
     }
 

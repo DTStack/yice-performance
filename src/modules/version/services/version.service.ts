@@ -6,7 +6,6 @@ import { IPatchDataBody } from 'typing';
 import { TASK_STATUS, TASK_TRIGGER_TYPE } from '@/const';
 import { Project } from '@/modules/project/entities/project.entity';
 import { Task } from '@/modules/task/entities/task.entity';
-import { TaskRunService } from '@/modules/task/services/task.run.service';
 import { getWhere, isSecond, previewCron } from '@/utils';
 import { VersionDto } from '../dto/version.dto';
 import { Version } from '../entities/version.entity';
@@ -19,8 +18,7 @@ export class VersionService {
         @InjectRepository(Task)
         private readonly taskRepository: Repository<Task>,
         @InjectRepository(Project)
-        private readonly projectRepository: Repository<Project>,
-        private readonly taskRunService: TaskRunService
+        private readonly projectRepository: Repository<Project>
     ) {}
 
     async findAll(projectId: number): Promise<Version[]> {
@@ -109,8 +107,6 @@ export class VersionService {
             .into(Task)
             .values(taskList)
             .execute();
-
-        this.taskRunService.scheduleControl();
 
         return result;
     }

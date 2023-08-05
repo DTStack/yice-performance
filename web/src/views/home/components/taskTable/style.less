@@ -3,8 +3,11 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        > span {
+            user-select: none;
+        }
     }
-    .ant-table-column-title {
+    .ant-table-cell, .ant-table-column-title {
         user-select: none;
     }
 }
