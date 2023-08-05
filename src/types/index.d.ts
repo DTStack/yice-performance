@@ -49,5 +49,7 @@ declare module 'typing' {
         versionIds: number[];
         /** 补数据次数 */
         time: number;
+        /** 已冻结的版本是否补数据 */
+        includeIsFreeze: boolean;
     }
 }

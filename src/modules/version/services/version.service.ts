@@ -67,10 +67,17 @@ export class VersionService {
     }
 
     async patchData(body: IPatchDataBody) {
-        const { projectId, versionIds, time } = body;
+        const { projectId, versionIds, time, includeIsFreeze } = body;
 
         const whereParams = { isDelete: 0, versionIds };
-        const whereSql = `isDelete = :isDelete and versionId IN (:...versionIds)`;
+        let whereSql = `isDelete = :isDelete and versionId IN (:...versionIds)`;
+
+        // 已冻结的版本不补数据的话，需要添加参数
+        if (!includeIsFreeze) {
+            Object.assign(whereParams, { isFreeze: 0 });
+            whereSql += ' and isFreeze = :isFreeze';
+        }
+
         const versionList = await this.versionRepository
             .createQueryBuilder()
             .where(whereSql, whereParams)

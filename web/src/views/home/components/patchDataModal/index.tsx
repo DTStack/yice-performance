@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Form, InputNumber, message, Modal, Select } from 'antd';
+import { Form, InputNumber, message, Modal, Select, Switch } from 'antd';
 import { IProject, IVersion } from 'typing';
 
 import API from '../../../../utils/api';
@@ -42,7 +42,7 @@ export default function PatchDataModal(props: IProps) {
     return (
         <Modal
             width={500}
-            title={`补数据${project?.name}`}
+            title={`补数据（${project?.name}）`}
             open={open}
             forceRender
             destroyOnClose
@@ -70,7 +70,6 @@ export default function PatchDataModal(props: IProps) {
                         })}
                     />
                 </Form.Item>
-
                 <Form.Item
                     name="time"
                     label="补数据次数"
@@ -78,6 +77,14 @@ export default function PatchDataModal(props: IProps) {
                     initialValue={5}
                 >
                     <InputNumber min={1} max={10} precision={0} placeholder="请输入补数据次数" />
+                </Form.Item>
+                <Form.Item
+                    name="includeIsFreeze"
+                    label="已冻结的版本"
+                    rules={[{ required: true }]}
+                    initialValue={false}
+                >
+                    <Switch checkedChildren="补数据" unCheckedChildren="不补" />
                 </Form.Item>
             </Form>
         </Modal>
