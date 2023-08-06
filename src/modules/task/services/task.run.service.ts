@@ -185,7 +185,7 @@ export class TaskRunService {
                 failReason,
                 duration,
             });
-            DingtalkRobot.failure(task);
+            await DingtalkRobot.failure(task);
         } catch (error) {
             console.error('failCallback error', error);
         }
@@ -318,7 +318,7 @@ export class TaskRunService {
                     where: getWhere({ versionId: task.versionId }),
                 });
 
-                DingtalkRobot.timeout({ ...task, projectId });
+                await DingtalkRobot.timeout({ ...task, projectId });
             }
         });
     }

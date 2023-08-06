@@ -61,7 +61,7 @@ export class TaskService {
                 Object.assign(whereParams, { versionIds });
             }
             if (searchStr !== undefined) {
-                whereSql += 'and versionName LIKE :searchVersionName or taskId = :searchTaskId ';
+                whereSql += 'and (versionName LIKE :searchVersionName or taskId = :searchTaskId) ';
                 Object.assign(whereParams, {
                     searchVersionName: `%${searchStr}%`,
                     searchTaskId: searchStr,

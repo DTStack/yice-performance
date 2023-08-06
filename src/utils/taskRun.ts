@@ -149,7 +149,7 @@ const withOutLogin = async (runInfo: ITask) => {
         chrome = await chromeLauncher.launch(chromeLauncherOptions);
         runResult = await lighthouse(url, getLhOptions(chrome.port), lhConfig);
 
-        console.log(`taskId: ${taskId}, 检测完成，开始整理数据`);
+        console.log(`taskId: ${taskId}, 检测完成，开始整理数据...`);
     } catch (error) {
         console.error(`taskId: ${taskId}, 检测失败`, `检测失败，${error?.toString()}`);
         throw error;
@@ -225,7 +225,6 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         }
         const duration = Number((new Date().getTime() - start).toFixed(2));
         await failCallback(task, failReason, duration);
-        throw error;
     } finally {
         completeCallback();
     }

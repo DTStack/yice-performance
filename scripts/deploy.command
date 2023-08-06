@@ -8,8 +8,8 @@ pnpm build
 
 # gtar 是给 macos 使用的，和 tar 区别不大，可以通过 brew install gnu-tar 安装
 echo -e '3、本地资源开始压缩'
-# gtar -czf yice-performance.tar.gz dist pm2/config.* static/README.md web/dist scripts/start.sh package.json pnpm-lock.yaml
-gtar -czf yice-performance.tar.gz dist pm2/config.* static/README.md web/dist .env scripts/start.sh package.json pnpm-lock.yaml
+# gtar -czf yice-performance.tar.gz dist pm2/config.* static/README.md web/dist .env scripts/start.sh package.json pnpm-lock.yaml
+gtar -czf yice-performance.tar.gz dist pm2/config.* static/README.md web/dist scripts/start.sh package.json pnpm-lock.yaml
 
 
 echo -e '\n4、压缩包开始上传到远程服务器'

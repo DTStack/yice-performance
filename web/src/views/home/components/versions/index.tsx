@@ -178,17 +178,17 @@ export default function Versions(props: IProps) {
                     <div className="search-params">
                         {versionList.length ? (
                             <>
-                                {isDefault ? (
-                                    <Input
-                                        className="search-params-item"
-                                        value={searchStr}
-                                        maxLength={100}
-                                        allowClear
-                                        placeholder="搜索 taskId 或版本名称"
-                                        onChange={handleInputChange}
-                                        onPressEnter={handleInputEnter}
-                                    />
-                                ) : (
+                                <Input
+                                    className="search-params-item"
+                                    value={searchStr}
+                                    maxLength={100}
+                                    allowClear
+                                    placeholder="搜索 taskId 或版本名称"
+                                    onChange={handleInputChange}
+                                    onPressEnter={handleInputEnter}
+                                />
+
+                                {!isDefault && (
                                     <Select
                                         className="search-params-item"
                                         value={versionId ? `${versionId}` : undefined}
