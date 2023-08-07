@@ -65,7 +65,6 @@ export default function PatchDataModal(props: IProps) {
                             return {
                                 label: item.name,
                                 value: item.versionId,
-                                disabled: item.isFreeze !== 0,
                             };
                         })}
                     />
