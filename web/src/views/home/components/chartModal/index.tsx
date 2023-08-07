@@ -150,6 +150,15 @@ export default function ChartModal(props: IProps) {
         );
     };
 
+    const handleCancel = () => {
+        onCancel();
+
+        setTimeout(() => {
+            setProjectChartData([]);
+            setLegendSelected({});
+        }, 200);
+    };
+
     return (
         <Modal
             width={1000}
@@ -158,9 +167,9 @@ export default function ChartModal(props: IProps) {
             open={open}
             forceRender
             destroyOnClose
-            onCancel={onCancel}
+            onCancel={handleCancel}
             footer={[
-                <Button key="back" onClick={onCancel}>
+                <Button key="back" onClick={handleCancel}>
                     关闭
                 </Button>,
             ]}
