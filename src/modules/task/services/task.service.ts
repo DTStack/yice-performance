@@ -34,6 +34,7 @@ export class TaskService {
                 projectId,
                 versionId,
                 searchStr,
+                sorter,
                 triggerType = [],
                 isUseful = [],
                 status = [],
@@ -53,6 +54,7 @@ export class TaskService {
                 versionIds = [versionId];
             }
 
+            let orderBy: any = {};
             const whereParams = { isDelete: 0 };
             let whereSql = 'isDelete = :isDelete ';
 
@@ -84,12 +86,20 @@ export class TaskService {
                 Object.assign(whereParams, { startTime, endTime });
             }
 
+            // 每次仅会有一种排序存在
+            const { columnKey, order } = sorter || {};
+            if (order) {
+                orderBy = { [columnKey]: order };
+            } else {
+                orderBy = { taskId: 'DESC' };
+            }
+
             const [data, total] = await this.taskRepository
                 .createQueryBuilder()
                 .where(whereSql, whereParams)
                 .skip((current - 1) * pageSize)
                 .take(pageSize)
-                .orderBy({ taskId: 'DESC' })
+                .orderBy(orderBy)
                 .printSql()
                 .getManyAndCount();
 

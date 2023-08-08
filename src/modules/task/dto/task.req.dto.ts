@@ -20,6 +20,13 @@ export class TaskReqDto extends QueryDto {
     @IsOptional()
     searchStr?: string;
 
+    @ApiPropertyOptional({ required: false, description: '排序方式' })
+    @IsOptional()
+    sorter?: {
+        columnKey: string | undefined;
+        order: 'DESC' | 'ASC' | undefined;
+    };
+
     @ApiPropertyOptional({ required: false, description: '任务触发方式' })
     @IsOptional()
     triggerType?: number[];

@@ -38,6 +38,11 @@ interface IPros {
     setRunTime: (runTime: number) => void;
 }
 
+interface ISorter {
+    columnKey: string | undefined;
+    order: string | undefined;
+}
+
 export default function TaskTable(props: IPros) {
     const {
         isDefault,
@@ -55,6 +60,7 @@ export default function TaskTable(props: IPros) {
     const [current, setCurrent] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(20);
     const [total, setTotal] = useState<number>(0);
+    const [sorter, setSorter] = useState<ISorter | undefined>(undefined);
     const [triggerType, setTriggerType] = useState<number[] | undefined>(undefined);
     const [status, setStatus] = useState<number[] | undefined>(undefined);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -63,7 +69,7 @@ export default function TaskTable(props: IPros) {
 
     useEffect(() => {
         (projectId || versionId) && fetchData();
-    }, [versionId, current, pageSize, triggerType, status]);
+    }, [versionId, current, pageSize, sorter, triggerType, status]);
 
     useEffect(() => {
         if (runTime !== 0) {
@@ -80,6 +86,7 @@ export default function TaskTable(props: IPros) {
             searchStr,
             current,
             pageSize,
+            sorter,
             triggerType,
             status,
             startTime,
@@ -181,6 +188,7 @@ export default function TaskTable(props: IPros) {
             dataIndex: 'score',
             key: 'score',
             width: 120,
+            sorter: true,
             render: (text) => {
                 return text ? (
                     <div className="color-content">
@@ -386,9 +394,14 @@ export default function TaskTable(props: IPros) {
     };
 
     // 表格的分页、筛选
-    const handleTableChange = (pagination: any, filters: any) => {
+    const handleTableChange = (pagination: any, filters: any, sorter: any) => {
         setCurrent(pagination?.current);
         setPageSize(pagination?.pageSize);
+
+        const { columnKey, order: _order } = sorter;
+        const order = _order === 'ascend' ? 'ASC' : _order === 'descend' ? 'DESC' : undefined;
+        setSorter({ columnKey, order });
+
         setTriggerType(filters?.triggerType);
         setStatus(filters?.status);
     };
