@@ -79,11 +79,11 @@ export default function VersionModal(props: IProps) {
         const { label: name } = devopsShiLiList.find((item) => item.value === value) || {};
         API.getDevopsUrl({ shiliId: value })
             .then(({ data = {} }) => {
-                const { portalfront: url, uicfront: loginUrl, username, password } = data;
+                const { portalfront: url, loginUrl, username, password } = data;
                 form.setFieldsValue({
                     name,
                     url: `${url}/${appName}/#/`,
-                    loginUrl: `${loginUrl}/#/login`,
+                    loginUrl: `${loginUrl}/uic/#/`,
                     username,
                     password,
                 });

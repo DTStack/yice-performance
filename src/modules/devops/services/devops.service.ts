@@ -56,11 +56,19 @@ export class DevopsService {
                 ?.split('*****************************************')?.[0]
                 ?.split('\nportalfront:')?.[1]
                 ?.split('\nportalfront-doraemon:') || '';
-        const uicfront = str.split('uicfront:')?.[1]?.replace(/\n/g, '');
+
+        let loginUrl = '';
+        // v4.x、v5.x 版本的数栈
+        if (portalfront.includes('base4') || portalfront.includes('base5')) {
+            loginUrl = str.split('uicfront:')?.[1]?.replace(/\n/g, '');
+        } else {
+            // v6.x 及以上版本的数栈
+            loginUrl = portalfront;
+        }
 
         return {
             portalfront,
-            uicfront,
+            loginUrl,
             username: process.env.DEVOPS_USERNAME,
             password: process.env.DEVOPS_PASSWORD,
         };
