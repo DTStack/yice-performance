@@ -14,7 +14,7 @@ interface IProps {
     versionList: IVersion[];
     defaultVersionId: number | null | undefined;
     setRunTime: (runTime: number) => void;
-    onCancel: (flag?: any) => void;
+    onCancel: () => void;
 }
 
 export default function ScheduleModal(props: IProps) {
@@ -61,15 +61,16 @@ export default function ScheduleModal(props: IProps) {
             });
     };
 
-    // 确定按钮
-    const handleOk = () => {
+    // 保存并关闭
+    const handleOk = (close = false) => {
         const versionId = form.getFieldValue('versionId') || defaultVersionId;
         form.validateFields().then((values) => {
             setSaving(true);
             API.updateScheduleConf({ projectId: project?.projectId, versionId, ...values })
                 .then(() => {
                     message.success('保存成功！');
-                    onCancel('fetch-versionList');
+                    // close 为 true 则关闭弹框
+                    close && onCancel();
                 })
                 .finally(() => {
                     setSaving(false);
@@ -116,14 +117,17 @@ export default function ScheduleModal(props: IProps) {
     const renderButtons = () => {
         return (
             <div className="btn-box">
-                <Button loading={runLoading} onClick={handleRun}>
+                <Button type="primary" loading={runLoading} onClick={handleRun}>
                     立即运行
                 </Button>
 
                 <div>
                     <Button onClick={onCancel}>取消</Button>
-                    <Button type="primary" loading={saving} onClick={handleOk}>
-                        确定
+                    <Button loading={saving} onClick={() => handleOk(true)}>
+                        保存并关闭
+                    </Button>
+                    <Button type="primary" loading={saving} onClick={() => handleOk(false)}>
+                        保存
                     </Button>
                 </div>
             </div>
