@@ -60,6 +60,10 @@ export default {
     tryRunTask(data: any) {
         return instance.post('/task/tryRunTask', data);
     },
+    // 检查结果文件是否存在
+    checkFileExists(data: any) {
+        return instance.post('/task/checkFileExists', data);
+    },
 
     // 性能指标相关
     getPerformancesByTaskId(params: any) {

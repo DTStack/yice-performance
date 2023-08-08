@@ -4,6 +4,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
+import { join } from 'path';
 import { Repository } from 'typeorm';
 
 import { TASK_STATUS, TASK_TRIGGER_TYPE } from '@/const';
@@ -16,6 +17,7 @@ import { taskRun } from '@/utils/taskRun';
 import { TaskDto } from '../dto/task.dto';
 import { Task } from '../entities/task.entity';
 import { TaskService } from '../services/task.service';
+const fs = require('fs');
 
 @Injectable()
 export class TaskRunService {
@@ -132,6 +134,13 @@ export class TaskRunService {
         // 手动取消任务只会修改任务状态，任务实际不会停止
         const result = await this.taskRepository.update(taskId, taskDto);
         return result;
+    }
+
+    // 检查结果文件是否存在
+    async checkFileExists(reportPath: string) {
+        return fs.existsSync(
+            join(__dirname, '../../../../', `static/${reportPath.replace('/report/', '')}`)
+        );
     }
 
     // 任务运行成功的回调

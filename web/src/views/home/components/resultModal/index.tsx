@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Descriptions, Modal, Tooltip } from 'antd';
+import moment from 'moment';
 
 import { getScoreColor } from '../../../../const';
 import API from '../../../../utils/api';
@@ -14,8 +15,10 @@ interface IProps {
 
 function ResultModal(props: IProps) {
     const { open, taskInfo, onCancel } = props;
-    const { taskId, score, duration, reportPath } = taskInfo;
+    const { taskId, startAt, score, duration, reportPath } = taskInfo;
     const [performances, setPerformances] = useState<any[]>([]);
+    const [fileExists, setFileExists] = useState<boolean>(false);
+
     const list = [
         {
             key: 'FCP',
@@ -59,6 +62,9 @@ function ResultModal(props: IProps) {
         API.getPerformancesByTaskId({ taskId }).then((res) => {
             setPerformances(res.data || []);
         });
+        API.checkFileExists({ reportPath }).then(({ data }) => {
+            setFileExists(data || false);
+        });
     };
 
     const getScoreDiv = (score: number) => {
@@ -85,6 +91,11 @@ function ResultModal(props: IProps) {
             width={1000}
         >
             <Descriptions bordered column={2} labelStyle={{ width: 220 }}>
+                <Descriptions.Item label="taskId">{taskId}</Descriptions.Item>
+                <Descriptions.Item label="开始检测时间">
+                    {moment(startAt).format('YYYY-MM-DD HH:mm:ss')}
+                </Descriptions.Item>
+
                 <Descriptions.Item label="检测得分">
                     {score ? (
                         <div className="color-content">
@@ -133,9 +144,15 @@ function ResultModal(props: IProps) {
                 })}
 
                 <Descriptions.Item label="查看报告" span={2}>
-                    <a target="_blank" href={_reportPath} rel="noreferrer">
-                        {_reportPath}
-                    </a>
+                    {fileExists ? (
+                        <a target="_blank" href={_reportPath} rel="noreferrer">
+                            {_reportPath}
+                        </a>
+                    ) : (
+                        <Tooltip title="报告文件不存在" placement="right">
+                            --
+                        </Tooltip>
+                    )}
                 </Descriptions.Item>
             </Descriptions>
         </Modal>

@@ -112,4 +112,14 @@ export class TaskController {
         }
         return await this.taskRunService.scheduleControlByHand(taskId);
     }
+
+    @ApiOperation({ summary: '检查结果文件是否存在' })
+    @HttpCode(HttpStatus.OK)
+    @Post('checkFileExists')
+    async checkFileExists(@Body() { reportPath }) {
+        if (!reportPath) {
+            throw new HttpException('结果文件的路径', HttpStatus.OK);
+        }
+        return await this.taskRunService.checkFileExists(reportPath);
+    }
 }
