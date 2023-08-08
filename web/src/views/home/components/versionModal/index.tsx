@@ -163,7 +163,7 @@ export default function VersionModal(props: IProps) {
 
     return (
         <Modal
-            title="子产品版本信息"
+            title={`${isEdit ? '编辑' : '新增'}版本（${project?.name}）`}
             open={open}
             forceRender
             destroyOnClose

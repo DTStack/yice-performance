@@ -82,6 +82,7 @@ export default function PatchDataModal(props: IProps) {
                     label="已冻结的版本"
                     rules={[{ required: true }]}
                     initialValue={false}
+                    valuePropName="checked"
                 >
                     <Switch checkedChildren="补数据" unCheckedChildren="不补" />
                 </Form.Item>

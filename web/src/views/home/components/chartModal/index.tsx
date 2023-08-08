@@ -162,7 +162,7 @@ export default function ChartModal(props: IProps) {
     return (
         <Modal
             width={1000}
-            title="性能趋势"
+            title={`性能趋势（${project?.name}）`}
             className="chart-modal"
             open={open}
             forceRender

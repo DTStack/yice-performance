@@ -149,7 +149,7 @@ export default function ScheduleModal(props: IProps) {
     return (
         <Modal
             width={500}
-            title="子产品版本调度信息"
+            title={`调度配置（${project?.name}）`}
             open={open}
             forceRender
             destroyOnClose
@@ -194,7 +194,7 @@ export default function ScheduleModal(props: IProps) {
                             onPressEnter={handleInputEnter}
                         />
                     </Form.Item>
-                    <Form.Item name="isFreeze" label="调度冻结" valuePropName="checked" required>
+                    <Form.Item name="isFreeze" label="调度状态" valuePropName="checked" required>
                         <Checkbox>冻结</Checkbox>
                     </Form.Item>
                 </Form>
