@@ -11,6 +11,7 @@ class DingtalkRobot {
         const text = `taskId: ${taskId} 【运行超时】，请注意检查！\n\n版本名称：[${versionName}](http://yice.dtstack.cn?projectId=${projectId}&versionId=${versionId})`;
 
         await this.send(title, text);
+        console.log(`taskId: ${taskId}，任务超时告警已发送`);
     }
 
     // 任务运行失败告警
@@ -19,6 +20,7 @@ class DingtalkRobot {
         const text = `taskId: ${taskId} 【运行失败】，请注意检查！\n\n版本名称：[${versionName}](http://yice.dtstack.cn?projectId=${projectId}&versionId=${versionId})`;
 
         await this.send(title, text);
+        console.log(`taskId: ${taskId}，任务失败告警已发送`);
     }
 
     // 发送消息的具体实现
