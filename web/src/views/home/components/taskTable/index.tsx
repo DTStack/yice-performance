@@ -468,9 +468,13 @@ export default function TaskTable(props: IPros) {
                     onClick: (e: any) => {
                         // TODO 双击某个元素时也会触发、选择内容时也会触发
                         // 拦截按钮的点击事件、failReason 的复制
-                        if (!['A', 'svg'].includes(e?.target?.tagName)) {
-                            selectRow(record);
+                        if (
+                            ['A', 'svg'].includes(e?.target?.tagName) ||
+                            (e?.target?.tagName === 'SPAN' && e?.target?.innerHTML === '确 定')
+                        ) {
+                            return;
                         }
+                        selectRow(record);
                     },
                 })}
             />
