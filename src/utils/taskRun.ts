@@ -44,11 +44,11 @@ const toLogin = async (page, runInfo: ITask) => {
         await sleep(Number(process.env.RESPONSE_SLEEP ?? 5) * 2);
 
         /**
-         * TODO 开了验证码，账号密码错误，则不会弹出选择租户
+         * TODO 开了验证码、账号密码错误，则后续不会弹出选择租户
          */
         const currentUrl = await page.url();
-        // 依据是否包含 login 来判断是否需要登录，若跳转之后仍在登录页，说明登录出错
-        if (currentUrl.includes('login')) {
+        // 依据是否包含 login 或 uic 来判断登录是否成功，包含则说明登录出错
+        if (currentUrl.includes('login') || currentUrl.includes('uic')) {
             throw new Error(`taskId: ${taskId}, 登录失败，仍在登录页面`);
         } else {
             console.log(`taskId: ${taskId}, 登录成功`);
