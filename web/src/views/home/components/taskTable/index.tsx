@@ -273,12 +273,9 @@ export default function TaskTable(props: IPros) {
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {failReason ? (
                             <Tooltip title={failReason}>
-                                <span
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => copy(failReason)}
-                                >
+                                <span>
                                     {tag}
-                                    <CopyOutlined />
+                                    <CopyOutlined onClick={() => copy(failReason)} />
                                 </span>
                             </Tooltip>
                         ) : (
@@ -405,7 +402,18 @@ export default function TaskTable(props: IPros) {
         setTriggerType(filters?.triggerType);
         setStatus(filters?.status);
     };
-    // 表格的勾选
+
+    // 点击行选择
+    const selectRow = (record: any) => {
+        const _selectedRowKeys = [...selectedRowKeys];
+        if (_selectedRowKeys.includes(record.taskId)) {
+            _selectedRowKeys.splice(_selectedRowKeys.indexOf(record.taskId), 1);
+        } else {
+            _selectedRowKeys.push(record.taskId);
+        }
+        setSelectedRowKeys(_selectedRowKeys);
+    };
+    // 点击 checkbox 勾选
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         setSelectedRowKeys(newSelectedRowKeys);
     };
@@ -436,6 +444,15 @@ export default function TaskTable(props: IPros) {
                     y: 'calc(100vh - 160px - 32px - 56px - 24px - 32px - 47px)',
                 }}
                 onChange={handleTableChange}
+                onRow={(record) => ({
+                    onClick: (e: any) => {
+                        // TODO 双击某个元素时也会触发、选择内容时也会触发
+                        // 拦截按钮的点击事件、failReason 的复制
+                        if (!['A', 'svg'].includes(e?.target?.tagName)) {
+                            selectRow(record);
+                        }
+                    },
+                })}
             />
 
             {taskList.length ? (
