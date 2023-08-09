@@ -60,7 +60,7 @@ export class ChartService {
                 };
             });
         } catch (error) {
-            console.error('getCharts error', error);
+            console.log('getCharts error', error);
         }
     }
 }

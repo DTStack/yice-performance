@@ -167,7 +167,7 @@ export class TaskRunService {
                 } catch (error) {
                     status = TASK_STATUS.FAIL;
                     failReason = error;
-                    console.error('performance save error', error?.toString());
+                    console.log('performance save error', error?.toString());
                 }
                 await this.taskService.update(taskId, {
                     score,
@@ -177,12 +177,12 @@ export class TaskRunService {
                     failReason,
                 });
             } else {
-                console.warn(
+                console.log(
                     `taskId: ${taskId}, 任务不是运行中的状态，可能是由于被手动取消了，故本次检测结果不做记录`
                 );
             }
         } catch (error) {
-            console.error('successCallback error', error);
+            console.log('successCallback error', error);
         }
     }
 
@@ -196,7 +196,7 @@ export class TaskRunService {
             });
             await DingtalkRobot.failure(task);
         } catch (error) {
-            console.error('failCallback error', error);
+            console.log('failCallback error', error);
         }
     }
 

@@ -36,7 +36,7 @@ export const canCreateTask = (currentDate, cron: string): boolean => {
         const interval = cronParser.parseExpression(cron);
         cronDate = formatDate(new Date(interval.prev().toString()));
     } catch (err) {
-        console.error('Error: ' + err.message);
+        console.log('Error: ' + err.message);
     }
     return currentDate === cronDate;
 };

@@ -117,7 +117,7 @@ export class TaskService {
                 pageSize: +pageSize,
             };
         } catch (error) {
-            console.error('getTasks error', error);
+            console.log('getTasks error', error);
         }
     }
 

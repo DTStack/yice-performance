@@ -60,7 +60,7 @@ const toLogin = async (page, runInfo: ITask) => {
             console.log(`taskId: ${taskId}, 通过非用户名密码方式登录，已进入 portal 页面`);
             return 'not-uic';
         } else {
-            console.error(`taskId: ${taskId}, 登录出错`, error?.toString());
+            console.log(`taskId: ${taskId}, 登录出错`, error?.toString());
             throw error;
         }
     }
@@ -100,7 +100,7 @@ const changeTenant = async (page, taskId) => {
 
         console.log(`taskId: ${taskId}, 选择租户成功`);
     } catch (error) {
-        console.error(`taskId: ${taskId}, 选择租户出错`, `选择租户出错，${error?.toString()}`);
+        console.log(`taskId: ${taskId}, 选择租户出错`, `选择租户出错，${error?.toString()}`);
         throw error;
     }
 };
@@ -127,7 +127,7 @@ const withLogin = async (runInfo: ITask) => {
 
         console.log(`taskId: ${taskId}, 检测完成，开始整理数据`);
     } catch (error) {
-        console.error(`taskId: ${taskId}, 检测失败`, `${error?.toString()}`);
+        console.log(`taskId: ${taskId}, 检测失败`, `${error?.toString()}`);
         throw error;
     } finally {
         // 检测结束关闭标签页、无头浏览器
@@ -151,7 +151,7 @@ const withOutLogin = async (runInfo: ITask) => {
 
         console.log(`taskId: ${taskId}, 检测完成，开始整理数据...`);
     } catch (error) {
-        console.error(`taskId: ${taskId}, 检测失败`, `检测失败，${error?.toString()}`);
+        console.log(`taskId: ${taskId}, 检测失败`, `检测失败，${error?.toString()}`);
         throw error;
     } finally {
         await chrome.kill();
