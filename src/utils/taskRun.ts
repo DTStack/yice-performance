@@ -27,6 +27,22 @@ const toLogin = async (page, runInfo: ITask) => {
     const { taskId, loginUrl, username, password } = runInfo;
     try {
         await page.goto(loginUrl);
+
+        // 等待指定的选择器匹配元素出现在页面中
+        await page.waitForSelector('#sysId', { visible: true });
+        // 登录方式选择 UIC账号登录
+        await page.click('.ant-select');
+        const text = 'UIC账号登录';
+        await page.$$eval(
+            'div.ant-select-item-option-content',
+            (options = [], text) => {
+                options.forEach((item) => {
+                    item?.textContent?.includes(text) && item.click();
+                });
+            },
+            text
+        );
+
         // 等待指定的选择器匹配元素出现在页面中
         await page.waitForSelector('#username', { visible: true, timeout: 20_000 });
 
