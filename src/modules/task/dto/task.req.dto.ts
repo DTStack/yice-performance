@@ -27,7 +27,10 @@ export class TaskReqDto extends QueryDto {
         order: 'DESC' | 'ASC' | undefined;
     };
 
-    @ApiPropertyOptional({ required: false, description: '任务触发方式' })
+    @ApiPropertyOptional({
+        required: false,
+        description: '任务触发方式 0 系统触发, 1 用户手动触发, 2 补数据, 3 批量重试',
+    })
     @IsOptional()
     triggerType?: number[];
 
@@ -51,6 +54,9 @@ export class TaskReqDto extends QueryDto {
 export class batchReqDto {
     @ApiPropertyOptional({ required: true, description: '任务id集合' })
     taskIds: number[];
-    @ApiPropertyOptional({ required: true, description: '批量操作类型 delete 删除, cancel 取消' })
+    @ApiPropertyOptional({
+        required: true,
+        description: '批量操作类型 delete 删除, cancel 取消, retry 重试',
+    })
     operation: string;
 }

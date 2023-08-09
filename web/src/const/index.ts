@@ -17,11 +17,13 @@ export enum TASK_TRIGGER_TYPE {
     SYSTEM,
     USER_HAND,
     PATCH_DATA,
+    BATCH_RETRY,
 }
 export const TASK_TRIGGER_TYPE_TEXT = [
     { text: '系统触发', value: TASK_TRIGGER_TYPE.SYSTEM },
     { text: '手动触发', value: TASK_TRIGGER_TYPE.USER_HAND },
     { text: '补数据', value: TASK_TRIGGER_TYPE.PATCH_DATA },
+    { text: '批量重试', value: TASK_TRIGGER_TYPE.BATCH_RETRY },
 ];
 
 export enum IS_USEFUL {

@@ -54,7 +54,9 @@ export class TaskDto {
     readonly failReason?: string;
 
     @IsOptional()
-    @ApiPropertyOptional({ description: '任务触发方式 0 系统触发, 1 用户手动触发, 2 补数据' })
+    @ApiPropertyOptional({
+        description: '任务触发方式 0 系统触发, 1 用户手动触发, 2 补数据, 3 批量重试',
+    })
     readonly triggerType?: number;
 
     @IsOptional()

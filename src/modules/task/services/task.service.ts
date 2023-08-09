@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { TASK_STATUS } from '@/const';
+import { TASK_STATUS, TASK_TRIGGER_TYPE } from '@/const';
 import { Performance } from '@/modules/performance/entities/performance.entity';
 import { Version } from '@/modules/version/entities/version.entity';
 import { getWhere } from '@/utils';
@@ -141,6 +141,43 @@ export class TaskService {
                 taskIds,
                 status: [TASK_STATUS.WAITING],
             })
+            .execute();
+
+        return result;
+    }
+
+    // 批量操作 - 重试
+    async batchRetryTask(taskIds: number[]) {
+        const whereParams = {
+            isDelete: 0,
+            taskIds,
+            status: [TASK_STATUS.CANCEL, TASK_STATUS.FAIL],
+        };
+        const whereSql = `isDelete = :isDelete and taskId IN (:...taskIds) and status IN (:...status)`;
+
+        const taskList = await this.taskRepository
+            .createQueryBuilder()
+            .where(whereSql, whereParams)
+            .orderBy({ taskId: 'ASC' })
+            .printSql()
+            .getMany();
+
+        // 批量创建任务
+        const result = await this.taskRepository
+            .createQueryBuilder()
+            .insert()
+            .into(Task)
+            .values(
+                taskList.map((item) => {
+                    const { url, versionId, versionName } = item;
+                    return {
+                        url,
+                        versionId,
+                        versionName,
+                        triggerType: TASK_TRIGGER_TYPE.BATCH_RETRY,
+                    };
+                })
+            )
             .execute();
 
         return result;

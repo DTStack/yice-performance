@@ -87,6 +87,10 @@ export class TaskController {
         if (operation === 'cancel') {
             return await this.taskService.batchCancelTask(taskIds);
         }
+        // 批量重试
+        if (operation === 'retry') {
+            return await this.taskService.batchRetryTask(taskIds);
+        }
         // 批量删除
         if (operation === 'delete') {
             return await this.taskService.batchDeleteTask(taskIds);

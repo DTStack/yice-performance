@@ -369,6 +369,26 @@ export default function TaskTable(props: IPros) {
             },
         });
     };
+    // 批量重试
+    const handleBatchRetry = () => {
+        const hasCanNotRetry = taskList
+            .filter((task: any) => selectedRowKeys.includes(task.taskId))
+            .some((task: any) => ![TASK_STATUS.CANCEL, TASK_STATUS.FAIL].includes(task.status));
+
+        Modal.confirm({
+            title: `确定要重新运行选中的 ${selectedRowKeys.length} 条数据吗？${
+                hasCanNotRetry ? '（只有取消检测和检测失败的任务可以重试）' : ''
+            }`,
+            icon: <ExclamationCircleOutlined />,
+            onOk() {
+                API.batchTask({ taskIds: selectedRowKeys, operation: 'retry' }).then(() => {
+                    message.success('操作成功！');
+                    setRunTime(new Date().getTime());
+                    setSelectedRowKeys([]);
+                });
+            },
+        });
+    };
     // 批量删除
     const handleBatchDelete = () => {
         const hasRunning = taskList
@@ -460,6 +480,9 @@ export default function TaskTable(props: IPros) {
                     <div className="count">当前选中：{selectedRowKeys.length}</div>
                     <Button disabled={!selectedRowKeys.length} onClick={handleBatchCancel}>
                         批量取消
+                    </Button>
+                    <Button disabled={!selectedRowKeys.length} onClick={handleBatchRetry}>
+                        批量重试
                     </Button>
                     <Button danger disabled={!selectedRowKeys.length} onClick={handleBatchDelete}>
                         批量删除
