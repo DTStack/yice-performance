@@ -58,6 +58,7 @@ export default function ProjectChart(props: IProps) {
 
     const renderChart = (versionNames: any, xAxisData: string[], series: any[]) => {
         const productChart = echarts.init(document.getElementById('container') as any);
+        const yMin = Math.min.apply(null, series.map((item) => item.data).flat(Infinity));
 
         const option = {
             tooltip: {
@@ -88,7 +89,7 @@ export default function ProjectChart(props: IProps) {
             },
             yAxis: {
                 type: 'value',
-                // min: Math.min.apply(null, [1, 2, 3]),
+                min: yMin > 20 ? 20 : 0,
             },
             series,
         };
