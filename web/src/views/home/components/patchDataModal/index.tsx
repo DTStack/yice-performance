@@ -30,7 +30,7 @@ export default function PatchDataModal(props: IProps) {
             API.patchData({ projectId: project?.projectId, ...values })
                 .then(() => {
                     setRunTime(new Date().getTime());
-                    message.success('操作成功，请在任务列表查看');
+                    message.success('操作完成，请在任务列表查看');
                     onCancel();
                 })
                 .finally(() => {

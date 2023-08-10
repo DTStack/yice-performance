@@ -107,7 +107,7 @@ export default function TaskTable(props: IPros) {
     const handleTryRun = (item: any) => {
         API.tryRunTask({ taskId: item.taskId })
             .then(() => {
-                message.success('操作成功！');
+                message.success('操作完成！');
             })
             .finally(() => {
                 fetchData();
@@ -122,7 +122,7 @@ export default function TaskTable(props: IPros) {
             failReason: '手动取消检测',
         })
             .then(() => {
-                message.success('操作成功！');
+                message.success('操作完成！');
             })
             .finally(() => {
                 fetchData();
@@ -138,7 +138,7 @@ export default function TaskTable(props: IPros) {
     // 再次检测
     const handleTryAgain = (item: any) => {
         API.tryTaskAgain({ taskId: item.taskId }).then(() => {
-            message.success('操作成功！');
+            message.success('操作完成！');
             setRunTime(new Date().getTime());
         });
     };
@@ -362,7 +362,7 @@ export default function TaskTable(props: IPros) {
             icon: <ExclamationCircleOutlined />,
             onOk() {
                 API.batchTask({ taskIds: selectedRowKeys, operation: 'cancel' }).then(() => {
-                    message.success('操作成功！');
+                    message.success('操作完成！');
                     setRunTime(new Date().getTime());
                     setSelectedRowKeys([]);
                 });
@@ -382,7 +382,7 @@ export default function TaskTable(props: IPros) {
             icon: <ExclamationCircleOutlined />,
             onOk() {
                 API.batchTask({ taskIds: selectedRowKeys, operation: 'retry' }).then(() => {
-                    message.success('操作成功！');
+                    message.success('操作完成！');
                     setRunTime(new Date().getTime());
                     setSelectedRowKeys([]);
                 });
@@ -402,7 +402,7 @@ export default function TaskTable(props: IPros) {
             icon: <ExclamationCircleOutlined />,
             onOk() {
                 API.batchTask({ taskIds: selectedRowKeys, operation: 'delete' }).then(() => {
-                    message.success('操作成功！');
+                    message.success('操作完成！');
                     setRunTime(new Date().getTime());
                     setSelectedRowKeys([]);
                 });

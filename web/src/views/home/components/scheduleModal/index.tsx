@@ -53,7 +53,7 @@ export default function ScheduleModal(props: IProps) {
         API.createTask({ versionId })
             .then(() => {
                 setRunTime(new Date().getTime());
-                message.success('操作成功，请在任务列表查看');
+                message.success('操作完成，请在任务列表查看');
             })
             .finally(() => {
                 setRunLoading(false);

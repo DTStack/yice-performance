@@ -124,7 +124,7 @@ export default function VersionModal(props: IProps) {
             onOk() {
                 API.deleteVersion({ versionId }).then(() => {
                     onCancel(true);
-                    message.success('操作成功！');
+                    message.success('操作完成！');
                 });
             },
         });

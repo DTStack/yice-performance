@@ -54,7 +54,7 @@ function Home() {
                 setSearch('');
                 // 输入地址的检测，版本名为“自定义地址”，检测后跳转到汇总
                 setProject(projectList.find((project: IProject) => project.name === '汇总'));
-                message.success('操作成功，请在『汇总』的任务列表查看');
+                message.success('操作完成，请在『汇总』的任务列表查看');
             })
             .finally(() => {
                 setRunning(false);
