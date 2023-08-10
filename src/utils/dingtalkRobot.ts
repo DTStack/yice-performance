@@ -34,7 +34,7 @@ class DingtalkRobot {
                 isAtAll: false,
             };
             await robot.markdown(title, text, at);
-            console.log(`taskId: ${taskId}，${title}已发送`);
+            console.log(`taskId: ${taskId}, ${title}已发送`);
         } catch (error) {
             console.log('发送失败', text);
         }

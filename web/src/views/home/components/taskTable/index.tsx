@@ -441,6 +441,7 @@ export default function TaskTable(props: IPros) {
         current,
         pageSize,
         total,
+        pageSizeOptions: ['20', '50', '100', '200'],
         showTotal: (total: number) => `共 ${total} 条数据`,
     };
     const rowSelection = {
