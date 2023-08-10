@@ -140,8 +140,6 @@ const withLogin = async (runInfo: ITask) => {
 
         // 开始检测
         runResult = await lighthouse(url, getLhOptions(PORT), lhConfig);
-
-        console.log(`taskId: ${taskId}, 检测完成，开始整理数据`);
     } catch (error) {
         console.log(`taskId: ${taskId}, 检测失败`, `${error?.toString()}`);
         throw error;
@@ -164,8 +162,6 @@ const withOutLogin = async (runInfo: ITask) => {
         // 通过 API 控制 Node 端的 chrome 打开标签页，借助 Lighthouse 检测页面
         chrome = await chromeLauncher.launch(chromeLauncherOptions);
         runResult = await lighthouse(url, getLhOptions(chrome.port), lhConfig);
-
-        console.log(`taskId: ${taskId}, 检测完成，开始整理数据...`);
     } catch (error) {
         console.log(`taskId: ${taskId}, 检测失败`, `检测失败，${error?.toString()}`);
         throw error;
@@ -188,6 +184,8 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
 
         // 需要登录与否会决定使用哪个方法
         const runResult = needLogin ? await withLogin(task) : await withOutLogin(task);
+
+        console.log(`taskId: ${taskId}, 检测完成，开始整理数据...`);
 
         // 保存检测结果的报告文件，便于预览
         const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|#/g, '');
@@ -231,7 +229,6 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         // 抛出结果
         await successCallback(taskId, result);
 
-        console.log(`taskId: ${taskId}, 本次检测耗时：${duration}ms`);
         return result;
     } catch (error) {
         // 错误处理

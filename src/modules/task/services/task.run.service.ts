@@ -146,10 +146,10 @@ export class TaskRunService {
     // 任务运行成功的回调
     private async successCallback(taskId, result) {
         try {
+            const { score, duration, reportPath, performance } = result;
             const { status } = await this.taskService.findOne(taskId);
             // 只有当前任务是运行中才保存检测结果，因为任务可能被手动取消，手动取消的任务不保存结果数据
             if (status === TASK_STATUS.RUNNING) {
-                const { score, duration, reportPath, performance } = result;
                 let status = TASK_STATUS.SUCCESS;
                 let failReason = '';
                 try {
@@ -164,10 +164,12 @@ export class TaskRunService {
                         )
                         .printSql()
                         .execute();
+
+                    console.log(`taskId: ${taskId}, 数据整理完成，已落库`);
                 } catch (error) {
                     status = TASK_STATUS.FAIL;
                     failReason = error;
-                    console.log('performance save error', error?.toString());
+                    console.log(`taskId: ${taskId}, 性能数据落库失败`, error?.toString());
                 }
                 await this.taskService.update(taskId, {
                     score,
@@ -177,10 +179,10 @@ export class TaskRunService {
                     failReason,
                 });
             } else {
-                console.log(
-                    `taskId: ${taskId}, 任务不是运行中的状态，可能是由于被手动取消了，故本次检测结果不做记录`
-                );
+                console.log(`taskId: ${taskId}, 任务不是运行中的状态，故本次检测结果不做记录`);
             }
+
+            console.log(`taskId: ${taskId}, 本次检测耗时：${duration}ms`);
         } catch (error) {
             console.log('successCallback error', error);
         }
