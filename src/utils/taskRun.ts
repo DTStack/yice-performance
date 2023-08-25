@@ -13,6 +13,12 @@ const chromeLauncher = require('chrome-launcher');
 // puppeteer 和 lighthouse 公用该端口
 const PORT = 8041;
 
+// 等待元素出现，秒
+const waitForSelectorOptions = {
+    visible: true,
+    timeout: 20_000,
+};
+
 interface ITask {
     taskId: number;
     start: number;
@@ -22,17 +28,28 @@ interface ITask {
     password?: string;
 }
 
-// 登录
-const toLogin = async (page, runInfo: ITask) => {
-    const { taskId, loginUrl, username, password } = runInfo;
-    try {
-        await page.goto(loginUrl);
+/**
+ * UIC 选择登录方式；
+ * antd3 和 antd4 的 Select DOM 不同
+ * @param text Select 选择包含的文本
+ */
+const handleAntdSelect = async (page, text: string) => {
+    const antd3Item = await page.$('li.ant-select-dropdown-menu-item');
+    const antd4Item = await page.$('div.ant-select-item-option-content');
 
-        // 等待指定的选择器匹配元素出现在页面中
-        await page.waitForSelector('#sysId', { visible: true });
-        // 登录方式选择 UIC账号登录
-        await page.click('.ant-select');
-        const text = 'UIC账号登录';
+    if (antd3Item) {
+        // antd3
+        await page.$$eval(
+            'li.ant-select-dropdown-menu-item',
+            (options = [], text) => {
+                options.forEach((item) => {
+                    item?.textContent?.includes(text) && item.click();
+                });
+            },
+            text
+        );
+    } else if (antd4Item) {
+        // antd4
         await page.$$eval(
             'div.ant-select-item-option-content',
             (options = [], text) => {
@@ -42,9 +59,24 @@ const toLogin = async (page, runInfo: ITask) => {
             },
             text
         );
+    }
+};
+
+// 登录
+const toLogin = async (page, runInfo: ITask) => {
+    const { taskId, loginUrl, username, password } = runInfo;
+    try {
+        await page.goto(loginUrl);
 
         // 等待指定的选择器匹配元素出现在页面中
-        await page.waitForSelector('#username', { visible: true, timeout: 20_000 });
+        await page.waitForSelector('#sysId', waitForSelectorOptions);
+
+        // 登录方式选择 UIC账号登录
+        await page.click('.ant-select');
+        await handleAntdSelect(page, 'UIC账号登录');
+
+        // 等待指定的选择器匹配元素出现在页面中
+        await page.waitForSelector('#username', waitForSelectorOptions);
 
         // 用户名、密码、验证码
         const usernameInput = await page.$('#username');
@@ -60,14 +92,12 @@ const toLogin = async (page, runInfo: ITask) => {
         await sleep(Number(process.env.RESPONSE_SLEEP ?? 5) * 2);
 
         /**
-         * TODO 开了验证码、账号密码错误，则后续不会弹出选择租户
+         * TODO 开了验证码、账号密码错误，则不会弹出选择租户
          */
         const currentUrl = await page.url();
         // 依据是否包含 /login 或 /uic/#/ 来判断登录是否成功，包含则说明登录出错
         if (currentUrl.includes('/login') || currentUrl.includes('/uic/#/')) {
             throw new Error(`taskId: ${taskId}, 登录失败，仍在登录页面`);
-        } else {
-            console.log(`taskId: ${taskId}, 登录成功`);
         }
     } catch (error) {
         const currentUrl = await page.url();
@@ -86,8 +116,8 @@ const toLogin = async (page, runInfo: ITask) => {
 const changeTenant = async (page, taskId) => {
     try {
         // 等待指定的选择器匹配元素出现在页面中
-        await page.waitForSelector('#change_ten_id', { visible: true });
-        console.log(`taskId: ${taskId}, 开始搜索并选择租户`);
+        await page.waitForSelector('#change_ten_id', waitForSelectorOptions);
+        console.log(`taskId: ${taskId}, 登录成功，开始搜索并将选择租户`);
 
         // 租户
         await page.click('.ant-select');
@@ -101,20 +131,21 @@ const changeTenant = async (page, taskId) => {
         // v5.3.x
         try {
             await page.click('li.ant-select-dropdown-menu-item');
-            console.log(`taskId: ${taskId}, 这是 v5.3.x 及之前版本的租户选择框`);
+            console.log(`taskId: ${taskId}, 这是数栈 v5.3.x 及之前版本的租户选择框`);
         } catch (_error) {}
 
         // v6.0.x
         try {
             await page.click('.ant-select-item-option-content');
-            console.log(`taskId: ${taskId}, 这是 v6.0.x 的租户选择框`);
+            console.log(`taskId: ${taskId}, 这是数栈 v6.0.x 的租户选择框`);
         } catch (_error) {}
 
         // 确定按钮，等待接口选择租户成功
         await page.click('button.ant-btn-primary');
-        await sleep(sleepTime);
 
-        console.log(`taskId: ${taskId}, 选择租户成功`);
+        // 等待出现数栈的产品入口
+        await page.waitForSelector('div.product-box', waitForSelectorOptions);
+        // await sleep(sleepTime);
     } catch (error) {
         console.log(`taskId: ${taskId}, 选择租户出错`, `选择租户出错，${error?.toString()}`);
         throw error;
@@ -136,7 +167,7 @@ const withLogin = async (runInfo: ITask) => {
             await changeTenant(page, taskId);
         }
 
-        console.log(`taskId: ${taskId}, 准备工作完成，开始检测`);
+        console.log(`taskId: ${taskId}, 选择租户成功，将开始检测`);
 
         // 开始检测
         runResult = await lighthouse(url, getLhOptions(PORT), lhConfig);
@@ -157,13 +188,13 @@ const withOutLogin = async (runInfo: ITask) => {
     const { taskId, url } = runInfo;
     let chrome, runResult;
     try {
-        console.log(`taskId: ${taskId}, 开始检测`);
+        console.log(`taskId: ${taskId}, 将开始检测`);
 
         // 通过 API 控制 Node 端的 chrome 打开标签页，借助 Lighthouse 检测页面
         chrome = await chromeLauncher.launch(chromeLauncherOptions);
         runResult = await lighthouse(url, getLhOptions(chrome.port), lhConfig);
     } catch (error) {
-        console.log(`taskId: ${taskId}, 检测失败`, `检测失败，${error?.toString()}`);
+        console.log(`taskId: ${taskId}, 检测失败，${error?.toString()}`);
         throw error;
     } finally {
         await chrome.kill();
@@ -177,15 +208,12 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
     try {
         // 依据是否包含 devops 来判断是否需要登录
         const needLogin = url.includes('devops') || loginUrl;
-        console.log(
-            `\ntaskId: ${taskId}, 本次检测${needLogin ? '' : '不'}需要登录，检测地址：`,
-            url
-        );
+        console.log(`taskId: ${taskId}, 本次检测${needLogin ? '' : '不'}需要登录，检测地址：`, url);
 
         // 需要登录与否会决定使用哪个方法
         const runResult = needLogin ? await withLogin(task) : await withOutLogin(task);
 
-        console.log(`taskId: ${taskId}, 检测完成，开始整理数据...`);
+        console.log(`taskId: ${taskId}, 开始整理数据...`);
 
         // 保存检测结果的报告文件，便于预览
         const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|#/g, '');
