@@ -68,6 +68,10 @@ export default function TaskTable(props: IPros) {
     const [resultModalOpen, setResultModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
+        (projectId || versionId) && setCurrent(1);
+    }, [projectId]);
+
+    useEffect(() => {
         (projectId || versionId) && fetchData();
     }, [versionId, current, pageSize, sorter, triggerType, status]);
 

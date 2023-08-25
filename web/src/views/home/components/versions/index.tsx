@@ -271,7 +271,7 @@ export default function Versions(props: IProps) {
                         isDefault={isDefault}
                         versionListLoading={loading}
                         projectId={projectId}
-                        versionId={versionId}
+                        versionId={versionId ?? undefined}
                         searchStr={searchStr}
                         startTime={startTime}
                         endTime={endTime}
