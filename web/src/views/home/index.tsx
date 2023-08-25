@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Empty, Input, message } from 'antd';
 import { IProject } from 'typing';
 
+import { YICE_ROLE } from '../../const/role';
 import { getImgUrl, httpPattern } from '../../utils';
 import API from '../../utils/api';
 import Projects from './components/projects';
@@ -19,10 +20,37 @@ function Home() {
     const [search, setSearch] = useState<string>('');
     // runTime 更新则代表 点击了运行按钮，需要更新任务列表，页码为 1
     const [runTime, setRunTime] = useState<number>(0);
+    const [clickCount, setClickCount] = useState(0);
 
     useEffect(() => {
         getProjects();
     }, []);
+
+    useEffect(() => {
+        let timer: any;
+
+        if (clickCount > 0) {
+            // 一秒钟内没有继续点击，则重置点击次数
+            timer = setTimeout(() => {
+                setClickCount(0);
+            }, 1000);
+        }
+
+        // 处理三次点击的操作
+        if (clickCount === 3) {
+            setClickCount(0);
+            clearTimeout(timer);
+
+            const yiceRole = localStorage.getItem('yice-role');
+            const role = yiceRole === YICE_ROLE.USER ? YICE_ROLE.ADMIN : YICE_ROLE.USER;
+            localStorage.setItem('yice-role', role);
+            message.success(`已切换为『${role === YICE_ROLE.ADMIN ? '管理员' : '用户'}』权限`);
+        }
+
+        return () => {
+            clearTimeout(timer); // 在组件卸载或重新渲染时清除定时器
+        };
+    }, [clickCount]);
 
     const getProjects = () => {
         API.getProjects().then((res) => {
@@ -72,13 +100,17 @@ function Home() {
         !running && e.keyCode === 13 && handleRun((e?.target as any)?.value);
     };
 
+    const handleClick = () => {
+        setClickCount((prevClickCount) => prevClickCount + 1);
+    };
+
     return (
         <div className="home-content">
             <div className="top-content">
                 <div className="top-bg"></div>
                 <div className="top-row">
                     <div className="logo">
-                        <img src={getImgUrl('', '/logo.png')} alt="" />
+                        <img src={getImgUrl('', '/logo.png')} alt="" onClick={handleClick} />
                         <div>易测性能检测平台</div>
                     </div>
                     <Search

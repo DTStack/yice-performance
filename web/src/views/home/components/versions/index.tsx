@@ -6,6 +6,7 @@ import { IProject, IVersion } from 'typing';
 // import moment from 'moment';
 import 'moment/dist/locale/zh-cn';
 
+import { YICE_ROLE } from '../../../../const/role';
 import API from '../../../../utils/api';
 import {
     disabledDate,
@@ -53,6 +54,8 @@ export default function Versions(props: IProps) {
         // formatTime(moment().subtract(0, 'days'), true)
         undefined
     );
+
+    const yiceRole = localStorage.getItem('yice-role');
 
     useEffect(() => {
         if (projectId) {
@@ -236,13 +239,15 @@ export default function Versions(props: IProps) {
                             </Tooltip>
                             {versionList.length ? (
                                 <>
-                                    <Tooltip title="编辑版本">
-                                        <Button
-                                            className="left-btn"
-                                            icon={<EditOutlined />}
-                                            onClick={handleEdit}
-                                        />
-                                    </Tooltip>
+                                    {yiceRole === YICE_ROLE.ADMIN && (
+                                        <Tooltip title="编辑版本">
+                                            <Button
+                                                className="left-btn"
+                                                icon={<EditOutlined />}
+                                                onClick={handleEdit}
+                                            />
+                                        </Tooltip>
+                                    )}
                                     <Tooltip title="性能趋势">
                                         <Button
                                             className="left-btn"

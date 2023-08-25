@@ -19,6 +19,7 @@ import {
     TASK_STATUS_TEXT,
     TASK_TRIGGER_TYPE_TEXT,
 } from '../../../../const';
+import { YICE_ROLE } from '../../../../const/role';
 import API from '../../../../utils/api';
 import { durationTime } from '../../../../utils/date';
 import ResultModal from '../resultModal';
@@ -66,6 +67,8 @@ export default function TaskTable(props: IPros) {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [taskInfo, setTaskInfo] = useState<any>({});
     const [resultModalOpen, setResultModalOpen] = useState<boolean>(false);
+
+    const yiceRole = localStorage.getItem('yice-role');
 
     useEffect(() => {
         (projectId || versionId) && setCurrent(1);
@@ -495,9 +498,15 @@ export default function TaskTable(props: IPros) {
                     <Button disabled={!selectedRowKeys.length} onClick={handleBatchRetry}>
                         批量重试
                     </Button>
-                    <Button danger disabled={!selectedRowKeys.length} onClick={handleBatchDelete}>
-                        批量删除
-                    </Button>
+                    {yiceRole === YICE_ROLE.ADMIN && (
+                        <Button
+                            danger
+                            disabled={!selectedRowKeys.length}
+                            onClick={handleBatchDelete}
+                        >
+                            批量删除
+                        </Button>
+                    )}
                 </div>
             ) : null}
 

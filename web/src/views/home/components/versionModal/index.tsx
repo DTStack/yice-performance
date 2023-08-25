@@ -3,6 +3,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Button, Form, Input, message, Modal, Select, Spin } from 'antd';
 import { IProject, IVersion } from 'typing';
 
+import { YICE_ROLE } from '../../../../const/role';
 import { httpPattern } from '../../../../utils';
 import API from '../../../../utils/api';
 import './style.less';
@@ -27,6 +28,8 @@ export default function VersionModal(props: IProps) {
     const [saving, setSaving] = useState<boolean>(false);
     const [devopsShiLiId, setDevopsShiLiId] = useState<number | undefined>(undefined);
     const [devopsShiLiList, setDevopsShiLiList] = useState<any[]>([]);
+
+    const yiceRole = localStorage.getItem('yice-role');
 
     useEffect(() => {
         if (open) {
@@ -140,7 +143,7 @@ export default function VersionModal(props: IProps) {
         return (
             <div className="footer-btn">
                 <div className="btn-box">
-                    {isEdit ? (
+                    {isEdit && yiceRole === YICE_ROLE.ADMIN ? (
                         <Button danger onClick={handleDelete}>
                             删除
                         </Button>

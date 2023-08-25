@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { Button, Checkbox, Form, Input, message, Modal, Select, Spin } from 'antd';
 import { IProject, IVersion } from 'typing';
 
+import { YICE_ROLE } from '../../../../const/role';
 import API from '../../../../utils/api';
 import './style.less';
 
 const Option = Select.Option;
-const { Search } = Input;
 
 interface IProps {
     open: boolean;
@@ -23,6 +23,8 @@ export default function ScheduleModal(props: IProps) {
     const [versionFetching, setVersionFetching] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
     const [runLoading, setRunLoading] = useState<boolean>(false);
+
+    const yiceRole = localStorage.getItem('yice-role');
 
     useEffect(() => {
         if (open) {
@@ -182,21 +184,27 @@ export default function ScheduleModal(props: IProps) {
                             })}
                         </Select>
                     </Form.Item>
-                    <Form.Item
-                        name="cron"
-                        label="Cron表达式"
-                        rules={[{ required: true }]}
-                        tooltip={tooltip}
-                    >
-                        <Search
-                            placeholder="请输入Cron表达式，如 0 0 2-3 * * *"
-                            autoFocus
-                            maxLength={64}
-                            enterButton="预览"
-                            loading={saving}
-                            onSearch={handlePreviewCron} // 按钮事件
-                            onPressEnter={handleInputEnter}
-                        />
+                    <Form.Item name="cron" label="Cron表达式" tooltip={tooltip} required>
+                        <Input.Group compact>
+                            <Form.Item name="cron" rules={[{ required: true }]}>
+                                <Input
+                                    placeholder="请输入Cron表达式，如 0 0 2-3 * * *"
+                                    autoFocus
+                                    maxLength={64}
+                                    style={{ width: 255 }}
+                                    disabled={yiceRole !== YICE_ROLE.ADMIN}
+                                    onPressEnter={handleInputEnter}
+                                />
+                            </Form.Item>
+                            <Button
+                                style={{ width: 85 }}
+                                type="primary"
+                                loading={saving}
+                                onClick={handlePreviewCron}
+                            >
+                                预览
+                            </Button>
+                        </Input.Group>
                     </Form.Item>
                     <Form.Item name="isFreeze" label="调度状态" valuePropName="checked" required>
                         <Checkbox>冻结</Checkbox>
