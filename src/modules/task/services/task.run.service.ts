@@ -37,7 +37,7 @@ export class TaskRunService {
     @Cron('0 * * * * *')
     async handleCron() {
         if (process.env.NODE_ENV === 'production') {
-            this.checkCronForCurrentDate();
+            await this.checkCronForCurrentDate();
         }
         this.checkHasWaitingTask();
         this.checkTaskIsTimeout();
@@ -182,7 +182,7 @@ export class TaskRunService {
                 console.log(`taskId: ${taskId}, 任务不是运行中的状态，故本次检测结果不做记录`);
             }
 
-            console.log(`taskId: ${taskId}, 检测完成，本次检测耗时：${duration}ms\n`);
+            console.log(`taskId: ${taskId}, 检测完成，本次检测耗时: ${duration}ms\n`);
         } catch (error) {
             console.log('successCallback error', error);
         }
@@ -286,8 +286,6 @@ export class TaskRunService {
             .into(Task)
             .values(taskList)
             .execute();
-
-        this.scheduleControl();
     }
 
     // 检查是否有任务在等待中
