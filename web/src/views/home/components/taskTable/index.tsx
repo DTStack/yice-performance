@@ -471,7 +471,8 @@ export default function TaskTable(props: IPros) {
                         // 拦截按钮的点击事件、failReason 的复制
                         if (
                             ['A', 'svg'].includes(e?.target?.tagName) ||
-                            (e?.target?.tagName === 'SPAN' && e?.target?.innerHTML === '确 定')
+                            (e?.target?.tagName === 'SPAN' &&
+                                ['取 消', '确 定'].includes(e?.target?.innerHTML))
                         ) {
                             return;
                         }
