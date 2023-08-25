@@ -425,6 +425,7 @@ export default function TaskTable(props: IPros) {
 
         setTriggerType(filters?.triggerType);
         setStatus(filters?.status);
+        setSelectedRowKeys([]);
     };
 
     // 点击行选择
