@@ -29,7 +29,7 @@ interface ITask {
 }
 
 /**
- * UIC 选择登录方式；
+ * UIC 选择登录方式；选择租户；
  * antd3 和 antd4 的 Select DOM 不同
  * @param text Select 选择包含的文本
  */
@@ -88,8 +88,8 @@ const toLogin = async (page, runInfo: ITask) => {
 
         // 登录按钮
         await page.click('.c-login__container__form__btn');
-        // await page.waitForNavigation();
-        await sleep(Number(process.env.RESPONSE_SLEEP ?? 5) * 2);
+        await page.waitForNavigation();
+        // await sleep(Number(process.env.RESPONSE_SLEEP ?? 5));
 
         /**
          * TODO 开了验证码、账号密码错误，则不会弹出选择租户

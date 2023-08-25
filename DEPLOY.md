@@ -57,7 +57,7 @@ APP_PORT=4000
 API_PREFIX='api/v1'
 
 # 部分动作由于网络原因，延时再进行下一步操作比较稳妥，毫秒
-RESPONSE_SLEEP=7500
+RESPONSE_SLEEP=5000
 
 # 仅在本地调试时允许放开下方一行的注释，放开会出现检测浏览器窗口
 # USE_HEADLESS=yes
