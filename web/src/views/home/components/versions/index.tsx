@@ -22,6 +22,7 @@ import PatchDataModal from '../patchDataModal';
 import ScheduleModal from '../scheduleModal';
 import TaskTable from '../taskTable';
 import VersionModal from '../versionModal';
+import { PatchDataIcon, ScheduleIcon } from './icon';
 import './style.less';
 
 const RangePicker = DatePicker.RangePicker;
@@ -233,7 +234,7 @@ export default function Versions(props: IProps) {
 
                     {/* 右上角按钮区域 */}
                     {isDefault ? null : (
-                        <>
+                        <div className="btn-box">
                             <Tooltip title="添加版本">
                                 <Button icon={<PlusOutlined />} onClick={handleAdd} />
                             </Tooltip>
@@ -241,33 +242,28 @@ export default function Versions(props: IProps) {
                                 <>
                                     {yiceRole === YICE_ROLE.ADMIN && (
                                         <Tooltip title="编辑版本">
-                                            <Button
-                                                className="left-btn"
-                                                icon={<EditOutlined />}
-                                                onClick={handleEdit}
-                                            />
+                                            <Button icon={<EditOutlined />} onClick={handleEdit} />
                                         </Tooltip>
                                     )}
                                     <Tooltip title="性能趋势">
                                         <Button
-                                            className="left-btn"
                                             icon={<LineChartOutlined />}
                                             onClick={handleChart}
                                         />
                                     </Tooltip>
-                                    <Button className="left-btn" onClick={handlePatchData}>
-                                        补数据
-                                    </Button>
-                                    <Button
-                                        className="left-btn"
-                                        type="primary"
-                                        onClick={handleSchedule}
-                                    >
-                                        调度
-                                    </Button>
+
+                                    <Tooltip title="补数据">
+                                        <Button
+                                            icon={<PatchDataIcon />}
+                                            onClick={handlePatchData}
+                                        />
+                                    </Tooltip>
+                                    <Tooltip title="调度">
+                                        <Button icon={<ScheduleIcon />} onClick={handleSchedule} />
+                                    </Tooltip>
                                 </>
                             ) : null}
-                        </>
+                        </div>
                     )}
                 </div>
 

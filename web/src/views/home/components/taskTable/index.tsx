@@ -151,8 +151,8 @@ export default function TaskTable(props: IPros) {
     };
 
     const getScoreDiv = (score: number) => {
-        const className = getScoreColor(score);
-        return <div className={className}></div>;
+        const scoreColor = getScoreColor(score);
+        return <div className={`score ${scoreColor}`}>{score}</div>;
     };
 
     const columns: ColumnsType<any> = [
@@ -194,17 +194,10 @@ export default function TaskTable(props: IPros) {
             title: '检测得分',
             dataIndex: 'score',
             key: 'score',
-            width: 120,
+            width: 100,
             sorter: true,
             render: (text) => {
-                return text ? (
-                    <div className="color-content">
-                        {getScoreDiv(text)}
-                        {text} 分
-                    </div>
-                ) : (
-                    '-'
-                );
+                return text ? <div className="table-color-content">{getScoreDiv(text)}</div> : '-';
             },
         },
         {
@@ -241,7 +234,7 @@ export default function TaskTable(props: IPros) {
             title: '任务状态',
             dataIndex: 'status',
             key: 'status',
-            width: 130,
+            width: 120,
             fixed: 'right',
             filters: TASK_STATUS_TEXT,
             render: (status, record) => {
@@ -469,8 +462,8 @@ export default function TaskTable(props: IPros) {
                 pagination={pagination}
                 rowSelection={rowSelection}
                 scroll={{
-                    x: 1600,
-                    y: 'calc(100vh - 160px - 32px - 56px - 24px - 32px - 47px)',
+                    x: 1570,
+                    y: 'calc(100vh - 160px - 24px - 56px - 48px - 48px - 16px)',
                 }}
                 onChange={handleTableChange}
                 onRow={(record) => ({

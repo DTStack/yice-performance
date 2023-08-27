@@ -1,32 +1,37 @@
 .version-box {
     flex: 1;
-    max-width: calc(100vw - 244px);
-    margin-left: 12px;
+    max-width: calc(100vw - 248px);
+    margin-left: 16px;
     background-color: #FFF;
     .top-box {
-        padding: 12px 12px 0;
+        height: 56px;
+        padding: 12px 16px 0;
         display: flex;
         justify-content: space-between;
         .search-params {
             flex: 1;
-            margin-right: 20px;
+            white-space: nowrap;
             &-item {
-                margin-bottom: 12px;
+                margin: 0 12px 12px 0;
             }
             .ant-input-affix-wrapper {
-                width: 200px;
-                margin-right: 12px;
+                width: 190px;
             }
             .ant-select {
-                width: 180px;
-                margin-right: 12px;
+                width: 190px;
             }
             .ant-picker-range {
                 width: 240px;
             }
         }
-        .left-btn {
-            margin-left: 12px;
+        .btn-box {
+            min-width: 208px;
+            .ant-btn {
+                margin-left: 12px;
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
         }
     }
 }
