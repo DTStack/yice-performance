@@ -71,12 +71,12 @@ export default function TaskTable(props: IPros) {
     const yiceRole = localStorage.getItem('yice-role');
 
     useEffect(() => {
-        (projectId || versionId) && setCurrent(1);
-    }, [projectId]);
+        (projectId || versionId) && current === 1 ? fetchData() : setCurrent(1);
+    }, [projectId, versionId]);
 
     useEffect(() => {
         (projectId || versionId) && fetchData();
-    }, [versionId, current, pageSize, sorter, triggerType, status]);
+    }, [current, pageSize, sorter, triggerType, status]);
 
     useEffect(() => {
         if (runTime !== 0) {
