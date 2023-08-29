@@ -75,7 +75,7 @@ export default function PatchDataModal(props: IProps) {
                     rules={[{ required: true }]}
                     initialValue={5}
                 >
-                    <InputNumber min={1} max={10} precision={0} placeholder="请输入补数据次数" />
+                    <InputNumber min={1} max={20} precision={0} placeholder="请输入补数据次数" />
                 </Form.Item>
                 <Form.Item
                     name="includeIsFreeze"

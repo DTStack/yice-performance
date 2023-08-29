@@ -79,7 +79,7 @@ function ResultModal(props: IProps) {
 
     return (
         <Modal
-            title="查看结果"
+            title={`查看结果（${taskInfo.versionName}）`}
             open={open}
             onCancel={onCancel}
             footer={[

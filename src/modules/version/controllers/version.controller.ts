@@ -11,7 +11,7 @@ import {
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { IPatchDataBody } from 'typing';
 
-import { isSecond } from '@/utils';
+import { isDayMore, isSecond } from '@/utils';
 import { VersionDto } from '../dto/version.dto';
 import { getVersionReqDto, getVersionsReqDto } from '../dto/version.req.dto';
 import { VersionService } from '../services/version.service';
@@ -79,6 +79,11 @@ export class VersionController {
         const { cron } = versionDto;
         if (isSecond(cron)) {
             throw new HttpException('不允许秒级调度，请修改Cron表达式', HttpStatus.OK);
+        }
+
+        const max = 10;
+        if (isDayMore(cron, max)) {
+            throw new HttpException(`每天调度次数超过${max}次，请修改Cron表达式`, HttpStatus.OK);
         }
 
         return await this.versionService.updateScheduleConf(versionDto);
