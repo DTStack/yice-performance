@@ -169,7 +169,7 @@ export default function ChartModal(props: IProps) {
             destroyOnClose
             onCancel={handleCancel}
             footer={[
-                <Button key="back" onClick={handleCancel}>
+                <Button type="primary" key="back" onClick={handleCancel}>
                     关闭
                 </Button>,
             ]}

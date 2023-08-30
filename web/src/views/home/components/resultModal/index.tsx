@@ -83,7 +83,7 @@ function ResultModal(props: IProps) {
             open={open}
             onCancel={onCancel}
             footer={[
-                <Button key="back" onClick={onCancel}>
+                <Button type="primary" key="back" onClick={onCancel}>
                     关闭
                 </Button>,
             ]}
