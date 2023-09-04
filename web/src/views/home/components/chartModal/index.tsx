@@ -36,13 +36,16 @@ export default function ChartModal(props: IProps) {
     const [legendSelected, setLegendSelected] = useState({});
 
     useEffect(() => {
+        // 打开弹框时默认选择最近七天的日期
+        const [startTimeInitialValue, endTimeInitialValue] = last7DaysRange;
+        setStartTime(open ? formatTime(startTimeInitialValue) : undefined);
+        setEndTime(open ? formatTime(endTimeInitialValue, true) : undefined);
+    }, [open]);
+    useEffect(() => {
         if (open) {
             getProjectChart();
-        } else {
-            setStartTime(undefined);
-            setEndTime(undefined);
         }
-    }, [open, startTime, endTime]);
+    }, [startTime]);
 
     // 获取子产品所有版本的性能分数
     const getProjectChart = () => {

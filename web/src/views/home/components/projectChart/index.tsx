@@ -31,6 +31,10 @@ export default function ProjectChart(props: IProps) {
                         .filter((task: ITask) => task.versionId === versionId)
                         .map((task: ITask) => task.score),
                     smooth: true,
+                    taskIds:
+                        data
+                            .filter((task: ITask) => task.versionId === versionId)
+                            .map((task: ITask) => task.taskId) || [],
                     // 右侧显示名称
                     // endLabel: {
                     //     show: true,
@@ -63,6 +67,21 @@ export default function ProjectChart(props: IProps) {
         const option = {
             tooltip: {
                 trigger: 'axis',
+                formatter: function (params: any) {
+                    let relVal = params[0].name;
+                    params.forEach((param: any) => {
+                        const value = series[param.seriesIndex].data[param.dataIndex];
+                        const taskId = series[param.seriesIndex].taskIds[param.dataIndex];
+                        const seriesName = param.seriesName;
+                        relVal +=
+                            '<br/>' +
+                            param.marker +
+                            `[${taskId}]${seriesName}` +
+                            `<span style='font-weight:500;margin-left: 10px'>${value}分</span>`;
+                    });
+
+                    return relVal;
+                },
             },
             // echarts 顶部选择展示的版本
             legend: {
