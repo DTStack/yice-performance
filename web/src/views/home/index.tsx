@@ -110,7 +110,9 @@ function Home() {
                 <div className="top-bg"></div>
                 <div className="logo-box">
                     <img src={getImgUrl('', '/logo.png')} alt="" onClick={handleClick} />
-                    <div>易测性能检测平台</div>
+                    <div>
+                        {process.env.NODE_ENV === 'staging' ? '【测试】' : ''}易测性能检测平台
+                    </div>
                 </div>
                 <Search
                     className="run-input"

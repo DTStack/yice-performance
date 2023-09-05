@@ -25,7 +25,7 @@ class DingtalkRobot {
     private async send(taskId: number, title: string, text: string) {
         try {
             const webhook = process.env.ALARM_WEBHOOK;
-            if (!webhook || process.env.NODE_ENV !== 'production') return;
+            if (!webhook || process.env.NODE_ENV === 'development') return;
 
             const robot = new ChatBot({ webhook });
 
@@ -33,7 +33,11 @@ class DingtalkRobot {
                 atMobiles: [process.env.ALARM_USER_PHONE],
                 isAtAll: false,
             };
-            await robot.markdown(title, text, at);
+            await robot.markdown(
+                `${process.env.NODE_ENV === 'staging' ? '【测试】' : ''}${title}`,
+                text,
+                at
+            );
             console.log(`taskId: ${taskId}, ${title}已发送`);
         } catch (error) {
             console.log('发送失败', text);
