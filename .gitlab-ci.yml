@@ -11,7 +11,7 @@ stages:
   - stylelint
   - test
   - build
-  - web-build
+  - website-build
 
 # 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
 prettier:
@@ -24,7 +24,6 @@ prettier:
 # 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
 eslint:
   stage: eslint
-  needs: [prettier]
   script:
     - pnpm eslint;
   rules:
@@ -33,7 +32,6 @@ eslint:
 # 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
 stylelint:
   stage: stylelint
-  needs: [prettier]
   script:
     - pnpm stylelint;
   rules:
@@ -51,18 +49,18 @@ test:
 # 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
 build:
   stage: build
-  needs: [prettier, eslint, stylelint, test]
+  needs: [test]
   script:
     - pnpm build;
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
 
 # 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
-web-build:
-  stage: web-build
-  needs: [prettier, eslint, stylelint, test]
+website-build:
+  stage: website-build
+  needs: [test]
   script:
-    - cd web
+    - cd website
     - pnpm install --frozen-lockfile
     - pnpm build
   rules:

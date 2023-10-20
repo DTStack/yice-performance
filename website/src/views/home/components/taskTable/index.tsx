@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     CheckCircleOutlined,
     ClockCircleOutlined,
@@ -20,23 +20,15 @@ import {
     TASK_TRIGGER_TYPE_TEXT,
 } from '../../../../const';
 import { YICE_ROLE } from '../../../../const/role';
+import { InitContext } from '../../../../store';
 import API from '../../../../utils/api';
 import { durationTime } from '../../../../utils/date';
 import ResultModal from '../resultModal';
 import './style.less';
 
 interface IPros {
-    isDefault: boolean;
     // versionList 接口请求时，表格也需要 loading
     versionListLoading: boolean;
-    projectId: number | undefined;
-    versionId: number | undefined | null;
-    searchStr: string | undefined;
-    startTime: string | undefined;
-    endTime: string | undefined;
-    // runTime 变化可以触发获取任务列表接口
-    runTime: number;
-    setRunTime: (runTime: number) => void;
 }
 
 interface ISorter {
@@ -46,19 +38,21 @@ interface ISorter {
 
 export default function TaskTable(props: IPros) {
     const {
-        isDefault,
-        versionListLoading,
-        projectId,
+        project,
         versionId,
-        searchStr,
+        runTime,
         startTime,
         endTime,
-        runTime,
+        searchStr,
+        current,
         setRunTime,
-    } = props;
+        setCurrent,
+    } = useContext(InitContext);
+
+    const { projectId } = project || {};
+    const { versionListLoading } = props;
     const [taskList, setTaskList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [current, setCurrent] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(20);
     const [total, setTotal] = useState<number>(0);
     const [sorter, setSorter] = useState<ISorter | undefined>(undefined);
@@ -71,23 +65,24 @@ export default function TaskTable(props: IPros) {
     const yiceRole = localStorage.getItem('yice-role');
 
     useEffect(() => {
-        (projectId || versionId) && current === 1 ? fetchData() : setCurrent(1);
-    }, [projectId, versionId]);
-
-    useEffect(() => {
-        (projectId || versionId) && fetchData();
-    }, [current, pageSize, sorter, triggerType, status]);
-
-    useEffect(() => {
-        if (runTime !== 0) {
-            current === 1 ? fetchData() : setCurrent(1);
-        }
+        fetchData();
     }, [runTime]);
 
+    /**
+     * 获取任务列表的数据 taskList
+     * 注意：仅通过改变 runTime 来触发获取 taskList, 用法: setRunTime(new Date().getTime())
+     *
+     * 1. projectId 从 undefined 变为有值后，此时应当清除 versionId，并请求 taskList
+     * 2. 点击顶部输入框后的运行按钮，应当清除搜索条件，切换到汇总的项目下，请求 taskList
+     * 3. 版本变化应清除搜索框的内容，将 current 置为 1，再请求 taskList
+     * 4. projects 切换 project 时，此时应当先清除搜索条件：搜索内容、versionId、起止日期、current，再更新 projectId，并请求 taskList
+     * 5. 搜索 taskId 或版本名称时，应当将 current 置为 1，再请求 taskList
+     * 6. 起止日期变化时，应当将 current 置为 1，再请求 taskList
+     */
     const fetchData = () => {
+        if (!projectId && !versionId) return;
         setLoading(true);
         const params = {
-            isDefault,
             projectId,
             versionId,
             searchStr,
@@ -146,7 +141,7 @@ export default function TaskTable(props: IPros) {
     const handleTryAgain = (item: any) => {
         API.tryTaskAgain({ taskId: item.taskId }).then(() => {
             message.success('操作完成！');
-            setRunTime(new Date().getTime());
+            fetchData();
         });
     };
 
@@ -292,7 +287,13 @@ export default function TaskTable(props: IPros) {
                 return (
                     <div className="action-title">
                         <span>操作</span>
-                        <SyncOutlined spin={versionListLoading || loading} onClick={fetchData} />
+                        <SyncOutlined
+                            spin={versionListLoading || loading}
+                            onClick={() => {
+                                setCurrent(1);
+                                setRunTime(new Date().getTime());
+                            }}
+                        />
                     </div>
                 );
             },
@@ -363,8 +364,8 @@ export default function TaskTable(props: IPros) {
             onOk() {
                 API.batchTask({ taskIds: selectedRowKeys, operation: 'cancel' }).then(() => {
                     message.success('操作完成！');
-                    setRunTime(new Date().getTime());
                     setSelectedRowKeys([]);
+                    fetchData();
                 });
             },
         });
@@ -383,8 +384,8 @@ export default function TaskTable(props: IPros) {
             onOk() {
                 API.batchTask({ taskIds: selectedRowKeys, operation: 'retry' }).then(() => {
                     message.success('操作完成！');
-                    setRunTime(new Date().getTime());
                     setSelectedRowKeys([]);
+                    fetchData();
                 });
             },
         });
@@ -403,8 +404,9 @@ export default function TaskTable(props: IPros) {
             onOk() {
                 API.batchTask({ taskIds: selectedRowKeys, operation: 'delete' }).then(() => {
                     message.success('操作完成！');
-                    setRunTime(new Date().getTime());
                     setSelectedRowKeys([]);
+                    setCurrent(1);
+                    setRunTime(new Date().getTime());
                 });
             },
         });
@@ -422,6 +424,8 @@ export default function TaskTable(props: IPros) {
         setTriggerType(filters?.triggerType);
         setStatus(filters?.status);
         setSelectedRowKeys([]);
+
+        setRunTime(new Date().getTime());
     };
 
     // 点击行选择
@@ -443,6 +447,7 @@ export default function TaskTable(props: IPros) {
         pageSize,
         total,
         pageSizeOptions: ['20', '50', '100', '200'],
+        showSizeChanger: true,
         showTotal: (total: number) => `共 ${total} 条数据`,
     };
     const rowSelection = {

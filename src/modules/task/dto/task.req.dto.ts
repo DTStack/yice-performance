@@ -4,10 +4,6 @@ import { IsOptional } from 'class-validator';
 import { QueryDto } from '@/modules/base.req.dto';
 
 export class TaskReqDto extends QueryDto {
-    @ApiPropertyOptional({ required: false, description: '是否默认的版本，即汇总' })
-    @IsOptional()
-    isDefault?: string;
-
     @ApiPropertyOptional({ required: false, description: '项目id' })
     @IsOptional()
     projectId: number;

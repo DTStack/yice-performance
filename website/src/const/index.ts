@@ -38,12 +38,12 @@ export const IS_USEFUL_TEXT = [
 /**
  * 得分的颜色
  * 慢 red #FF3333 0 ~ 49
- * 平均值 orange #FFAA33 50 ~ 89
- * 快 green #00CC66 90 ~ 100
+ * 平均值 orange #FFAA33 50 ~ 79
+ * 快 green #00CC66 80 ~ 100
  */
 const scoreColor = {
     orangeMin: 50,
-    greenMin: 90,
+    greenMin: 80,
 };
 
 export const getScoreColor = (score: number) => {

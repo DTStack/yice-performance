@@ -41,8 +41,8 @@ jobs:
       - name: Run build
         run: pnpm build
 
-      - name: Run web build
+      - name: Run website build
         run: |
-          cd web
+          cd website
           pnpm install --frozen-lockfile
           pnpm build

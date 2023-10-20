@@ -38,7 +38,11 @@ class DingtalkRobot {
                 text,
                 at
             );
-            console.log(`taskId: ${taskId}, ${title}已发送`);
+            console.log(
+                `${
+                    process.env.NODE_ENV === 'staging' ? '【测试】' : ''
+                }taskId: ${taskId}, ${title}已发送`
+            );
         } catch (error) {
             console.log('发送失败', text);
         }

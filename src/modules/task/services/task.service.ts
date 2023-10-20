@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 
 import { TASK_STATUS, TASK_TRIGGER_TYPE } from '@/const';
 import { Performance } from '@/modules/performance/entities/performance.entity';
+import { Project } from '@/modules/project/entities/project.entity';
 import { Version } from '@/modules/version/entities/version.entity';
 import { getWhere } from '@/utils';
 import { TaskDto } from '../dto/task.dto';
@@ -19,6 +20,8 @@ export class TaskService {
     constructor(
         @InjectRepository(Task)
         private readonly taskRepository: Repository<Task>,
+        @InjectRepository(Project)
+        private readonly projectRepository: Repository<Project>,
         @InjectRepository(Version)
         private readonly versionRepository: Repository<Version>,
         @InjectRepository(Performance)
@@ -30,7 +33,6 @@ export class TaskService {
             const {
                 pageSize = 20,
                 current = 1,
-                isDefault,
                 projectId,
                 versionId,
                 searchStr,
@@ -58,10 +60,14 @@ export class TaskService {
             const whereParams = { isDelete: 0 };
             let whereSql = 'isDelete = :isDelete ';
 
-            if (isDefault !== 'true') {
+            const project = await this.projectRepository.findOneBy(getWhere({ projectId }));
+
+            const isDefault = project?.name === '汇总' && project?.appName === 'default';
+            if (!isDefault && versionIds.length) {
                 whereSql += 'and versionId IN (:...versionIds) ';
                 Object.assign(whereParams, { versionIds });
             }
+
             if (searchStr !== undefined) {
                 whereSql += 'and (versionName LIKE :searchVersionName or taskId = :searchTaskId) ';
                 Object.assign(whereParams, {

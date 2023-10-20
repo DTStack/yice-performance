@@ -1,6 +1,6 @@
 # compiled output
 dist
-/node_modules
+node_modules
 
 # Logs
 logs
@@ -36,3 +36,5 @@ lerna-debug.log*
 
 # 检测结果
 static/**/*.html
+
+yice-performance*.tar.gz

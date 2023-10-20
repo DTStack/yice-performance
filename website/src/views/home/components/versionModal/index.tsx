@@ -148,11 +148,11 @@ export default function VersionModal(props: IProps) {
                             删除
                         </Button>
                     ) : null}
+                    <Button onClick={onCancel}>取消</Button>
+                    <Button type="primary" loading={saving} onClick={handleOk}>
+                        确定
+                    </Button>
                 </div>
-                <Button onClick={onCancel}>取消</Button>
-                <Button type="primary" loading={saving} onClick={handleOk}>
-                    确定
-                </Button>
             </div>
         );
     };

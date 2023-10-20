@@ -64,7 +64,7 @@ export default function ChartModal(props: IProps) {
                 const legendSelectedTemp = {};
                 if (!selectedVersionNames.length) {
                     versionNames.forEach((name: any, idx: number) => {
-                        legendSelectedTemp[name] = idx < 2;
+                        legendSelectedTemp[name] = idx < 3;
                     });
                     setLegendSelected(legendSelectedTemp);
                 }

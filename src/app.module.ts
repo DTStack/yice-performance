@@ -33,7 +33,7 @@ import { ValidationPipe } from './pipe/validation/validation.pipe';
         // 托管页面的静态资源
         ServeStaticModule.forRoot({
             serveRoot: '/',
-            rootPath: join(__dirname, '..', 'web/dist'),
+            rootPath: join(__dirname, '..', 'website/dist'),
         }),
         // 托管检测报告的静态资源
         ServeStaticModule.forRoot({

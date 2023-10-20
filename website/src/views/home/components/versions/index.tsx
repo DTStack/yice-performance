@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
 import { EditOutlined, LineChartOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, DatePicker, Empty, Input, Select, Tooltip } from 'antd';
-import { IProject, IVersion } from 'typing';
-// import moment from 'moment';
+import { IVersion } from 'typing';
 import 'moment/dist/locale/zh-cn';
 
 import { YICE_ROLE } from '../../../../const/role';
+import { InitContext } from '../../../../store';
 import API from '../../../../utils/api';
 import {
     disabledDate,
@@ -27,45 +26,36 @@ import './style.less';
 
 const RangePicker = DatePicker.RangePicker;
 
-interface IProps {
-    project: IProject | undefined;
-    runTime: number;
-    setRunTime: (runTime: number) => void;
-}
+export default function Versions() {
+    const {
+        project,
+        versionId,
+        startTime,
+        endTime,
+        searchStr,
+        setVersionId,
+        setRunTime,
+        setStartTime,
+        setEndTime,
+        setSearchStr,
+        setCurrent,
+    } = useContext(InitContext);
 
-export default function Versions(props: IProps) {
-    const [searchParams] = useSearchParams();
-    const { project, runTime, setRunTime } = props;
     const { projectId } = project || {};
     const [versionList, setVersionList] = useState<IVersion[]>([]);
-    const [versionId, setVersionId] = useState<number | undefined | null>(undefined);
-    const [infoOpen, setInfoOpen] = useState<boolean>(false);
+    const [versionOpen, setVersionOpen] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [scheduleOpen, setScheduleOpen] = useState<boolean>(false);
     const [chartOpen, setChartOpen] = useState<boolean>(false);
     const [patchDataOpen, setPatchDataOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [isDefault, setIsDefault] = useState<boolean>(false);
-    const [searchStr, setSearchStr] = useState<string | undefined>(undefined);
-    const [startTime, setStartTime] = useState<string | undefined>(
-        // formatTime(moment().subtract(0, 'days'))
-        undefined
-    );
-    const [endTime, setEndTime] = useState<string | undefined>(
-        // formatTime(moment().subtract(0, 'days'), true)
-        undefined
-    );
 
     const yiceRole = localStorage.getItem('yice-role');
 
+    // 切换项目时获取版本列表
     useEffect(() => {
-        if (projectId) {
-            // 切换项目要清空版本名称的输入
-            setSearchStr(undefined);
-
-            setIsDefault(false);
-            getVersions(true);
-        }
+        projectId && getVersions(true);
     }, [projectId]);
 
     // 获取版本列表
@@ -82,33 +72,18 @@ export default function Versions(props: IProps) {
                     setIsDefault(false);
                 } else {
                     if (projectChanged || _versionList?.length === 1) {
-                        let versionIdTemp = versionId;
-                        // 路由的 versionId 参数在当前返回的版本列表里，则使用；反之不使用，对应的场景是已经切换到其他项目了
-                        const _versionId = Number(searchParams.get('versionId'));
-                        if (
-                            _versionId &&
-                            _versionList.some(
-                                (version: IVersion) => version.versionId === _versionId
-                            )
-                        ) {
-                            versionIdTemp = _versionId;
-                        } else {
-                            // 为了保证默认不选择版本时，切换项目也能触发 taskTable 的 versionId 变化监听，从而请求任务列表
-                            if (versionIdTemp === undefined) {
-                                versionIdTemp = null;
-                            } else if (versionIdTemp === null) {
-                                versionIdTemp = undefined;
-                            } else {
-                                versionIdTemp = null;
-                            }
+                        // 如果 router-params_versionId 中有值，则使用
+                        const _versionId =
+                            sessionStorage.getItem('router-params_versionId') || undefined;
+                        if (_versionId) {
+                            sessionStorage.removeItem('router-params_versionId');
+                            setVersionId(_versionId);
                         }
 
-                        // 在汇总页，仅有一个版本，此时要把 versionId 传给后端
+                        // 在汇总页，仅有一个版本
                         const _isDefault =
                             _versionList?.length === 1 &&
                             _versionList.some((item: IVersion) => item.isDefault);
-                        _isDefault && (versionIdTemp = _versionList?.[0]?.versionId);
-                        setVersionId(versionIdTemp);
                         setIsDefault(_isDefault);
                     }
                 }
@@ -118,34 +93,40 @@ export default function Versions(props: IProps) {
             });
     };
 
-    // 版本变化
+    // 版本变化 应清除搜索框的内容，将 current 置为 1，再请求 taskList
     const handleVersionChange = (value: string, option: any) => {
         setVersionId(value ? Number(value) : undefined);
+        setSearchStr(undefined);
+        setCurrent(1);
         setIsDefault(option?.isDefault || false);
+
+        setRunTime(new Date().getTime());
     };
 
-    // 日期变化
+    // 起止日期变化 应当将 current 置为 1，再请求 taskList
     const changeDate = (value: any) => {
         // 清除选择后查询
         if (value === null) {
             setStartTime(undefined);
             setEndTime(undefined);
-            setRunTime(new Date().getTime());
         } else {
             setStartTime(formatTime(value?.[0]));
             setEndTime(formatTime(value?.[1], true));
         }
+
+        setCurrent(1);
+        setRunTime(new Date().getTime());
     };
 
     // 新增按钮
     const handleAdd = () => {
         setIsEdit(false);
-        setInfoOpen(true);
+        setVersionOpen(true);
     };
     // 编辑按钮
     const handleEdit = () => {
         setIsEdit(true);
-        setInfoOpen(true);
+        setVersionOpen(true);
     };
     // 性能趋势按钮
     const handleChart = () => {
@@ -160,19 +141,23 @@ export default function Versions(props: IProps) {
         setScheduleOpen(true);
     };
 
-    // 版本名称输入框内容变化
+    // 版本名称输入框内容变化 搜索 taskId 或版本名称时，应当将 current 置为 1，再请求 taskList
     const handleInputChange = (e: any) => {
         const value = e?.target?.value;
-        setSearchStr(value);
-        // allowClear, clear 事件的响应
+        setSearchStr(value || undefined);
+        // 设置了 allowClear, clear 事件的响应
         if (e.type === 'click' && value === '') {
+            setCurrent(1);
             setRunTime(new Date().getTime());
         }
     };
-    // 输入框的回车事件
+    // 输入框的回车事件 搜索 taskId 或版本名称时，应当将 current 置为 1，再请求 taskList
     const handleInputEnter = (e: any) => {
         // 中文输入法输入时回车，keyCode 是 229；光标在输入框直接回车，keyCode 是 13
-        e.keyCode === 13 && setRunTime(new Date().getTime());
+        if (e.keyCode === 13) {
+            setCurrent(1);
+            setRunTime(new Date().getTime());
+        }
     };
 
     return (
@@ -221,9 +206,6 @@ export default function Versions(props: IProps) {
                                     }}
                                     value={[parseTime(startTime) as any, parseTime(endTime) as any]}
                                     onChange={changeDate}
-                                    onOpenChange={(open) =>
-                                        !open && setRunTime(new Date().getTime())
-                                    }
                                     getPopupContainer={(triggerNode) =>
                                         triggerNode.parentElement as any
                                     }
@@ -268,30 +250,20 @@ export default function Versions(props: IProps) {
                 </div>
 
                 {versionList.length ? (
-                    <TaskTable
-                        isDefault={isDefault}
-                        versionListLoading={loading}
-                        projectId={projectId}
-                        versionId={versionId ?? undefined}
-                        searchStr={searchStr}
-                        startTime={startTime}
-                        endTime={endTime}
-                        runTime={runTime}
-                        setRunTime={setRunTime}
-                    />
+                    <TaskTable versionListLoading={loading} />
                 ) : (
                     <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
             </div>
 
             <VersionModal
-                open={infoOpen}
+                open={versionOpen}
                 isEdit={isEdit}
                 project={project}
                 versionList={versionList}
                 defaultVersionId={versionId ?? versionList[0]?.versionId}
                 onCancel={(needFetch: boolean) => {
-                    setInfoOpen(false);
+                    setVersionOpen(false);
                     // 新增的第一个版本设置为默认的 versionId
                     needFetch && getVersions(!versionList.length);
                 }}
