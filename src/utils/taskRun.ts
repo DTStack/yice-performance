@@ -233,6 +233,7 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
             const { weight, acronym } = auditRef;
             const { score, numericValue } = audits[auditRef.id] || {};
             if (numericValue === undefined) {
+                console.log(`taskId: ${taskId}, 检测结果出现问题，没有单项检测时长`);
                 throw new Error(
                     `检测结果出现问题，没有单项检测时长，${JSON.stringify(audits[auditRef.id])}`
                 );

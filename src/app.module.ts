@@ -35,6 +35,10 @@ import { ValidationPipe } from './pipe/validation/validation.pipe';
             serveRoot: '/',
             rootPath: join(__dirname, '..', 'website/dist'),
         }),
+        ServeStaticModule.forRoot({
+            serveRoot: '/redirect',
+            rootPath: join(__dirname, '..', 'website/dist'),
+        }),
         // 托管检测报告的静态资源
         ServeStaticModule.forRoot({
             serveRoot: '/report',

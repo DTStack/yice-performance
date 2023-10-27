@@ -8,7 +8,7 @@ class DingtalkRobot {
     // 任务超时告警
     async timeout({ taskId, projectId, versionId, versionName }) {
         const title = '任务超时告警';
-        const text = `taskId: ${taskId} 【运行超时】，请注意检查！\n\n版本名称：[${versionName}](http://yice.dtstack.cn?projectId=${projectId}&versionId=${versionId})`;
+        const text = `taskId: ${taskId} 【运行超时】，请注意检查！\n\n版本名称：[${versionName}](http://yice.dtstack.cn/redirect?projectId=${projectId}&versionId=${versionId})`;
 
         await this.send(taskId, title, text);
     }
@@ -16,7 +16,7 @@ class DingtalkRobot {
     // 任务运行失败告警
     async failure({ taskId, projectId, versionId, versionName }) {
         const title = '任务失败告警';
-        const text = `taskId: ${taskId} 【运行失败】，请注意检查！\n\n版本名称：[${versionName}](http://yice.dtstack.cn?projectId=${projectId}&versionId=${versionId})`;
+        const text = `taskId: ${taskId} 【运行失败】，请注意检查！\n\n版本名称：[${versionName}](http://yice.dtstack.cn/redirect?projectId=${projectId}&versionId=${versionId})`;
 
         await this.send(taskId, title, text);
     }
