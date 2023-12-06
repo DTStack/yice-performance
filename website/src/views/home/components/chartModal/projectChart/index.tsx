@@ -30,7 +30,7 @@ export default function ProjectChart(props: IProps) {
 
     useEffect(() => {
         if (versionNameList?.length) {
-            const _map = {};
+            const _map = { ...legendSelectedMap };
             for (let i = 0; i < versionNameList.length; i++) {
                 // 默认选择前三个
                 _map[versionNameList[i]] = i < 3;
@@ -44,7 +44,16 @@ export default function ProjectChart(props: IProps) {
     }, [legendSelectedMap]);
 
     const renderChart = () => {
-        const chart = echarts.init(document.getElementById('project-container') as any);
+        let chart = echarts.init(document.getElementById('project-container') as any);
+
+        const hasOldSelected = Object.keys(legendSelectedMap).some(
+            (key) => !versionNameList.includes(key)
+        );
+        // echarts line legend 的 data 和 selected 变化后还有之前的 selected
+        if (hasOldSelected) {
+            chart.dispose();
+            chart = echarts.init(document.getElementById('project-container') as any);
+        }
 
         const xAxisData = [];
         for (let i = 0; i < maxLength; i++) {
@@ -100,6 +109,7 @@ export default function ProjectChart(props: IProps) {
             },
             series: taskList,
         };
+
         chart.setOption(option);
 
         // echarts 顶部展示的版本变化
