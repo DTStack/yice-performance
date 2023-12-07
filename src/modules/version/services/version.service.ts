@@ -6,6 +6,7 @@ import { IPatchDataBody } from 'typing';
 import { TASK_STATUS, TASK_TRIGGER_TYPE } from '@/const';
 import { Project } from '@/modules/project/entities/project.entity';
 import { Task } from '@/modules/task/entities/task.entity';
+import { TaskService } from '@/modules/task/services/task.service';
 import { getWhere, isSecond, previewCron } from '@/utils';
 import { VersionDto } from '../dto/version.dto';
 import { Version } from '../entities/version.entity';
@@ -18,7 +19,8 @@ export class VersionService {
         @InjectRepository(Task)
         private readonly taskRepository: Repository<Task>,
         @InjectRepository(Project)
-        private readonly projectRepository: Repository<Project>
+        private readonly projectRepository: Repository<Project>,
+        private readonly taskService: TaskService
     ) {}
 
     async findAll(projectId: number): Promise<Version[]> {
@@ -50,6 +52,13 @@ export class VersionService {
                     HttpStatus.OK
                 );
             }
+
+            // 删除版本时同步删除运行记录
+            const taskList = await this.taskRepository.find({
+                where: getWhere({ versionId: versionDto.versionId }),
+            });
+            taskList.length &&
+                this.taskService.batchDeleteTask(taskList.map((item) => item.taskId));
         }
 
         const result = await this.versionRepository.update(versionDto.versionId, versionDto);
