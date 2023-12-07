@@ -20,7 +20,7 @@ interface IProps {
 export default function ScheduleModal(props: IProps) {
     const { open, project, versionList, defaultVersionId, onCancel, setRunTime } = props;
     const [form] = Form.useForm();
-    const [versionFetching, setVersionFetching] = useState<boolean>(false);
+    const [formLoading, setFormLoading] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
     const [runLoading, setRunLoading] = useState<boolean>(false);
 
@@ -34,7 +34,7 @@ export default function ScheduleModal(props: IProps) {
     }, [open]);
 
     const getVersion = () => {
-        setVersionFetching(true);
+        setFormLoading(true);
         const versionId = form.getFieldValue('versionId') || defaultVersionId;
         API.getVersion({ versionId })
             .then((res) => {
@@ -44,7 +44,7 @@ export default function ScheduleModal(props: IProps) {
                 }, 200);
             })
             .finally(() => {
-                setVersionFetching(false);
+                setFormLoading(false);
             });
     };
 
@@ -63,16 +63,15 @@ export default function ScheduleModal(props: IProps) {
             });
     };
 
-    // 保存并关闭
-    const handleOk = (close = false) => {
+    // 保存
+    const handleOk = () => {
         const versionId = form.getFieldValue('versionId') || defaultVersionId;
         form.validateFields().then((values) => {
             setSaving(true);
             API.updateScheduleConf({ projectId: project?.projectId, versionId, ...values })
                 .then(() => {
                     message.success('保存成功！');
-                    // close 为 true 则关闭弹框
-                    close && onCancel();
+                    onCancel();
                 })
                 .finally(() => {
                     setSaving(false);
@@ -125,10 +124,7 @@ export default function ScheduleModal(props: IProps) {
 
                 <div>
                     <Button onClick={onCancel}>取消</Button>
-                    <Button loading={saving} onClick={() => handleOk(true)}>
-                        保存并关闭
-                    </Button>
-                    <Button type="primary" loading={saving} onClick={() => handleOk(false)}>
+                    <Button type="primary" loading={saving || formLoading} onClick={handleOk}>
                         保存
                     </Button>
                 </div>
@@ -162,7 +158,7 @@ export default function ScheduleModal(props: IProps) {
             footer={renderButtons()}
             onCancel={onCancel}
         >
-            <Spin spinning={versionFetching}>
+            <Spin spinning={formLoading}>
                 <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} name="Form">
                     <Form.Item
                         name="versionId"
@@ -171,7 +167,7 @@ export default function ScheduleModal(props: IProps) {
                         initialValue={`${defaultVersionId}`}
                     >
                         <Select
-                            loading={versionFetching}
+                            loading={formLoading}
                             placeholder="请选择版本"
                             onChange={getVersion}
                         >
