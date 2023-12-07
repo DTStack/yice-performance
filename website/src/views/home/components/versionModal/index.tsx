@@ -88,7 +88,7 @@ export default function VersionModal(props: IProps) {
                 form.setFieldsValue({
                     name,
                     url: `${url}/${appName}/#/`,
-                    loginUrl: `${loginUrl}/uic/#/`,
+                    loginUrl: `${loginUrl}`,
                     username,
                     password,
                 });

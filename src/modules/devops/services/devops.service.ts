@@ -63,7 +63,7 @@ export class DevopsService {
             loginUrl = str.split('uicfront:')?.[1]?.replace(/\n/g, '');
         } else {
             // v6.x 及以上版本的数栈
-            loginUrl = portalfront;
+            loginUrl = `${portalfront}/uic/#/`;
         }
 
         return {
