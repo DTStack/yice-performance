@@ -28,7 +28,7 @@
 - 安装服务依赖：`pnpm i`
 - 安装页面依赖：`cd website && pnpm i`
 - 运行 node 服务：`pnpm dev`，4000 端口
-- 运行页面：`pnpm dev:web`，7001 端口
+- 运行页面：`pnpm web`，7001 端口
 
 ## 部署文档
 

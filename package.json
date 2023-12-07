@@ -7,7 +7,7 @@
     "license": "UNLICENSED",
     "scripts": {
         "dev": "nest start --watch",
-        "dev:web": "cd website && npm run dev",
+        "web": "cd website && npm run dev",
         "build": "nest build",
         "build:web": "cd website && npm run build",
         "build:web-test": "cd website && npm run build:test",
