@@ -33,4 +33,7 @@ export class Version extends BaseContent {
 
     @Column('int')
     isFreeze: number;
+
+    @Column({ length: 256 })
+    note: string;
 }

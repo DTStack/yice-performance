@@ -37,6 +37,7 @@ CREATE TABLE `version` (
   `password` varchar(256) NULL COMMENT '登录密码',
   `cron` varchar(64) NULL COMMENT '版本的cron表达式',
   `isFreeze` tinyint(1) NOT NULL DEFAULT 0 COMMENT '调度冻结 0 正常, 1 冻结',
+  `note` varchar(256) NULL COMMENT '备注',
   `isDelete` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0 未删除, 1 已删除',
   `createAt` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updateAt` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

@@ -19,6 +19,7 @@ declare module 'typing' {
         isDefault: boolean;
         cron?: string;
         isFreeze?: number;
+        note?: string;
     }
 
     /** 任务字段 */

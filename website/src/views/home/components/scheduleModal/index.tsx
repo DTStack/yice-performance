@@ -38,9 +38,9 @@ export default function ScheduleModal(props: IProps) {
         const versionId = form.getFieldValue('versionId') || defaultVersionId;
         API.getVersion({ versionId })
             .then((res) => {
-                const { cron, isFreeze } = res.data || {};
+                const { cron, isFreeze, note } = res.data || {};
                 setTimeout(() => {
-                    form.setFieldsValue({ cron, isFreeze });
+                    form.setFieldsValue({ cron, isFreeze, note });
                 }, 200);
             })
             .finally(() => {
@@ -186,7 +186,11 @@ export default function ScheduleModal(props: IProps) {
                     </Form.Item>
                     <Form.Item name="cron" label="Cron表达式" tooltip={tooltip} required>
                         <Input.Group compact>
-                            <Form.Item name="cron" rules={[{ required: true }]}>
+                            <Form.Item
+                                name="cron"
+                                rules={[{ required: true }]}
+                                style={{ marginBottom: 0 }}
+                            >
                                 <Input
                                     placeholder="请输入Cron表达式，如 0 0 2-3 * * *"
                                     autoFocus
@@ -208,6 +212,9 @@ export default function ScheduleModal(props: IProps) {
                     </Form.Item>
                     <Form.Item name="isFreeze" label="调度状态" valuePropName="checked" required>
                         <Checkbox>冻结</Checkbox>
+                    </Form.Item>
+                    <Form.Item name="note" label="备注">
+                        <Input.TextArea placeholder="请输入备注" maxLength={255} rows={3} />
                     </Form.Item>
                 </Form>
             </Spin>
