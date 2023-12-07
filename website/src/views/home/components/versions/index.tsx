@@ -94,7 +94,7 @@ export default function Versions() {
     };
 
     // 版本变化 应清除搜索框的内容，将 current 置为 1，再请求 taskList
-    const handleVersionChange = (value: string, option: any) => {
+    const handleVersionChange = (value: string, option?: any) => {
         setVersionId(value ? Number(value) : undefined);
         setSearchStr(undefined);
         setCurrent(1);
@@ -262,6 +262,7 @@ export default function Versions() {
                 project={project}
                 versionList={versionList}
                 defaultVersionId={versionId ?? versionList[0]?.versionId}
+                handleVersionChange={handleVersionChange}
                 onCancel={(needFetch: boolean) => {
                     setVersionOpen(false);
                     // 新增的第一个版本设置为默认的 versionId

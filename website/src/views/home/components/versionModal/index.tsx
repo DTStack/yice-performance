@@ -16,11 +16,13 @@ interface IProps {
     project: IProject | undefined;
     versionList: IVersion[];
     defaultVersionId: number | null | undefined;
+    handleVersionChange: Function;
     onCancel: (needFetch: any) => void;
 }
 
 export default function VersionModal(props: IProps) {
-    const { open, isEdit, project, versionList, defaultVersionId, onCancel } = props;
+    const { open, isEdit, project, versionList, defaultVersionId, handleVersionChange, onCancel } =
+        props;
     const { projectId, appName, devopsProjectIds } = project || {};
     const [form] = Form.useForm();
     const [formLoading, setFormLoading] = useState<boolean>(false);
@@ -126,6 +128,9 @@ export default function VersionModal(props: IProps) {
             icon: <ExclamationCircleOutlined />,
             onOk() {
                 API.deleteVersion({ versionId }).then(() => {
+                    // 删除版本后重新获取任务列表
+                    handleVersionChange(undefined);
+
                     onCancel(true);
                     message.success('操作完成！');
                 });
@@ -149,7 +154,7 @@ export default function VersionModal(props: IProps) {
                         </Button>
                     ) : null}
                     <Button onClick={onCancel}>取消</Button>
-                    <Button type="primary" loading={saving} onClick={handleOk}>
+                    <Button type="primary" loading={saving || formLoading} onClick={handleOk}>
                         确定
                     </Button>
                 </div>
