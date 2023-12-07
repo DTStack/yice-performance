@@ -12,6 +12,7 @@ import { Button, message, Modal, Popconfirm, Table, Tag, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import copy from 'copy-to-clipboard';
 import moment from 'moment';
+import { ITask } from 'typing';
 
 import {
     getScoreColor,
@@ -98,6 +99,11 @@ export default function TaskTable(props: IPros) {
             .then((res) => {
                 const { data, total } = res.data;
                 setTaskList(data || []);
+                setSelectedRowKeys(
+                    selectedRowKeys.filter((key) =>
+                        data.map((item: ITask) => item.taskId).includes(key)
+                    )
+                );
                 setTotal(total);
             })
             .finally(() => {
