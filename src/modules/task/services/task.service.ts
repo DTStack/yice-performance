@@ -189,6 +189,21 @@ export class TaskService {
         return result;
     }
 
+    // 批量操作 - 置无效
+    async batchUnUsefulTask(taskIds: number[]) {
+        const result = await this.taskRepository
+            .createQueryBuilder()
+            .update(Task)
+            .set({ isUseful: 0 })
+            .where('taskId IN (:...taskIds) and status != :status', {
+                taskIds,
+                status: TASK_STATUS.SUCCESS,
+            })
+            .execute();
+
+        return result;
+    }
+
     // 批量操作 - 删除
     async batchDeleteTask(taskIds: number[]) {
         const result = await this.taskRepository

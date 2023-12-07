@@ -390,6 +390,26 @@ export default function TaskTable(props: IPros) {
             },
         });
     };
+    // 批量置无效
+    const handleBatchUnUseful = () => {
+        const hasSuccess = taskList
+            .filter((task: any) => selectedRowKeys.includes(task.taskId))
+            .some((task: any) => task.status === TASK_STATUS.SUCCESS);
+
+        Modal.confirm({
+            title: `确定要将选中的 ${selectedRowKeys.length} 条数据置为无效数据吗？`,
+            content: `无效数据在图表中不展示${hasSuccess ? '' : '，仅检测完成的数据能被置为无效'}`,
+            icon: <ExclamationCircleOutlined />,
+            onOk() {
+                API.batchTask({ taskIds: selectedRowKeys, operation: 'unUseful' }).then(() => {
+                    message.success('操作完成！');
+                    setSelectedRowKeys([]);
+                    setCurrent(1);
+                    setRunTime(new Date().getTime());
+                });
+            },
+        });
+    };
     // 批量删除
     const handleBatchDelete = () => {
         const hasRunning = taskList
@@ -496,6 +516,11 @@ export default function TaskTable(props: IPros) {
                     <Button disabled={!selectedRowKeys.length} onClick={handleBatchRetry}>
                         批量重试
                     </Button>
+                    {false && (
+                        <Button disabled={!selectedRowKeys.length} onClick={handleBatchUnUseful}>
+                            批量置无效
+                        </Button>
+                    )}
                     {yiceRole === YICE_ROLE.ADMIN && (
                         <Button
                             danger

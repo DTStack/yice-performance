@@ -91,6 +91,10 @@ export class TaskController {
         if (operation === 'retry') {
             return await this.taskService.batchRetryTask(taskIds);
         }
+        // 批量置无效
+        if (operation === 'unUseful') {
+            return await this.taskService.batchUnUsefulTask(taskIds);
+        }
         // 批量删除
         if (operation === 'delete') {
             return await this.taskService.batchDeleteTask(taskIds);
