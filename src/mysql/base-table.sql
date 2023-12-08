@@ -64,6 +64,7 @@ CREATE TABLE `task` (
   `failReason` varchar(10240) NULL COMMENT '检测失败报错信息',
   `triggerType` tinyint(1) NOT NULL DEFAULT 1 COMMENT '任务触发方式 0 系统触发, 1 用户手动触发, 2 补数据, 3 批量重试',
   `isUseful` tinyint(1) NOT NULL DEFAULT 1 COMMENT '任务是否有效 0 无效, 1 有效',
+  `previewImg` LONGTEXT NULL COMMENT '结果的首屏图片预览',
   `isDelete` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0 未删除, 1 已删除',
   `createAt` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updateAt` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

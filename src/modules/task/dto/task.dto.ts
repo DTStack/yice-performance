@@ -62,4 +62,8 @@ export class TaskDto {
     @IsOptional()
     @ApiPropertyOptional({ description: '任务是否有效 0 无效, 1 有效' })
     readonly isUseful?: number;
+
+    @IsOptional()
+    @ApiPropertyOptional({ description: '结果的首屏图片预览' })
+    readonly previewImg?: string;
 }

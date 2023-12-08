@@ -39,4 +39,7 @@ export class Task extends BaseContent {
 
     @Column('int', { default: 1 })
     isUseful?: number;
+
+    @Column()
+    previewImg?: string;
 }

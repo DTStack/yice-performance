@@ -37,6 +37,7 @@ declare module 'typing' {
         triggerType: number;
         failReason?: string;
         isUseful: number;
+        previewImg?: string;
     }
 
     /** 性能字段 */

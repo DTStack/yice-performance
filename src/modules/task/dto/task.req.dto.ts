@@ -34,6 +34,10 @@ export class TaskReqDto extends QueryDto {
     @IsOptional()
     isUseful?: number[];
 
+    @ApiPropertyOptional({ required: false, description: '结果的首屏图片预览' })
+    @IsOptional()
+    previewImg?: string;
+
     @ApiPropertyOptional({ required: false, description: '任务状态' })
     @IsOptional()
     status?: number[];

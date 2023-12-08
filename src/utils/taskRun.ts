@@ -167,7 +167,7 @@ const withLogin = async (runInfo: ITask) => {
             await changeTenant(page, taskId);
         }
 
-        console.log(`taskId: ${taskId}, 选择租户成功，将开始检测`);
+        console.log(`taskId: ${taskId}, 选择租户成功，开始检测`);
 
         // 开始检测
         runResult = await lighthouse(url, getLhOptions(PORT), lhConfig);
@@ -188,7 +188,7 @@ const withOutLogin = async (runInfo: ITask) => {
     const { taskId, url } = runInfo;
     let chrome, runResult;
     try {
-        console.log(`taskId: ${taskId}, 将开始检测`);
+        console.log(`taskId: ${taskId}, 开始检测`);
 
         // 通过 API 控制 Node 端的 chrome 打开标签页，借助 Lighthouse 检测页面
         chrome = await chromeLauncher.launch(chromeLauncherOptions);
@@ -222,6 +222,9 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         const reportPath = `/report/${fileName}.html`;
         fs.writeFileSync(filePath, runResult?.report);
 
+        // 结果的首屏图片预览
+        const previewImg = runResult?.lhr?.audits?.['final-screenshot']?.details?.data;
+
         // 整理性能数据
         const audits = runResult?.lhr?.audits || {};
         const auditRefs =
@@ -253,10 +256,11 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
             duration,
             reportPath,
             performance,
+            previewImg,
         };
 
         // 抛出结果
-        await successCallback(taskId, result);
+        await successCallback(task, result);
 
         return result;
     } catch (error) {

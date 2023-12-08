@@ -6,9 +6,10 @@ import {
     CopyOutlined,
     ExclamationCircleOutlined,
     MinusCircleOutlined,
+    PictureOutlined,
     SyncOutlined,
 } from '@ant-design/icons';
-import { Button, message, Modal, Popconfirm, Table, Tag, Tooltip } from 'antd';
+import { Button, message, Modal, Popconfirm, Popover, Table, Tag, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import copy from 'copy-to-clipboard';
 import moment from 'moment';
@@ -238,7 +239,7 @@ export default function TaskTable(props: IPros) {
             width: 120,
             fixed: 'right',
             filters: TASK_STATUS_TEXT,
-            render: (status, record) => {
+            render: (status, record: ITask) => {
                 const { failReason } = record;
                 let icon, color;
                 switch (status) {
@@ -270,22 +271,37 @@ export default function TaskTable(props: IPros) {
                     </Tag>
                 );
 
-                return [TASK_STATUS.CANCEL, TASK_STATUS.FAIL].includes(status) ? (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {failReason ? (
-                            <Tooltip title={failReason}>
-                                <span>
-                                    {tag}
-                                    <CopyOutlined onClick={() => copy(failReason)} />
-                                </span>
-                            </Tooltip>
-                        ) : (
-                            tag
-                        )}
-                    </div>
-                ) : (
-                    tag
-                );
+                if ([TASK_STATUS.CANCEL, TASK_STATUS.FAIL].includes(status)) {
+                    return (
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            {failReason ? (
+                                <Tooltip title={failReason}>
+                                    <span>
+                                        {tag}
+                                        <CopyOutlined onClick={() => copy(failReason)} />
+                                    </span>
+                                </Tooltip>
+                            ) : (
+                                tag
+                            )}
+                        </div>
+                    );
+                } else if ([TASK_STATUS.SUCCESS].includes(status)) {
+                    return record.previewImg ? (
+                        <span>
+                            {tag}
+                            <Popover
+                                content={<img style={{ width: 200 }} src={record.previewImg} />}
+                            >
+                                <PictureOutlined />
+                            </Popover>
+                        </span>
+                    ) : (
+                        tag
+                    );
+                } else {
+                    return tag;
+                }
             },
         },
         {
@@ -306,7 +322,7 @@ export default function TaskTable(props: IPros) {
             key: 'action',
             width: 160,
             fixed: 'right',
-            render: (_text, record: any) => {
+            render: (_text, record: ITask) => {
                 const { status } = record;
                 const tryAgainBtn = (
                     <Popconfirm
@@ -455,7 +471,7 @@ export default function TaskTable(props: IPros) {
     };
 
     // 点击行选择
-    const selectRow = (record: any) => {
+    const selectRow = (record: ITask) => {
         const _selectedRowKeys = [...selectedRowKeys];
         if (_selectedRowKeys.includes(record.taskId)) {
             _selectedRowKeys.splice(_selectedRowKeys.indexOf(record.taskId), 1);
@@ -497,7 +513,7 @@ export default function TaskTable(props: IPros) {
                     y: 'calc(100vh - 160px - 24px - 56px - 48px - 48px - 16px)',
                 }}
                 onChange={handleTableChange}
-                onRow={(record) => ({
+                onRow={(record: ITask) => ({
                     onClick: (e: any) => {
                         // TODO 双击某个元素时也会触发、选择内容时也会触发
                         // 拦截按钮的点击事件、failReason 的复制

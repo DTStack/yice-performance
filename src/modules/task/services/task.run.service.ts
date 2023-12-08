@@ -144,9 +144,10 @@ export class TaskRunService {
     }
 
     // 任务运行成功的回调
-    private async successCallback(taskId, result) {
+    private async successCallback(task, result) {
+        const { taskId } = task;
+        const { score, duration, reportPath, performance, previewImg } = result || {};
         try {
-            const { score, duration, reportPath, performance } = result;
             const { status } = await this.taskService.findOne(taskId);
             // 只有当前任务是运行中才保存检测结果，因为任务可能被手动取消，手动取消的任务不保存结果数据
             if (status === TASK_STATUS.RUNNING) {
@@ -175,6 +176,7 @@ export class TaskRunService {
                     score,
                     duration,
                     reportPath,
+                    previewImg,
                     status,
                     failReason,
                 });
@@ -185,6 +187,7 @@ export class TaskRunService {
             console.log(`taskId: ${taskId}, 检测完成，本次检测耗时: ${duration}ms\n`);
         } catch (error) {
             console.log('successCallback error', error);
+            this.failCallback(task, error?.toString(), duration);
         }
     }
 
@@ -193,7 +196,7 @@ export class TaskRunService {
         try {
             await this.taskService.update(task?.taskId, {
                 status: TASK_STATUS.FAIL,
-                failReason,
+                failReason: failReason.slice(0, 10240),
                 duration,
             });
             await DingtalkRobot.failure(task);
