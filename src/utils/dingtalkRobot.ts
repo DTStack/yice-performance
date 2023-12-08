@@ -34,13 +34,13 @@ class DingtalkRobot {
                 isAtAll: false,
             };
             await robot.markdown(
-                `${process.env.NODE_ENV === 'staging' ? '【测试】' : ''}${title}`,
+                `${process.env.NODE_ENV === 'staging' ? '【测试服】' : ''}${title}`,
                 text,
                 at
             );
             console.log(
                 `${
-                    process.env.NODE_ENV === 'staging' ? '【测试】' : ''
+                    process.env.NODE_ENV === 'staging' ? '【测试服】' : ''
                 }taskId: ${taskId}, ${title}已发送`
             );
         } catch (error) {

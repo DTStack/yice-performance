@@ -59,7 +59,11 @@ export class DevopsService {
 
         let loginUrl = '';
         // v4.x、v5.x 版本的数栈
-        if (portalfront.includes('base4') || portalfront.includes('base5')) {
+        if (
+            portalfront.includes('base4') ||
+            portalfront.includes('base5') ||
+            portalfront.includes('beta5')
+        ) {
             loginUrl = str.split('uicfront:')?.[1]?.replace(/\n/g, '');
         } else {
             // v6.x 及以上版本的数栈

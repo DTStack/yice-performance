@@ -147,17 +147,15 @@ export default function VersionModal(props: IProps) {
     const footerRender = () => {
         return (
             <div className="footer-btn">
-                <div className="btn-box">
-                    {isEdit && yiceRole === YICE_ROLE.ADMIN ? (
-                        <Button danger onClick={handleDelete}>
-                            删除
-                        </Button>
-                    ) : null}
-                    <Button onClick={onCancel}>取消</Button>
-                    <Button type="primary" loading={saving || formLoading} onClick={handleOk}>
-                        确定
+                {isEdit && yiceRole === YICE_ROLE.ADMIN ? (
+                    <Button danger onClick={handleDelete}>
+                        删除
                     </Button>
-                </div>
+                ) : null}
+                <Button onClick={onCancel}>取消</Button>
+                <Button type="primary" loading={saving || formLoading} onClick={handleOk}>
+                    确定
+                </Button>
             </div>
         );
     };

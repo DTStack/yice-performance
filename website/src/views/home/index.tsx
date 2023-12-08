@@ -132,7 +132,7 @@ function Home() {
                 <div className="logo-box">
                     <img src={getImgUrl('', '/logo.png')} alt="" onClick={handleClick} />
                     <div>
-                        {process.env.NODE_ENV === 'staging' ? '【测试】' : ''}易测性能检测平台
+                        {process.env.NODE_ENV === 'staging' ? '【测试服】' : ''}易测性能检测平台
                     </div>
                 </div>
                 <Search
