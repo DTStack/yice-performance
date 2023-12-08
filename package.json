@@ -28,6 +28,7 @@
         "deploy": "bash scripts/deploy.command",
         "deploy:test": "bash scripts/deploy-test.command",
         "static": "bash scripts/static.command",
+        "static:test": "bash scripts/static-test.command",
         "pm2": "pm2 restart ./pm2/config.json --env production",
         "pm2:test": "pm2 restart ./pm2/config-test.json --env staging"
     },
