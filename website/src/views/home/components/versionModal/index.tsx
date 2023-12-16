@@ -232,7 +232,11 @@ export default function VersionModal(props: IProps) {
                             { pattern: httpPattern, message: '请输入以 http(s) 开头的检测地址' },
                         ]}
                     >
-                        <Input allowClear placeholder="请输入检测地址" />
+                        <Input
+                            allowClear
+                            placeholder="请输入检测地址"
+                            onPressEnter={handleInputEnter}
+                        />
                     </Form.Item>
                     <Form.Item name="loginUrl" label="登录地址">
                         <Input allowClear placeholder="请输入登录地址" />
@@ -241,7 +245,11 @@ export default function VersionModal(props: IProps) {
                         <Input allowClear placeholder="请输入用户名" />
                     </Form.Item>
                     <Form.Item name="password" label="用户密码">
-                        <Input allowClear placeholder="请输入用户密码" />
+                        <Input
+                            allowClear
+                            placeholder="请输入用户密码"
+                            onPressEnter={handleInputEnter}
+                        />
                     </Form.Item>
                 </Form>
             </Spin>
