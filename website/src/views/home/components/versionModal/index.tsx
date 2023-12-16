@@ -27,6 +27,7 @@ export default function VersionModal(props: IProps) {
     const [form] = Form.useForm();
     const [formLoading, setFormLoading] = useState<boolean>(false);
     const [shiliFetching, setShiliFetching] = useState<boolean>(false);
+    const [deleting, setDeleting] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
     const [devopsShiLiId, setDevopsShiLiId] = useState<number | undefined>(undefined);
     const [devopsShiLiList, setDevopsShiLiList] = useState<any[]>([]);
@@ -127,13 +128,18 @@ export default function VersionModal(props: IProps) {
             title: '是否删除该版本？',
             icon: <ExclamationCircleOutlined />,
             onOk() {
-                API.deleteVersion({ versionId }).then(() => {
-                    // 删除版本后重新获取任务列表
-                    handleVersionChange(undefined);
+                setDeleting(true);
+                API.deleteVersion({ versionId })
+                    .then(() => {
+                        // 删除版本后重新获取任务列表
+                        handleVersionChange(undefined);
 
-                    onCancel(true);
-                    message.success('操作完成！');
-                });
+                        onCancel(true);
+                        message.success('操作完成！');
+                    })
+                    .finally(() => {
+                        setDeleting(false);
+                    });
             },
         });
     };
@@ -145,15 +151,16 @@ export default function VersionModal(props: IProps) {
     };
 
     const footerRender = () => {
+        const loading = deleting || saving || formLoading;
         return (
             <div className="footer-btn">
                 {isEdit && yiceRole === YICE_ROLE.ADMIN ? (
-                    <Button danger onClick={handleDelete}>
+                    <Button danger loading={loading} onClick={handleDelete}>
                         删除
                     </Button>
                 ) : null}
                 <Button onClick={onCancel}>取消</Button>
-                <Button type="primary" loading={saving || formLoading} onClick={handleOk}>
+                <Button type="primary" loading={loading} onClick={handleOk}>
                     确定
                 </Button>
             </div>
