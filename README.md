@@ -15,7 +15,8 @@
 
 ### mysql 5.7
 
-建表语句: `/src/mysql/base-table.sql`
+建表语句: `/src/mysql/base-table.sql`  
+demo 数据: `/src/mysql/demo-data.sql`  
 
 ### 基础依赖
 
