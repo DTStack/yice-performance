@@ -24,7 +24,12 @@ export class VersionService {
     ) {}
 
     async findAll(projectId: number): Promise<Version[]> {
-        const result = await this.versionRepository.find({ where: getWhere({ projectId }) });
+        const result = await this.versionRepository.find({
+            where: getWhere({ projectId }),
+            order: {
+                sort: 'DESC',
+            },
+        });
         return result.map((item) => {
             return { ...item, isDefault: item.name === '汇总' && item.url === 'default' };
         });

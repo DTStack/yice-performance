@@ -40,4 +40,10 @@ export class VersionDto {
 
     @ApiPropertyOptional({ description: '版本的cron表达式' })
     readonly cron?: string;
+
+    @ApiPropertyOptional({ description: '排序序号' })
+    readonly sort?: number;
+
+    @ApiPropertyOptional({ description: '备注' })
+    readonly note?: string;
 }

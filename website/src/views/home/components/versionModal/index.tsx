@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Form, Input, message, Modal, Select, Spin } from 'antd';
+import { Button, Form, Input, InputNumber, message, Modal, Select, Spin } from 'antd';
 import { IProject, IVersion } from 'typing';
 
 import { YICE_ROLE } from '../../../../const/role';
@@ -257,6 +257,15 @@ export default function VersionModal(props: IProps) {
                             placeholder="请输入用户密码"
                             onPressEnter={handleInputEnter}
                         />
+                    </Form.Item>
+                    <Form.Item
+                        name="sort"
+                        label=" 排序序号"
+                        tooltip="序号越大越靠前"
+                        rules={[{ required: true }]}
+                        initialValue={1}
+                    >
+                        <InputNumber min={1} max={20} precision={0} placeholder="请输入排序序号" />
                     </Form.Item>
                 </Form>
             </Spin>
