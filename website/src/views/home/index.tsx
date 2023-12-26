@@ -151,7 +151,7 @@ function Home() {
                 <div className={projectList.length ? 'box' : 'box empty'}>
                     {projectList.length ? (
                         <>
-                            <Projects projectList={projectList} />
+                            <Projects projectList={projectList} getProjects={getProjects} />
                             <Versions />
                         </>
                     ) : (

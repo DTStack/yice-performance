@@ -12,9 +12,25 @@
             left: 0;
             right: inherit !important;
         }
+        &:hover {
+            .edit-icon {
+                visibility: visible;
+            }
+        }
+        &:active {
+            background-color: #FFF;
+        }
         img {
             width: 20px;
             height: 20px;
+        }
+        .name {
+            margin: 0 10px;
+        }
+        .edit-icon {
+            position: absolute;
+            right: 24px;
+            visibility: hidden;
         }
     }
 }

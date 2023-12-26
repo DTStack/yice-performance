@@ -13,7 +13,7 @@ export class Version extends BaseContent {
     @Column('int')
     devopsShiLiId: number;
 
-    @Column({ length: 256 })
+    @Column({ length: 64 })
     name?: string;
 
     @Column({ length: 1024 })

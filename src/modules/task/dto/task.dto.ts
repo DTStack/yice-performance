@@ -11,7 +11,7 @@ export class TaskDto {
 
     @IsOptional()
     @ApiPropertyOptional({ description: '版本名称' })
-    @MaxLength(256, { message: '版本名称最大长度为256' })
+    @MaxLength(64, { message: '版本名称最大长度为64' })
     versionName?: string;
 
     @IsOptional()

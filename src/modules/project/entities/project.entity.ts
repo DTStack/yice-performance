@@ -10,9 +10,12 @@ export class Project extends BaseContent {
     @Column('int')
     devopsProjectIds: string;
 
-    @Column({ length: 256 })
+    @Column({ length: 64 })
     name: string;
 
-    @Column({ length: 256 })
+    @Column({ length: 64 })
     appName: string;
+
+    @Column({ length: 256 })
+    emails: string;
 }

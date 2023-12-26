@@ -13,7 +13,7 @@ export class VersionDto {
     readonly devopsShiLiId?: number;
 
     @ApiPropertyOptional({ description: '版本名称' })
-    @MaxLength(256, { message: '版本名称最大长度为256' })
+    @MaxLength(64, { message: '版本名称最大长度为64' })
     readonly name: string;
 
     @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: '检测地址无效' })

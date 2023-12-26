@@ -5,6 +5,7 @@ declare module 'typing' {
         devopsProjectIds?: string;
         name: string;
         appName?: string;
+        emails?: string;
     }
 
     /** 版本字段 */

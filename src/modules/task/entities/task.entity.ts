@@ -10,7 +10,7 @@ export class Task extends BaseContent {
     @Column('int')
     versionId?: number;
 
-    @Column({ length: 256 })
+    @Column({ length: 64 })
     versionName?: string;
 
     @Column('datetime')

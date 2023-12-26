@@ -89,4 +89,14 @@ export class DevopsService {
             throw new HttpException('请求 devops 接口失败', HttpStatus.OK);
         }
     }
+
+    // 获取 devops 项目列表
+    async getDevopsProjectList() {
+        try {
+            const result = await this.axiosGet(`http://devops.dtstack.cn/api/v1/projects`);
+            return result;
+        } catch (error) {
+            throw new HttpException('请求 devops 接口失败', HttpStatus.OK);
+        }
+    }
 }

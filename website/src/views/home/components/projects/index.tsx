@@ -1,12 +1,17 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import { EditOutlined } from '@ant-design/icons';
 import { Empty, Menu } from 'antd';
+import { IProject } from 'typing';
 
+import { YICE_ROLE } from '../../../../const/role';
 import { InitContext } from '../../../../store';
 import { getImgUrl } from '../../../../utils';
+import ProjectModal from '../projectModal';
 import './style.less';
 
 interface IProps {
     projectList: any[];
+    getProjects: Function;
 }
 
 export default function Projects(props: IProps) {
@@ -20,16 +25,34 @@ export default function Projects(props: IProps) {
         setSearchStr,
         setCurrent,
     } = useContext(InitContext);
+    const [open, setOpen] = useState<boolean>(false);
+    const [editProject, setEditProject] = useState<IProject | undefined>(undefined);
     const { projectId } = project || {};
-    const { projectList = [] } = props;
+    const { projectList = [], getProjects } = props;
+
+    const yiceRole = localStorage.getItem('yice-role');
 
     const items = projectList.map((item: any) => {
         return {
-            label: item.name,
             key: item.projectId,
-            icon: <img src={getImgUrl(`${item.appName || 'default'}.png`)} alt="" />,
+            icon: (
+                <>
+                    <img src={getImgUrl(`${item.appName || 'default'}.png`)} alt="" />
+                    <div className="name">{item.name}</div>
+                    {yiceRole === YICE_ROLE.ADMIN && item.name !== '汇总' ? (
+                        <EditOutlined className="edit-icon" onClick={(e) => handleEdit(e, item)} />
+                    ) : null}
+                </>
+            ),
         };
     });
+
+    // 编辑项目
+    const handleEdit = (e: any, item: IProject) => {
+        setEditProject(item);
+        setOpen(true);
+        e.stopPropagation();
+    };
 
     // 切换项目 应当先清除搜索条件：搜索内容、versionId、起止日期、current，再更新 projectId，并请求 taskList
     const handleClick = (e: any) => {
@@ -59,6 +82,16 @@ export default function Projects(props: IProps) {
             ) : (
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
             )}
+
+            <ProjectModal
+                open={open}
+                project={editProject}
+                onCancel={() => {
+                    setOpen(false);
+                    setEditProject(undefined);
+                    getProjects();
+                }}
+            />
         </div>
     );
 }

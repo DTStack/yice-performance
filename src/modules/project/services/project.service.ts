@@ -23,7 +23,6 @@ export class ProjectService {
         return result;
     }
 
-    /** 暂未使用 */
     async update(projectDto: ProjectDto) {
         const result = await this.projectRepository.update(projectDto.projectId, projectDto);
         return result;

@@ -82,4 +82,7 @@ export default {
     getDevopsUrl(params?: any) {
         return instance.get('/devops/getDevopsUrl', { params });
     },
+    getDevopsProjectList(params?: any) {
+        return instance.get('/devops/getDevopsProjectList', { params });
+    },
 };
