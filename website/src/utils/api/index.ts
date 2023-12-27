@@ -85,4 +85,9 @@ export default {
     getDevopsProjectList(params?: any) {
         return instance.get('/devops/getDevopsProjectList', { params });
     },
+
+    // 数据周报 - 邮件
+    sendProjectMail(data: any) {
+        return instance.post('/email/send', data);
+    },
 };

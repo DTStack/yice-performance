@@ -6,7 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { TASK_STATUS } from '@/const';
-import { Project } from '@/modules/project/entities/project.entity';
 import { TaskDto } from '@/modules/task/dto/task.dto';
 import { Task } from '@/modules/task/entities/task.entity';
 import { Version } from '@/modules/version/entities/version.entity';
@@ -16,8 +15,6 @@ import { projectChartReqDto } from '../dto/chart.req.dto';
 @Injectable()
 export class ChartService {
     constructor(
-        @InjectRepository(Project)
-        private readonly projectRepository: Repository<Project>,
         @InjectRepository(Version)
         private readonly versionRepository: Repository<Version>,
         @InjectRepository(Task)
@@ -36,6 +33,9 @@ export class ChartService {
                 const versionIds = result.map((task: TaskDto) => task.versionId);
                 whereSql += 'and versionId IN (:...versionIds) ';
                 Object.assign(whereParams, { versionIds });
+            } else {
+                // 没有版本就不用查检测数据列表了
+                return [];
             }
             if (startTime && endTime) {
                 whereSql += 'and startAt between :startTime and :endTime ';

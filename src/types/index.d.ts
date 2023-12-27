@@ -5,10 +5,16 @@ declare module 'typing' {
      * 检测任务所需要的字段
      */
     export interface ITask {
+        /** 任务id */
+        taskId?: number;
         /** 项目id */
         projectId?: number;
         /** 项目名称  */
         projectName?: string;
+        /** 版本 id */
+        versionId?: string;
+        /** 版本名称 */
+        versionName?: string;
         /** 待检测地址 */
         url?: string;
         /** 检测得分 */

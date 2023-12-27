@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Form, Input, message, Modal, Select, Spin } from 'antd';
+import { Button, Form, Input, message, Modal, Select, Spin } from 'antd';
 import { IProject } from 'typing';
 
 import { YICE_ROLE } from '../../../../const/role';
 import API from '../../../../utils/api';
+import './style.less';
 
 const Option = Select.Option;
 
@@ -16,7 +17,9 @@ interface IProps {
 export default function ProjectModal(props: IProps) {
     const { open, project, onCancel } = props;
     const [form] = Form.useForm();
+    const [emailsIsTrue, setEmailsIsTrue] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [sending, setSending] = useState<boolean>(false);
     const [devopsLoading, setDevopsLoading] = useState<boolean>(false);
     const [devopsProjectList, setDevopsProjectList] = useState<any[]>([]);
 
@@ -73,6 +76,44 @@ export default function ProjectModal(props: IProps) {
         !loading && e.keyCode === 13 && handleOk();
     };
 
+    const handleSendMail = () => {
+        form.validateFields().then((values: any) => {
+            const { emails } = values;
+
+            setSending(true);
+            API.sendProjectMail({ projectId: project?.projectId, emails })
+                .then((res) => {
+                    console.log(111, res);
+                    message.success('请求成功！');
+                })
+                .finally(() => {
+                    setSending(false);
+                });
+        });
+    };
+
+    const renderButtons = () => {
+        return (
+            <div className="btn-box">
+                <Button
+                    type="primary"
+                    loading={sending}
+                    disabled={!emailsIsTrue}
+                    onClick={handleSendMail}
+                >
+                    发送周报
+                </Button>
+
+                <div>
+                    <Button onClick={onCancel}>取消</Button>
+                    <Button type="primary" loading={loading} onClick={handleOk}>
+                        保存
+                    </Button>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <Modal
             width={500}
@@ -80,8 +121,8 @@ export default function ProjectModal(props: IProps) {
             open={open}
             forceRender
             destroyOnClose
-            confirmLoading={loading}
             onOk={handleOk}
+            footer={renderButtons()}
             onCancel={onCancel}
         >
             <Spin spinning={loading}>
@@ -139,13 +180,21 @@ export default function ProjectModal(props: IProps) {
                                         })
                                     ) {
                                         callback(`${email} 邮箱格式不正确`);
+                                        setEmailsIsTrue(false);
+                                    } else {
+                                        setEmailsIsTrue(true);
+                                        callback();
                                     }
-                                    callback();
                                 },
                             },
                         ]}
                     >
-                        <Input.TextArea placeholder="请输入邮箱" maxLength={256} rows={3} />
+                        <Input.TextArea
+                            placeholder="请输入邮箱，以英文逗号分隔"
+                            maxLength={256}
+                            rows={3}
+                            onFocus={() => setEmailsIsTrue(false)}
+                        />
                     </Form.Item>
                 </Form>
             </Spin>

@@ -37,9 +37,13 @@ export class TaskRunService {
     @Cron('0 * * * * *')
     async handleCron() {
         if (process.env.NODE_ENV === 'production') {
+            // 检测版本的 cron，符合当前时间运行的则创建任务
             await this.checkCronForCurrentDate();
         }
+
+        // 检查是否有任务在等待中
         this.checkHasWaitingTask();
+        // 检查任务的运行时长，超时的则让任务失败，一般为五分钟
         this.checkTaskIsTimeout();
     }
 
@@ -307,7 +311,7 @@ export class TaskRunService {
         }
     }
 
-    // 检查任务的运行时长，超时的则让任务失败
+    // 检查任务的运行时长，超时的则让任务失败，一般为五分钟
     private async checkTaskIsTimeout() {
         const result = await this.taskRepository.find({
             where: getWhere({ status: TASK_STATUS.RUNNING }),

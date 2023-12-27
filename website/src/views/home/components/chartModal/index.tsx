@@ -54,7 +54,7 @@ export default function ChartModal(props: IProps) {
             .then((res) => {
                 const data = res.data || [];
 
-                // 默认选择靠前的两个版本进行展示
+                // 默认选择靠前的三个版本进行展示
                 const selectedVersionNames = Object.keys(legendSelected).filter(
                     (item) => legendSelected[item]
                 );

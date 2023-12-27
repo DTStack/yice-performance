@@ -10,6 +10,7 @@ import { BuildModule } from './modules/build/build.module';
 import { ChartModule } from './modules/chart/chart.module';
 import { DatabaseModule } from './modules/database.module';
 import { DevopsModule } from './modules/devops/devops.module';
+import { EmailModule } from './modules/email/email.module';
 import { PerformanceModule } from './modules/performance/performance.module';
 import { ProjectModule } from './modules/project/project.module';
 import { TaskModule } from './modules/task/task.module';
@@ -25,6 +26,7 @@ import { ValidationPipe } from './pipe/validation/validation.pipe';
         ProjectModule,
         TaskModule,
         PerformanceModule,
+        EmailModule,
         BuildModule,
         VersionModule,
         DevopsModule,

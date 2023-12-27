@@ -85,6 +85,13 @@ export default function Versions() {
                             _versionList?.length === 1 &&
                             _versionList.some((item: IVersion) => item.isDefault);
                         setIsDefault(_isDefault);
+
+                        // 如果 router-params_type 中有值，则使用，type 为 'chart' 时应该打开图表弹框
+                        const type = sessionStorage.getItem('router-params_type');
+                        if (type === 'chart' && !_isDefault && _versionList.length) {
+                            sessionStorage.removeItem('router-params_type');
+                            setChartOpen(true);
+                        }
                     }
                 }
             })

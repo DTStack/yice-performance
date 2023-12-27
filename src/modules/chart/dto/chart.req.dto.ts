@@ -3,10 +3,7 @@ import { IsOptional } from 'class-validator';
 
 export class projectChartReqDto {
     @ApiPropertyOptional({ required: false, description: '项目id' })
-    projectId: number[];
-
-    @ApiPropertyOptional({ required: false, description: '版本id' })
-    versionId?: number[];
+    projectId: number;
 
     @ApiPropertyOptional({ required: false, description: '开始时间' })
     @IsOptional()

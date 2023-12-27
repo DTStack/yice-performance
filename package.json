@@ -33,6 +33,7 @@
         "pm2:test": "pm2 restart ./pm2/config-test.json --env staging"
     },
     "dependencies": {
+        "@nestjs-modules/mailer": "^1.10.3",
         "@nestjs/axios": "^2.0.0",
         "@nestjs/common": "^9.0.0",
         "@nestjs/config": "^2.2.0",
@@ -43,6 +44,7 @@
         "@nestjs/swagger": "^6.1.4",
         "@nestjs/typeorm": "^9.0.1",
         "axios": "^1.3.4",
+        "canvas": "^2.11.2",
         "chrome-launcher": "^0.15.1",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.0",
@@ -51,6 +53,8 @@
         "cron-parser": "^4.8.1",
         "dingtalk-robot-sender": "^1.2.0",
         "dotenv": "^16.3.1",
+        "echarts": "^5.4.3",
+        "jsdom": "^23.0.1",
         "lighthouse": "^9.6.8",
         "lodash": "^4.17.21",
         "moment": "2.29.4",
