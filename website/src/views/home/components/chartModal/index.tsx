@@ -30,6 +30,7 @@ export default function ChartModal(props: IProps) {
     const [projectChartLoading, setProjectChartLoading] = useState<boolean>(false);
     const [tabActiveKey, setTabActiveKey] = useState<string>('project');
     const [projectChartData, setProjectChartData] = useState<ITask[]>([]);
+    const [dates, setDates] = useState<any[]>([undefined, undefined]);
     const [startTime, setStartTime] = useState<string | undefined>(undefined);
     const [endTime, setEndTime] = useState<string | undefined>(undefined);
     // echarts 顶部选择展示的版本
@@ -78,13 +79,18 @@ export default function ChartModal(props: IProps) {
 
     // 日期变化
     const changeDate = (value: any) => {
+        setDates(value || [undefined, undefined]);
         // 清除选择后查询
         if (value === null) {
             setStartTime(undefined);
             setEndTime(undefined);
-        } else {
-            setStartTime(formatTime(value?.[0]));
-            setEndTime(formatTime(value?.[1], true));
+        }
+    };
+
+    const onOpenChange = (open: boolean) => {
+        if (!open) {
+            setStartTime(formatTime(dates?.[0]));
+            setEndTime(formatTime(dates?.[1], true));
         }
     };
 
@@ -145,6 +151,7 @@ export default function ChartModal(props: IProps) {
                             }}
                             value={[parseTime(startTime) as any, parseTime(endTime) as any]}
                             onChange={changeDate}
+                            onOpenChange={onOpenChange}
                             getPopupContainer={(triggerNode) => triggerNode.parentElement as any}
                         />
                     </>
