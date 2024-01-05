@@ -47,5 +47,7 @@
 - [ ] 数据周报
 - [ ] docker 部署
 
+**数据周报**功能依赖 canvas 模块，该模块需要一些先行安装的依赖，详情见：[node-canvas wiki](https://github.com/Automattic/node-canvas/wiki)。比如 CentOS 需要先执行 `yum install gcc-c++ cairo-devel pango-devel -y`，MacOS 需要先执行 `brew install pkg-config cairo pango libpng`。
+
 **注意**
 > 易测检测系统和我司内部的 devops 系统深度绑定，用于检测我司需要登录的一些页面，但不影响评分功能的实现参考。
