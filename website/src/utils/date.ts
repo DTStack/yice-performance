@@ -7,6 +7,8 @@ export const todayRange: any = [todayStart(), todayEnd()];
 export const lastDayRange: any = [todayStart().subtract(1, 'days'), todayEnd().subtract(1, 'days')];
 export const last7DaysRange: any = [todayStart().subtract(6, 'days'), todayEnd()];
 export const last30DaysRange: any = [todayStart().subtract(29, 'days'), todayEnd()];
+export const last90DaysRange: any = [todayStart().subtract(89, 'days'), todayEnd()];
+export const last180DaysRange: any = [todayStart().subtract(179, 'days'), todayEnd()];
 
 export const disabledDate = (current: any) => {
     return current?.valueOf() > moment().subtract(0, 'days').valueOf();

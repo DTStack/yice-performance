@@ -8,6 +8,8 @@ import {
     formatTime,
     last7DaysRange,
     last30DaysRange,
+    last90DaysRange,
+    last180DaysRange,
     lastDayRange,
     parseTime,
     todayRange,
@@ -222,6 +224,8 @@ export default function ChartModal(props: IProps) {
                         <RangePicker
                             disabledDate={disabledDate}
                             ranges={{
+                                最近180天: last180DaysRange,
+                                最近90天: last90DaysRange,
                                 最近30天: last30DaysRange,
                                 最近7天: last7DaysRange,
                                 昨天: lastDayRange,
