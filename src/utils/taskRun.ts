@@ -216,7 +216,7 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         console.log(`taskId: ${taskId}, 开始整理数据...`);
 
         // 保存检测结果的报告文件，便于预览
-        const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|#/g, '');
+        const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|\#|\?|\&/g, '-');
         const fileName = `${moment().format('YYYY-MM-DD')}-${taskId}-${urlStr}`;
         const filePath = `./static/${fileName}.html`;
         const reportPath = `/report/${fileName}.html`;
