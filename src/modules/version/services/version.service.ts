@@ -24,15 +24,12 @@ export class VersionService {
     ) {}
 
     async findAll(projectId: number): Promise<Version[]> {
-        const result = await this.versionRepository.find({
-            where: getWhere({ projectId }),
-            order: {
-                sort: 'DESC',
-            },
-        });
-        return result.map((item) => {
-            return { ...item, isDefault: item.name === '汇总' && item.url === 'default' };
-        });
+        const result = await this.versionRepository.find({ where: getWhere({ projectId }) });
+        return VersionService.versionSort(
+            result.map((item) => {
+                return { ...item, isDefault: item.name === '汇总' && item.url === 'default' };
+            })
+        );
     }
 
     async findOne(query) {
@@ -131,4 +128,37 @@ export class VersionService {
 
         return result;
     }
+
+    static versionSort = (arr: Version[]) => {
+        return arr.sort((a, b) => {
+            // 将字符串分解为数字和字母部分
+            const parseParts = (str) => str.split(/(\d+|\D+)/).filter(Boolean);
+
+            const partsA = parseParts(a.name);
+            const partsB = parseParts(b.name);
+
+            for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
+                const partA = partsA[i];
+                const partB = partsB[i];
+
+                if (partA === undefined) return -1;
+                if (partB === undefined) return 1;
+
+                const numA = parseInt(partA, 10);
+                const numB = parseInt(partB, 10);
+
+                if (!isNaN(numA) && !isNaN(numB)) {
+                    if (numA !== numB) {
+                        return numB - numA;
+                    }
+                } else {
+                    if (partA !== partB) {
+                        return partA.localeCompare(partB);
+                    }
+                }
+            }
+
+            return 0;
+        });
+    };
 }
