@@ -74,6 +74,12 @@ export default {
     getProjectChart(params: any) {
         return instance.get('/chart/getProjectChart', { params });
     },
+    getFileSizeChart(params: any) {
+        return instance.get('/chart/getFileSizeChart', { params });
+    },
+    getBuildChart(params: any) {
+        return instance.get('/chart/getBuildChart', { params });
+    },
 
     // devops 相关
     getShiLis(params?: any) {

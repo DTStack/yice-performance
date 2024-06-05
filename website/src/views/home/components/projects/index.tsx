@@ -88,7 +88,9 @@ export default function Projects(props: IProps) {
                 project={editProject}
                 onCancel={() => {
                     setOpen(false);
-                    setEditProject(undefined);
+                    setTimeout(() => {
+                        setEditProject(undefined);
+                    }, 200);
                     getProjects();
                 }}
             />

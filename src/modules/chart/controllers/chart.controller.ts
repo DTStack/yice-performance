@@ -14,4 +14,18 @@ export class ChartController {
     async getCharts(@Query() query: projectChartReqDto) {
         return await this.chartService.projectChart(query);
     }
+
+    @ApiOperation({ summary: '构建产物大小数据' })
+    @HttpCode(HttpStatus.OK)
+    @Get('getFileSizeChart')
+    async getFileSizes(@Query() query: projectChartReqDto) {
+        return await this.chartService.fileSizeChart(query);
+    }
+
+    @ApiOperation({ summary: '子产品构建数据' })
+    @HttpCode(HttpStatus.OK)
+    @Get('getBuildChart')
+    async getBuilds(@Query() query: projectChartReqDto) {
+        return await this.chartService.buildChart(query);
+    }
 }

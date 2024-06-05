@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerModule } from '@nestjs-modules/mailer';
 
+import { Build } from '../build/entities/build.entity';
 import { ChartService } from '../chart/services/chart.service';
 import { Project } from '../project/entities/project.entity';
 import { ProjectService } from '../project/services/project.service';
@@ -16,7 +17,7 @@ const emailFrom = 'yice_performance@163.com';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Project, Version, Task]),
+        TypeOrmModule.forFeature([Project, Version, Task, Build]),
         MailerModule.forRoot({
             transport: {
                 host: 'smtp.163.com',

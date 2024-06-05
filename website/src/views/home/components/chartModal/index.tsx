@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, DatePicker, Empty, Modal, Select, Spin, Tabs } from 'antd';
-import { IProject, ITask, IVersion } from 'typing';
+import { IBuild, IProject, ITask, IVersion } from 'typing';
 
 import API from '../../../../utils/api';
 import {
@@ -12,7 +12,9 @@ import {
     parseTime,
     todayRange,
 } from '../../../../utils/date';
-import ProjectChart from '../projectChart';
+import BuildChart from './buildChart';
+import FileSizeChart from './fileSizeChart';
+import ProjectChart from './projectChart';
 import './style.less';
 
 const Option = Select.Option;
@@ -28,13 +30,21 @@ interface IProps {
 export default function ChartModal(props: IProps) {
     const { open, project, versionList, onCancel } = props;
     const [projectChartLoading, setProjectChartLoading] = useState<boolean>(false);
+    const [fileSizeChartLoading, setFileSizeChartLoading] = useState<boolean>(false);
+    const [buildChartLoading, setBuildChartLoading] = useState<boolean>(false);
     const [tabActiveKey, setTabActiveKey] = useState<string>('project');
+    // 子产品性能趋势图 echarts 顶部选择展示的版本
+    const [legendSelected, setLegendSelected] = useState({});
     const [projectChartData, setProjectChartData] = useState<ITask[]>([]);
+    // 构建产物大小分析图
+    const [fileSizeVersions, setFileSizeVersions] = useState<string[]>([]);
+    const [fileSizeList, setFileSizeList] = useState<string[]>([]);
+    // 版本构建性能图
+    const [buildVersions, setBuildVersions] = useState<string[]>([]);
+    const [buildChartData, setBuildChartData] = useState<IBuild[]>([]);
     const [dates, setDates] = useState<any[]>([undefined, undefined]);
     const [startTime, setStartTime] = useState<string | undefined>(undefined);
     const [endTime, setEndTime] = useState<string | undefined>(undefined);
-    // echarts 顶部选择展示的版本
-    const [legendSelected, setLegendSelected] = useState({});
 
     useEffect(() => {
         // 打开弹框时默认选择最近七天的日期
@@ -44,9 +54,15 @@ export default function ChartModal(props: IProps) {
     }, [open]);
     useEffect(() => {
         if (open) {
-            getProjectChart();
+            if (tabActiveKey === 'project') {
+                getProjectChart();
+            } else if (tabActiveKey === 'file-size') {
+                getFileSizeChart();
+            } else if (tabActiveKey === 'version-build') {
+                getBuildChart();
+            }
         }
-    }, [startTime]);
+    }, [tabActiveKey, startTime]);
 
     // 获取子产品所有版本的性能分数
     const getProjectChart = () => {
@@ -77,6 +93,37 @@ export default function ChartModal(props: IProps) {
             });
     };
 
+    // 构建产物大小分析图
+    const getFileSizeChart = () => {
+        setFileSizeChartLoading(true);
+        API.getFileSizeChart({ projectId: project?.projectId, startTime, endTime })
+            .then((res) => {
+                const { fileSizeVersions, fileSizeList } = res.data || {};
+
+                setFileSizeVersions(fileSizeVersions);
+                setFileSizeList(fileSizeList);
+            })
+            .finally(() => {
+                setFileSizeChartLoading(false);
+            });
+    };
+
+    // 获取子产品版本构建性能图
+    const getBuildChart = () => {
+        setBuildChartLoading(true);
+        API.getBuildChart({ projectId: project?.projectId, startTime, endTime })
+            .then((res) => {
+                const { buildVersions, data } = res.data || {};
+
+                setBuildVersions(buildVersions);
+
+                setBuildChartData(data);
+            })
+            .finally(() => {
+                setBuildChartLoading(false);
+            });
+    };
+
     // 日期变化
     const changeDate = (value: any) => {
         setDates(value || [undefined, undefined]);
@@ -87,6 +134,7 @@ export default function ChartModal(props: IProps) {
         }
     };
 
+    // 打开弹框时初始化日期
     const onOpenChange = (open: boolean) => {
         if (!open) {
             setStartTime(formatTime(dates?.[0]));
@@ -111,9 +159,39 @@ export default function ChartModal(props: IProps) {
         );
     };
 
+    // 构建产物大小分析图
+    const renderFileSizeChart = () => {
+        return (
+            <Spin spinning={fileSizeChartLoading}>
+                {fileSizeVersions.length ? (
+                    <FileSizeChart
+                        fileSizeVersions={fileSizeVersions}
+                        fileSizeList={fileSizeList}
+                    />
+                ) : (
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
+            </Spin>
+        );
+    };
+
+    // 版本构建性能图
+    const renderBuildChart = () => {
+        return (
+            <Spin spinning={buildChartLoading}>
+                {buildVersions.length ? (
+                    <BuildChart data={buildChartData} buildVersions={buildVersions} />
+                ) : (
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
+            </Spin>
+        );
+    };
+
     const tabItems = [
-        { label: '子产品性能趋势图', key: 'project', children: renderProjectChart() },
-        { label: '版本性能图', key: 'version', disabled: true, children: renderProjectChart() },
+        { label: '性能趋势图', key: 'project', children: renderProjectChart() },
+        { label: '构建产物大小分析图', key: 'file-size', children: renderFileSizeChart() },
+        { label: '版本构建性能图', key: 'version-build', children: renderBuildChart() },
     ];
     const onTabChange = (key: string) => {
         setTabActiveKey(key);
@@ -166,6 +244,11 @@ export default function ChartModal(props: IProps) {
         setTimeout(() => {
             setProjectChartData([]);
             setLegendSelected({});
+            setFileSizeVersions([]);
+            setFileSizeList([]);
+            setBuildVersions([]);
+            setBuildChartData([]);
+            setTabActiveKey('project');
         }, 200);
     };
 

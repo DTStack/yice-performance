@@ -61,7 +61,7 @@ export default function ProjectChart(props: IProps) {
     }, [data?.length, legendSelected]);
 
     const renderChart = (versionNames: any, xAxisData: string[], series: any[]) => {
-        const productChart = echarts.init(document.getElementById('container') as any);
+        const chart = echarts.init(document.getElementById('project-container') as any);
         const yMin = Math.min.apply(null, series.map((item) => item.data).flat(Infinity));
 
         const option = {
@@ -112,13 +112,13 @@ export default function ProjectChart(props: IProps) {
             },
             series,
         };
-        productChart.setOption(option);
+        chart.setOption(option);
 
         // echarts 顶部展示的版本变化
-        productChart.on('legendselectchanged', function (params: any) {
+        chart.on('legendselectchanged', function (params: any) {
             setLegendSelected(params?.selected || {});
         });
     };
 
-    return <div id="container" className="product-container"></div>;
+    return <div id="project-container" className="project-container"></div>;
 }

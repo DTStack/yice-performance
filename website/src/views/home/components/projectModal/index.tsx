@@ -190,7 +190,7 @@ export default function ProjectModal(props: IProps) {
                         ]}
                     >
                         <Input.TextArea
-                            placeholder="请输入邮箱，以英文逗号分隔"
+                            placeholder="请输入接收邮箱，以英文逗号分隔"
                             maxLength={256}
                             rows={3}
                             onFocus={() => setEmailsIsTrue(false)}

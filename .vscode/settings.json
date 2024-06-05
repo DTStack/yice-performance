@@ -1,8 +1,8 @@
 {
     "editor.formatOnSave": false,
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-        "source.fixAll.stylelint": true
+        "source.fixAll.eslint": "explicit",
+        "source.fixAll.stylelint": "explicit"
     },
     "files.trimTrailingWhitespace": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -28,5 +28,14 @@
     "[nginx]": {
         "editor.defaultFormatter": "ahmadalli.vscode-nginx-conf"
     },
-    "cSpell.words": ["antv", "Inno", "Kbps", "KHTML", "portalfront", "Shili", "uicfront", "yice"]
+    "cSpell.words": [
+        "antv",
+        "Inno",
+        "Kbps",
+        "KHTML",
+        "portalfront",
+        "Shili",
+        "uicfront",
+        "yice"
+    ]
 }

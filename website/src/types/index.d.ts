@@ -1,4 +1,15 @@
 declare module 'typing' {
+    /** 构建信息字段 */
+    export interface IBuild {
+        buildId: number;
+        projectId: number;
+        repository: string;
+        branch: string;
+        version: string;
+        duration: number;
+        fileSize: number;
+    }
+
     /** 项目字段 */
     export interface IProject {
         projectId: number;
