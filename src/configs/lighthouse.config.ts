@@ -18,6 +18,7 @@ const getLhOptions = (PORT: number) => {
 const lhConfig = {
     extends: 'lighthouse:default',
     settings: {
+        locale: 'zh', //  国际化
         onlyCategories: ['performance'],
         // onlyAudits: ['first-contentful-paint'],
         formFactor: 'desktop',
