@@ -137,7 +137,7 @@ export default function Versions() {
         setIsEdit(true);
         setVersionOpen(true);
     };
-    // 性能趋势按钮
+    // 性能趋势弹框按钮
     const handleChart = () => {
         setChartOpen(true);
     };

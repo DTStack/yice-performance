@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { IProjectChartData } from 'typing';
 
 import { renderChart } from '@/utils/echarts';
 
@@ -7,12 +8,12 @@ import { renderChart } from '@/utils/echarts';
 export class EmailService {
     constructor(private readonly mailerService: MailerService) {}
 
-    async sendMail(project, lastWeekRange, chartList) {
+    async sendMail(project, lastWeekRange, projectChartData: IProjectChartData) {
         const [_, __, startTime, endTime] = lastWeekRange;
         const { projectId, name, emails } = project;
 
         if (emails?.split(',')?.length) {
-            const html = renderChart([{ chartList, projectId, name }]);
+            const html = renderChart([{ projectChartData, projectId, name }]);
             try {
                 const result = await this.mailerService.sendMail({
                     to: emails?.split(','),
@@ -29,11 +30,11 @@ export class EmailService {
     }
 
     // 定时发送所有子产品的数据周报到指定邮箱
-    async sendMailAllProject(emails, list = [], lastWeekRange) {
+    async sendMailAllProject(emails, projectChartDataList = [], lastWeekRange) {
         const [_, __, startTime, endTime] = lastWeekRange;
 
         if (emails?.split(',')?.length) {
-            const html = renderChart(list);
+            const html = renderChart(projectChartDataList);
             try {
                 const result = await this.mailerService.sendMail({
                     to: emails?.split(','),

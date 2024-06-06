@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, DatePicker, Empty, Modal, Select, Spin, Tabs } from 'antd';
 import { isEqual } from 'lodash';
+import { IBuild, IProject, IVersion } from 'typing';
 
 import API from '../../../../utils/api';
 import {
@@ -16,7 +17,7 @@ import {
 } from '../../../../utils/date';
 import BuildChart from './buildChart';
 import FileSizeChart from './fileSizeChart';
-import ProjectChart from './projectChart';
+import ProjectChart, { IProjectChartData } from './projectChart';
 import './style.less';
 
 const Option = Select.Option;
@@ -35,9 +36,8 @@ export default function ChartModal(props: IProps) {
     const [fileSizeChartLoading, setFileSizeChartLoading] = useState<boolean>(false);
     const [buildChartLoading, setBuildChartLoading] = useState<boolean>(false);
     const [tabActiveKey, setTabActiveKey] = useState<string>('project');
-    // 子产品性能趋势图 echarts 顶部选择展示的版本
-    const [legendSelected, setLegendSelected] = useState({});
-    const [projectChartData, setProjectChartData] = useState<ITask[]>([]);
+    // 性能分数趋势图
+    const [projectChartData, setProjectChartData] = useState<IProjectChartData>();
     // 构建产物大小分析图
     const [fileSizeVersions, setFileSizeVersions] = useState<string[]>([]);
     const [fileSizeList, setFileSizeList] = useState<string[]>([]);
@@ -99,24 +99,7 @@ export default function ChartModal(props: IProps) {
         const [startTime, endTime] = dateRange;
         API.getProjectChart({ projectId: project?.projectId, startTime, endTime })
             .then((res) => {
-                const data = res.data || [];
-
-                // 默认选择靠前的三个版本进行展示
-                const selectedVersionNames = Object.keys(legendSelected).filter(
-                    (item) => legendSelected[item]
-                );
-                const versionNames = Array.from(
-                    new Set(data.map((task: ITask) => task.versionName))
-                );
-                const legendSelectedTemp = {};
-                if (!selectedVersionNames.length) {
-                    versionNames.forEach((name: any, idx: number) => {
-                        legendSelectedTemp[name] = idx < 3;
-                    });
-                    setLegendSelected(legendSelectedTemp);
-                }
-
-                setProjectChartData(data);
+                setProjectChartData(res.data || {});
             })
             .finally(() => {
                 setProjectChartLoading(false);
@@ -162,16 +145,12 @@ export default function ChartModal(props: IProps) {
         setDateRange([formatTime(startTime), formatTime(endTime, true)]);
     };
 
-    // 子产品性能趋势图
+    // 子产品性能评分趋势图
     const renderProjectChart = () => {
         return (
             <Spin spinning={projectChartLoading}>
-                {projectChartData.length ? (
-                    <ProjectChart
-                        data={projectChartData}
-                        legendSelected={legendSelected}
-                        setLegendSelected={setLegendSelected}
-                    />
+                {projectChartData?.versionNameList?.length ? (
+                    <ProjectChart data={projectChartData} />
                 ) : (
                     <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
@@ -209,7 +188,7 @@ export default function ChartModal(props: IProps) {
     };
 
     const tabItems = [
-        { label: '性能趋势图', key: 'project', children: renderProjectChart() },
+        { label: '性能评分趋势图', key: 'project', children: renderProjectChart() },
         { label: '构建产物大小分析图', key: 'file-size', children: renderFileSizeChart() },
         { label: '版本构建性能图', key: 'version-build', children: renderBuildChart() },
     ];
@@ -261,8 +240,7 @@ export default function ChartModal(props: IProps) {
         onCancel();
 
         setTimeout(() => {
-            setProjectChartData([]);
-            setLegendSelected({});
+            setProjectChartData(undefined);
             setFileSizeVersions([]);
             setFileSizeList([]);
             setBuildVersions([]);

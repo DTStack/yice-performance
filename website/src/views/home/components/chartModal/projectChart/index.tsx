@@ -1,68 +1,56 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as echarts from 'echarts';
-import { ITask } from 'typing';
 
 import './style.less';
 
+interface IProjectChartSeries {
+    name: string;
+    type: string;
+    data: number[];
+    smooth: boolean;
+    taskIds: number[];
+}
+
+/** 子产品性能评分趋势接口结果 */
+export interface IProjectChartData {
+    taskList: IProjectChartSeries[];
+    versionNameList: string[];
+    maxLength: number;
+}
+
 interface IProps {
-    data: ITask[];
-    // echarts 顶部选择展示的版本
-    legendSelected: any;
-    setLegendSelected: (legendSelected: any) => void;
+    data: IProjectChartData;
 }
 
 export default function ProjectChart(props: IProps) {
-    const { data = [], legendSelected, setLegendSelected } = props;
+    const { data } = props;
+    const { taskList, versionNameList, maxLength } = data || {};
+    // echarts 顶部选择展示的版本
+    const [legendSelectedMap, setLegendSelectedMap] = useState({});
 
     useEffect(() => {
-        if (data?.length) {
-            const selectedVersionNames = Object.keys(legendSelected).filter(
-                (item) => legendSelected[item]
-            );
-            const versionIds = Array.from(new Set(data.map((task: ITask) => task.versionId)));
-            const versionNames = Array.from(new Set(data.map((task: ITask) => task.versionName)));
-
-            const series = versionIds.map((versionId: any) => {
-                return {
-                    name:
-                        data.find((task: ITask) => task.versionId === versionId)?.versionName || '',
-                    type: 'line',
-                    data: data
-                        .filter((task: ITask) => task.versionId === versionId)
-                        .map((task: ITask) => task.score),
-                    smooth: true,
-                    taskIds:
-                        data
-                            .filter((task: ITask) => task.versionId === versionId)
-                            .map((task: ITask) => task.taskId) || [],
-                    // 右侧显示名称
-                    // endLabel: {
-                    //     show: true,
-                    //     formatter: function (params: any) {
-                    //         return params.seriesName;
-                    //     },
-                    // },
-                };
-            });
-
-            const maxLength = Math.max.apply(
-                null,
-                series
-                    .filter((item) => selectedVersionNames.includes(item.name))
-                    .map((item) => item.data.length)
-            );
-            const xAxisData = [];
-            for (let i = 0; i < maxLength; i++) {
-                xAxisData.push(`第${i + 1}次`);
+        if (versionNameList?.length) {
+            const _map = {};
+            for (let i = 0; i < versionNameList.length; i++) {
+                // 默认选择前三个
+                _map[versionNameList[i]] = i < 3;
             }
-
-            renderChart(versionNames, xAxisData, series);
+            setLegendSelectedMap(_map);
         }
-    }, [data?.length, legendSelected]);
+    }, [taskList]);
 
-    const renderChart = (versionNames: any, xAxisData: string[], series: any[]) => {
+    useEffect(() => {
+        renderChart();
+    }, [legendSelectedMap]);
+
+    const renderChart = () => {
         const chart = echarts.init(document.getElementById('project-container') as any);
-        const yMin = Math.min.apply(null, series.map((item) => item.data).flat(Infinity));
+
+        const xAxisData = [];
+        for (let i = 0; i < maxLength; i++) {
+            xAxisData.push(`第${i + 1}次`);
+        }
+        const yMin = Math.min(...(taskList.map((item) => item.data).flat(Infinity) as number[]));
 
         const option = {
             tooltip: {
@@ -70,8 +58,8 @@ export default function ProjectChart(props: IProps) {
                 formatter: function (params: any) {
                     let relVal = params[0].name;
                     params.forEach((param: any) => {
-                        const value = series[param.seriesIndex].data[param.dataIndex];
-                        const taskId = series[param.seriesIndex].taskIds[param.dataIndex];
+                        const value = taskList[param.seriesIndex]?.data?.[param.dataIndex];
+                        const taskId = taskList[param.seriesIndex]?.taskIds?.[param.dataIndex];
                         const seriesName = param.seriesName;
                         relVal +=
                             '<br/>' +
@@ -85,8 +73,8 @@ export default function ProjectChart(props: IProps) {
             },
             // echarts 顶部选择展示的版本
             legend: {
-                data: versionNames,
-                selected: legendSelected,
+                data: versionNameList,
+                selected: legendSelectedMap,
             },
             grid: {
                 left: '3%',
@@ -110,13 +98,13 @@ export default function ProjectChart(props: IProps) {
                 type: 'value',
                 min: yMin > 20 ? 20 : 0,
             },
-            series,
+            series: taskList,
         };
         chart.setOption(option);
 
         // echarts 顶部展示的版本变化
         chart.on('legendselectchanged', function (params: any) {
-            setLegendSelected(params?.selected || {});
+            setLegendSelectedMap(params?.selected || {});
         });
     };
 

@@ -49,7 +49,7 @@ export class EmailController {
 
     @ApiOperation({ summary: '发送邮件' })
     @HttpCode(HttpStatus.OK)
-    @Post('send')
+    @Post('sendProjectMail')
     async sendProject(@Body() { projectId, emails: _emails }) {
         const project = await this.projectService.findOne(projectId);
         const emails = _emails?.split(',')?.length ? _emails : project?.emails;
@@ -67,14 +67,18 @@ export class EmailController {
 
     async generatePromise(project) {
         const [startTime, endTime] = lastWeekRange;
-        const chartList: any = await this.chartService.projectChart({
+        const projectChartData = await this.chartService.projectChart({
             projectId: project.projectId,
             startTime,
             endTime,
         });
 
-        if (chartList.length) {
-            const result = await this.emailService.sendMail(project, lastWeekRange, chartList);
+        if (projectChartData?.versionNameList?.length) {
+            const result = await this.emailService.sendMail(
+                project,
+                lastWeekRange,
+                projectChartData
+            );
             return result;
         } else {
             throw new HttpException('没有历史检测数据', HttpStatus.OK);
@@ -86,40 +90,45 @@ export class EmailController {
     @Post('sendAll')
     async sendAll(@Body() { emails = process.env.DEFAULT_EMAIL }) {
         try {
+            if (!emails) {
+                throw new Error('DEFAULT_EMAIL 未配置邮箱');
+            }
+
             const [startTime, endTime] = lastWeekRange;
             let projectList = await this.projectService.findAll();
             projectList = projectList.filter((project) => project.name !== '汇总');
 
-            const promiseList = [];
-            projectList.forEach((project) => {
-                promiseList.push(
-                    this.chartService.projectChart({
-                        projectId: project.projectId,
-                        startTime,
-                        endTime,
-                    })
-                );
+            const promiseList = projectList.map((project) => {
+                return this.chartService.projectChart({
+                    projectId: project.projectId,
+                    startTime,
+                    endTime,
+                });
             });
 
-            const list = [];
-            const chartListResult = await Promise.all(promiseList);
-            for (let i = 0; i < chartListResult.length; i++) {
-                if (chartListResult[i].length) {
+            const projectChartDataList = [];
+            const projectChartDataResults = await Promise.all(promiseList);
+            for (let i = 0; i < projectChartDataResults.length; i++) {
+                if (projectChartDataResults[i].versionNameList?.length) {
                     const { projectId, name } = projectList[i];
-                    list.push({ projectId, name, chartList: chartListResult[i] });
+                    projectChartDataList.push({
+                        projectId,
+                        name,
+                        projectChartData: projectChartDataResults[i],
+                    });
                 }
             }
 
-            if (list.length) {
+            if (projectChartDataList.length) {
                 const result = await this.emailService.sendMailAllProject(
                     emails,
-                    list,
+                    projectChartDataList,
                     lastWeekRange
                 );
                 return result;
             }
         } catch (error) {
-            throw new HttpException('尝试发送所有子产品的数据周报失败', HttpStatus.OK);
+            throw new HttpException(`尝试发送所有子产品的数据周报失败, ${error}`, HttpStatus.OK);
         }
     }
 }

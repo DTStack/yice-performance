@@ -60,4 +60,16 @@ declare module 'typing' {
         /** 已冻结的版本是否补数据 */
         includeIsFreeze: boolean;
     }
+
+    /** 子产品性能评分趋势接口结果 */
+    export interface IProjectChartData {
+        taskList: IProjectChartSeries[];
+        versionNameList: string[];
+        maxLength: number;
+    }
+    export interface IProjectChartDataList {
+        projectId: number;
+        name: string;
+        projectChartData: IProjectChartData;
+    }
 }

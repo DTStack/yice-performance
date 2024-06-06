@@ -10,7 +10,7 @@ class DingtalkRobot {
         const title = '任务超时告警';
         const text = `taskId: ${taskId} 【运行超时】，请注意检查！\n\n版本名称：[${versionName}](http://yice.dtstack.cn/redirect?projectId=${projectId}&versionId=${versionId})`;
 
-        await this.send(taskId, title, text);
+        await this.sendDingTalkMsg(taskId, title, text);
     }
 
     // 任务运行失败告警
@@ -18,11 +18,11 @@ class DingtalkRobot {
         const title = '任务失败告警';
         const text = `taskId: ${taskId} 【运行失败】，请注意检查！\n\n版本名称：[${versionName}](http://yice.dtstack.cn/redirect?projectId=${projectId}&versionId=${versionId})`;
 
-        await this.send(taskId, title, text);
+        await this.sendDingTalkMsg(taskId, title, text);
     }
 
     // 发送消息的具体实现
-    private async send(taskId: number, title: string, text: string) {
+    private async sendDingTalkMsg(taskId: number, title: string, text: string) {
         try {
             const webhook = process.env.ALARM_WEBHOOK;
             if (!webhook || process.env.NODE_ENV === 'development') return;

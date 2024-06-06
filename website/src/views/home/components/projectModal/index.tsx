@@ -82,9 +82,8 @@ export default function ProjectModal(props: IProps) {
 
             setSending(true);
             API.sendProjectMail({ projectId: project?.projectId, emails })
-                .then((res) => {
-                    console.log(111, res);
-                    message.success('请求成功！');
+                .then(() => {
+                    message.success('发送成功！');
                 })
                 .finally(() => {
                     setSending(false);

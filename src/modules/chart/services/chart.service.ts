@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { countBy, maxBy } from 'lodash';
 import { Repository } from 'typeorm';
+import { IProjectChartData } from 'typing';
 
 import { TASK_STATUS } from '@/const';
 import { BuildDto } from '@/modules/build/dto/build.dto';
@@ -12,6 +13,7 @@ import { Build } from '@/modules/build/entities/build.entity';
 import { TaskDto } from '@/modules/task/dto/task.dto';
 import { Task } from '@/modules/task/entities/task.entity';
 import { Version } from '@/modules/version/entities/version.entity';
+import { VersionService } from '@/modules/version/services/version.service';
 import { formatDate, getWhere } from '@/utils';
 import { projectChartReqDto } from '../dto/chart.req.dto';
 
@@ -29,20 +31,23 @@ export class ChartService {
     ) {}
 
     // 子产品性能数据
-    async projectChart(query: projectChartReqDto): Promise<object> {
+    async projectChart(query: projectChartReqDto): Promise<IProjectChartData> {
         try {
             const { projectId, startTime, endTime } = query;
-            const result = await this.versionRepository.find({ where: getWhere({ projectId }) });
+            const versions = await this.versionRepository.find({
+                where: getWhere({ projectId }),
+            });
+            VersionService.versionSort(versions);
 
             const whereParams = { isDelete: 0, status: TASK_STATUS.SUCCESS };
             let whereSql = 'isDelete = :isDelete and status = :status ';
-            if (result?.length) {
-                const versionIds = result.map((task: TaskDto) => task.versionId);
+            if (versions?.length) {
+                const versionIds = versions.map((task: TaskDto) => task.versionId);
                 whereSql += 'and versionId IN (:...versionIds) ';
                 Object.assign(whereParams, { versionIds });
             } else {
                 // 没有版本就不用查检测数据列表了
-                return [];
+                return { taskList: [], versionNameList: [], maxLength: 0 };
             }
             if (startTime && endTime) {
                 whereSql += 'and startAt between :startTime and :endTime ';
@@ -56,16 +61,37 @@ export class ChartService {
                 .printSql()
                 .getManyAndCount();
 
-            return data?.map((task: TaskDto) => {
-                const { taskId, versionId, versionName, score, startAt } = task;
-                return {
-                    taskId,
-                    versionId,
-                    versionName,
-                    score,
-                    startAt: formatDate(startAt, 'YYYY-MM-DD HH:mm'),
-                };
-            });
+            const taskList = [];
+            const versionNameList = [];
+            let maxLength = 0;
+
+            for (let i = 0; i < versions.length; i++) {
+                const scores = [];
+                let name;
+                const taskIds = [];
+                for (let j = 0; j < data.length; j++) {
+                    const { taskId, versionId, versionName, score } = data[j];
+                    if (versionId === versions[i].versionId) {
+                        name = versionName;
+                        scores.push(score);
+                        taskIds.push(taskId);
+                    }
+                }
+                if (scores.length > maxLength) {
+                    maxLength = scores.length;
+                }
+                scores.length &&
+                    taskList.push({
+                        name,
+                        type: 'line',
+                        data: scores,
+                        smooth: true,
+                        taskIds,
+                    });
+                name && versionNameList.push(name);
+            }
+
+            return { taskList, versionNameList, maxLength };
         } catch (error) {
             console.log('getCharts error', error);
         }
