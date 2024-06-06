@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, DatePicker, Empty, Modal, Select, Spin, Tabs } from 'antd';
-import { IBuild, IProject, ITask, IVersion } from 'typing';
+import { isEqual } from 'lodash';
 
 import API from '../../../../utils/api';
 import {
@@ -44,16 +44,43 @@ export default function ChartModal(props: IProps) {
     // 版本构建性能图
     const [buildVersions, setBuildVersions] = useState<string[]>([]);
     const [buildChartData, setBuildChartData] = useState<IBuild[]>([]);
-    const [dates, setDates] = useState<any[]>([undefined, undefined]);
-    const [startTime, setStartTime] = useState<string | undefined>(undefined);
-    const [endTime, setEndTime] = useState<string | undefined>(undefined);
+
+    const [dateRange, setDateRange] = useState<any[]>([undefined, undefined]);
 
     useEffect(() => {
-        // 打开弹框时默认选择最近七天的日期
         const [startTimeInitialValue, endTimeInitialValue] = last7DaysRange;
-        setStartTime(open ? formatTime(startTimeInitialValue) : undefined);
-        setEndTime(open ? formatTime(endTimeInitialValue, true) : undefined);
+        setDateRange(
+            open
+                ? [formatTime(startTimeInitialValue), formatTime(endTimeInitialValue, true)]
+                : [undefined, undefined]
+        );
     }, [open]);
+
+    // 切换 tab 时改变默认的时间范围让下方监听 dateRange 的 useEffect 去请求数据；如果和当时间范围相同则直接请求数据
+    useEffect(() => {
+        if (open) {
+            let daysRange;
+            if (tabActiveKey === 'project') {
+                isEqual(dateRange, last7DaysRange)
+                    ? getProjectChart()
+                    : (daysRange = last7DaysRange);
+            } else if (tabActiveKey === 'file-size') {
+                isEqual(dateRange, last30DaysRange)
+                    ? getFileSizeChart()
+                    : (daysRange = last30DaysRange);
+            } else if (tabActiveKey === 'version-build') {
+                isEqual(dateRange, last7DaysRange) ? getBuildChart() : (daysRange = last7DaysRange);
+            }
+
+            const [startTimeInitialValue, endTimeInitialValue] = daysRange;
+            setDateRange([
+                formatTime(startTimeInitialValue),
+                formatTime(endTimeInitialValue, true),
+            ]);
+        }
+    }, [tabActiveKey]);
+
+    // 时间范围改变会更新 chart 数据
     useEffect(() => {
         if (open) {
             if (tabActiveKey === 'project') {
@@ -64,11 +91,12 @@ export default function ChartModal(props: IProps) {
                 getBuildChart();
             }
         }
-    }, [tabActiveKey, startTime]);
+    }, [dateRange]);
 
     // 获取子产品所有版本的性能分数
     const getProjectChart = () => {
         setProjectChartLoading(true);
+        const [startTime, endTime] = dateRange;
         API.getProjectChart({ projectId: project?.projectId, startTime, endTime })
             .then((res) => {
                 const data = res.data || [];
@@ -98,6 +126,7 @@ export default function ChartModal(props: IProps) {
     // 构建产物大小分析图
     const getFileSizeChart = () => {
         setFileSizeChartLoading(true);
+        const [startTime, endTime] = dateRange;
         API.getFileSizeChart({ projectId: project?.projectId, startTime, endTime })
             .then((res) => {
                 const { fileSizeVersions, fileSizeList } = res.data || {};
@@ -113,6 +142,7 @@ export default function ChartModal(props: IProps) {
     // 获取子产品版本构建性能图
     const getBuildChart = () => {
         setBuildChartLoading(true);
+        const [startTime, endTime] = dateRange;
         API.getBuildChart({ projectId: project?.projectId, startTime, endTime })
             .then((res) => {
                 const { buildVersions, data } = res.data || {};
@@ -128,20 +158,8 @@ export default function ChartModal(props: IProps) {
 
     // 日期变化
     const changeDate = (value: any) => {
-        setDates(value || [undefined, undefined]);
-        // 清除选择后查询
-        if (value === null) {
-            setStartTime(undefined);
-            setEndTime(undefined);
-        }
-    };
-
-    // 打开弹框时初始化日期
-    const onOpenChange = (open: boolean) => {
-        if (!open) {
-            setStartTime(formatTime(dates?.[0]));
-            setEndTime(formatTime(dates?.[1], true));
-        }
+        const [startTime, endTime] = value || [undefined, undefined];
+        setDateRange([formatTime(startTime), formatTime(endTime, true)]);
     };
 
     // 子产品性能趋势图
@@ -195,9 +213,6 @@ export default function ChartModal(props: IProps) {
         { label: '构建产物大小分析图', key: 'file-size', children: renderFileSizeChart() },
         { label: '版本构建性能图', key: 'version-build', children: renderBuildChart() },
     ];
-    const onTabChange = (key: string) => {
-        setTabActiveKey(key);
-    };
 
     const tabBarExtraContent = () => {
         return (
@@ -223,6 +238,7 @@ export default function ChartModal(props: IProps) {
                         )}
                         <RangePicker
                             disabledDate={disabledDate}
+                            allowClear={false}
                             ranges={{
                                 最近180天: last180DaysRange,
                                 最近90天: last90DaysRange,
@@ -231,9 +247,8 @@ export default function ChartModal(props: IProps) {
                                 昨天: lastDayRange,
                                 今天: todayRange,
                             }}
-                            value={[parseTime(startTime) as any, parseTime(endTime) as any]}
+                            value={[parseTime(dateRange[0]) as any, parseTime(dateRange[1]) as any]}
                             onChange={changeDate}
-                            onOpenChange={onOpenChange}
                             getPopupContainer={(triggerNode) => triggerNode.parentElement as any}
                         />
                     </>
@@ -272,10 +287,11 @@ export default function ChartModal(props: IProps) {
             ]}
         >
             <Tabs
-                onChange={onTabChange}
+                onChange={setTabActiveKey}
                 items={tabItems}
                 activeKey={tabActiveKey}
                 type="card"
+                className="chart-tab-content"
                 tabBarExtraContent={tabBarExtraContent()}
             />
         </Modal>
