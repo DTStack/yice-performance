@@ -3,18 +3,18 @@
  */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { countBy, maxBy } from 'lodash';
-import { Repository } from 'typeorm';
-import { IProjectChartData } from 'typing';
-
 import { TASK_STATUS } from '@/const';
+import { countBy, maxBy } from 'lodash';
 import { BuildDto } from '@/modules/build/dto/build.dto';
 import { Build } from '@/modules/build/entities/build.entity';
 import { TaskDto } from '@/modules/task/dto/task.dto';
 import { Task } from '@/modules/task/entities/task.entity';
 import { Version } from '@/modules/version/entities/version.entity';
 import { VersionService } from '@/modules/version/services/version.service';
+import { Repository } from 'typeorm';
+import { IProjectChartData } from 'typing';
 import { formatDate, getWhere } from '@/utils';
+
 import { projectChartReqDto } from '../dto/chart.req.dto';
 
 type IBuildDto = BuildDto & { sizeMBNum: number };

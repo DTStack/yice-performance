@@ -3,7 +3,9 @@
  */
 import { chromeLauncherOptions, getLhOptions, lhConfig } from '@/configs/lighthouse.config';
 import { getPuppeteerConfig } from '@/configs/puppeteer.config';
+
 import { sleep } from './sleep';
+import { join } from 'path';
 const fs = require('fs');
 const moment = require('moment');
 const lighthouse = require('lighthouse');
@@ -137,7 +139,7 @@ const changeTenant = async (page, taskId) => {
         // v6.0.x
         try {
             await page.click('.ant-select-item-option-content');
-            console.log(`taskId: ${taskId}, 这是数栈 v6.0.x 的租户选择框`);
+            console.log(`taskId: ${taskId}, 这是数栈 v6.0.x 及之后版本的租户选择框`);
         } catch (_error) {}
 
         // 确定按钮，等待接口选择租户成功
@@ -218,7 +220,7 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         // 保存检测结果的报告文件，便于预览
         const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|\#|\?|\&/g, '-');
         const fileName = `${moment().format('YYYY-MM-DD')}-${taskId}-${urlStr}`;
-        const filePath = `./static/${fileName}.html`;
+        const filePath = join(__dirname, '../../', `./report/${fileName}.html`);
         const reportPath = `/report/${fileName}.html`;
         fs.writeFileSync(filePath, runResult?.report);
 

@@ -35,6 +35,9 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # 检测结果
-static/**/*.html
+**/report/*.html
 
 yice-performance*.tar.gz
+
+
+.turbo

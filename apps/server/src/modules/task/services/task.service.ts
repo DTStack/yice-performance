@@ -4,6 +4,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { join } from 'path';
 
 import { TASK_STATUS, TASK_TRIGGER_TYPE } from '@/const';
 import { Performance } from '@/modules/performance/entities/performance.entity';
@@ -225,7 +226,11 @@ export class TaskService {
             .printSql()
             .getManyAndCount();
         data?.filter((task) => !!task?.reportPath)?.forEach((task) => {
-            const filePath = `./static/${task?.reportPath?.replace('/report/', '')}`;
+            const filePath = join(
+                __dirname,
+                '../../../../',
+                `./report/${task?.reportPath?.replace('/report/', '')}`
+            );
             try {
                 fs.unlinkSync(filePath);
             } catch (_error) {

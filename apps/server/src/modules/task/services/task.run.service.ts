@@ -143,7 +143,7 @@ export class TaskRunService {
     // 检查结果文件是否存在
     async checkFileExists(reportPath: string) {
         return fs.existsSync(
-            join(__dirname, '../../../../', `static/${reportPath.replace('/report/', '')}`)
+            join(__dirname, '../../../../', `report/${reportPath.replace('/report/', '')}`)
         );
     }
 

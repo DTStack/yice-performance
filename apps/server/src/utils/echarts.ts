@@ -73,7 +73,7 @@ export const renderChart = (arr: IProjectChartDataList[] = []) => {
     return html;
 };
 
-// 以下内容请先在 src/utils/static/chart.html 调试效果
+// 以下内容请先在 apps/server/src/utils/static/chart.html 调试效果
 const renderHtml = (list) => {
     // 创建一个虚拟的DOM环境
     // prettier-ignore
