@@ -51,3 +51,8 @@
 
 **注意**
 > 易测检测系统和我司内部的 devops 系统深度绑定，用于检测我司需要登录的一些页面，但不影响评分功能的实现参考。
+
+
+## 趋势
+
+[![Stargazers over time](https://starchart.cc/dtstack/yice-performance.svg)](https://starchart.cc/sazima/proxynt)
