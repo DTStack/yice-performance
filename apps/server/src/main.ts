@@ -32,7 +32,9 @@ async function bootstrap() {
     app.use(compression());
 
     await app.listen(APP_PORT, () => {
-        console.log(`app is running: http://localhost:${APP_PORT}`);
+        console.log(
+            `app is running in mode ${process.env.NODE_ENV} on http://localhost:${APP_PORT}`
+        );
         console.log(`api docs: http://localhost:${APP_PORT}/docs`);
     });
 }

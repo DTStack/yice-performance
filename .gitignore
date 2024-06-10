@@ -39,5 +39,5 @@ lerna-debug.log*
 
 yice-performance*.tar.gz
 
-
 .turbo
+*.local

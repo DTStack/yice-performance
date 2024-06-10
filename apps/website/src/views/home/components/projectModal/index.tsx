@@ -97,7 +97,7 @@ export default function ProjectModal(props: IProps) {
                 <Button
                     type="primary"
                     loading={sending}
-                    disabled={!emailsIsTrue}
+                    // disabled={!emailsIsTrue}
                     onClick={handleSendMail}
                 >
                     发送周报
