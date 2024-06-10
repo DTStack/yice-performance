@@ -178,8 +178,12 @@ const withLogin = async (runInfo: ITask) => {
         throw error;
     } finally {
         // 检测结束关闭标签页、无头浏览器
-        await page.close();
-        await browser.close();
+        try {
+            await page.close();
+        } catch (error) {}
+        try {
+            await browser.close();
+        } catch (error) {}
     }
 
     return runResult;
