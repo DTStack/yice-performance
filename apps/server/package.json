@@ -51,11 +51,11 @@
         "dingtalk-robot-sender": "^1.2.0",
         "dotenv": "^16.3.1",
         "jsdom": "^22.1.0",
-        "lighthouse": "^9.6.8",
+        "lighthouse": "9.6.8",
         "mysql": "^2.18.1",
         "mysql2": "^3.2.0",
         "nodemailer": "^6.4.6",
-        "puppeteer": "^19.5.1",
+        "puppeteer": "19.6.3",
         "reflect-metadata": "^0.1.13",
         "rxjs": "^7.8.0",
         "typeorm": "^0.3.12"

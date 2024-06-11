@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+    server-service:
+        container_name: yice-server
+        image: liuxy0551/yice-server:latest
+        ports:
+            - '4000:4000'
+        restart: always
+        depends_on:
+            - mysql-service
+
+    mysql-service:
+        container_name: yice-mysql
+        image: liuxy0551/yice-mysql:latest
+        ports:
+            - '3306:3306'
+        restart: always

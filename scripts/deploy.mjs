@@ -12,7 +12,7 @@ $.verbose = false;
 
     infoLog(`\n---------------- ${isTest ? '测试' : '正式'}服开始部署 ----------------\n\n`);
 
-    infoLog('1. website 资源开始打包');
+    infoLog('1. web 资源开始打包');
     $.verbose = true;
     echo(await $`pnpm build:web${testStr}`);
     $.verbose = false;
@@ -27,7 +27,7 @@ $.verbose = false;
     $.verbose = true;
     // 第一次部署时应该加上 .env 文件
     echo(
-        await $`gtar -czf yice-performance${testStr}.tar.gz dist pm2/config${testStr}.* static/README.md website/dist scripts/start${testStr}.sh package.json pnpm-lock.yaml`
+        await $`gtar -czf yice-performance${testStr}.tar.gz dist pm2/config${testStr}.* static/README.md web/dist scripts/start${testStr}.sh package.json pnpm-lock.yaml`
     );
     $.verbose = false;
     doneLog();

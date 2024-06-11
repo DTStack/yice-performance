@@ -6,7 +6,7 @@ import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/
 const ScheduleSvg = () => (
     <svg width="13.5px" height="12.75px" viewBox="0 0 13.5 12.75">
         <g id="页面-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-            <g id="离线开发" transform="translate(-1385.25, -209.5)" fill="#64698B">
+            <g id="patch-data-svg" transform="translate(-1385.25, -209.5)" fill="#64698B">
                 <g id="Button/次按钮/默认/32/灰色边框备份-9" transform="translate(1376, 200)">
                     <g id="icon/线性/添加" transform="translate(9.25, 9.5)">
                         <path
@@ -24,7 +24,7 @@ const ScheduleSvg = () => (
 const PatchDataSvg = () => (
     <svg width="12.5755539px" height="13.5px" viewBox="0 0 12.5755539 13.5" version="1.1">
         <g id="页面-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-            <g id="离线开发" transform="translate(-1341.853, -209.532)" fill="#64698B">
+            <g id="patch-data-svg" transform="translate(-1341.853, -209.532)" fill="#64698B">
                 <g id="Button/次按钮/默认/32/灰色边框备份-8" transform="translate(1332, 200)">
                     <g id="icon/线性/添加" transform="translate(9.853, 9.532)">
                         <path

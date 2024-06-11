@@ -13,7 +13,7 @@ export default function Routers() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="redirect" element={<Redirect />} />
-                    <Route path="*" element={<NotFound />} />
+                    {/* <Route path="*" element={<NotFound />} /> */}
                 </Route>
             </Routes>
         </YiceContextProvider>
