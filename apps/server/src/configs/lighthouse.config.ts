@@ -15,32 +15,35 @@ const getLhOptions = (PORT: number) => {
     };
 };
 
-const lhConfig = {
-    extends: 'lighthouse:default',
-    settings: {
-        locale: 'zh', //  国际化
-        onlyCategories: ['performance'],
-        // onlyAudits: ['first-contentful-paint'],
-        formFactor: 'desktop',
-        throttling: {
-            rttMs: 0, // 网络延迟，单位 ms
-            throughputKbps: 10 * 1024,
-            cpuSlowdownMultiplier: 1,
-            requestLatencyMs: 0, // 0 means unset
-            downloadThroughputKbps: 0,
-            uploadThroughputKbps: 0,
+const getLhConfig = ({ locale }) => {
+    return {
+        extends: 'lighthouse:default',
+        // https://github.com/GoogleChrome/lighthouse/blob/575e29b8b6634bfb280bc820efea6795f3dd9017/types/externs.d.ts#L141-L186
+        settings: {
+            locale: locale || 'en', //  国际化
+            onlyCategories: ['performance'],
+            // onlyAudits: ['first-contentful-paint'],
+            formFactor: 'desktop',
+            throttling: {
+                rttMs: 0, // 网络延迟，单位 ms
+                throughputKbps: 10 * 1024,
+                cpuSlowdownMultiplier: 1,
+                requestLatencyMs: 0, // 0 means unset
+                downloadThroughputKbps: 0,
+                uploadThroughputKbps: 0,
+            },
+            screenEmulation: {
+                mobile: false,
+                width: 1440,
+                height: 960,
+                deviceScaleFactor: 1,
+                disabled: false,
+            },
+            skipAudits: ['uses-http2'], // 跳过的检查
+            emulatedUserAgent:
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4695.0 Safari/537.36 Chrome-Lighthouse',
         },
-        screenEmulation: {
-            mobile: false,
-            width: 1440,
-            height: 960,
-            deviceScaleFactor: 1,
-            disabled: false,
-        },
-        skipAudits: ['uses-http2'], // 跳过的检查
-        emulatedUserAgent:
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4695.0 Safari/537.36 Chrome-Lighthouse',
-    },
+    };
 };
 
-export { chromeLauncherOptions, getLhOptions, lhConfig };
+export { chromeLauncherOptions, getLhOptions, getLhConfig };

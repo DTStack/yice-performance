@@ -1,7 +1,7 @@
 /**
  * 任务运行相关方法
  */
-import { chromeLauncherOptions, getLhOptions, lhConfig } from '@/configs/lighthouse.config';
+import { chromeLauncherOptions, getLhOptions, getLhConfig } from '@/configs/lighthouse.config';
 import { getPuppeteerConfig } from '@/configs/puppeteer.config';
 
 import { sleep } from './sleep';
@@ -172,7 +172,11 @@ const withLogin = async (runInfo: ITask) => {
         console.log(`taskId: ${taskId}, 选择租户成功，开始检测`);
 
         // 开始检测
-        runResult = await lighthouse(url, getLhOptions(PORT), lhConfig);
+        runResult = await lighthouse(
+            url,
+            getLhOptions(PORT),
+            getLhConfig({ locale: process.env.LIGHTHOUSE_LOCALE })
+        );
     } catch (error) {
         console.log(`taskId: ${taskId}, 检测失败`, `${error?.toString()}`);
         throw error;
@@ -198,7 +202,11 @@ const withOutLogin = async (runInfo: ITask) => {
 
         // 通过 API 控制 Node 端的 chrome 打开标签页，借助 Lighthouse 检测页面
         chrome = await chromeLauncher.launch(chromeLauncherOptions);
-        runResult = await lighthouse(url, getLhOptions(chrome.port), lhConfig);
+        runResult = await lighthouse(
+            url,
+            getLhOptions(chrome.port),
+            getLhConfig({ locale: process.env.LIGHTHOUSE_LOCALE })
+        );
     } catch (error) {
         console.log(`taskId: ${taskId}, 检测失败，${error?.toString()}`);
         throw error;
