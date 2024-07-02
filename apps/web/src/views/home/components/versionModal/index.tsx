@@ -255,7 +255,8 @@ export default function VersionModal(props: IProps) {
                             onPressEnter={handleInputEnter}
                         />
                     </Form.Item>
-                    <Form.Item
+                    {/* 暂时隐藏 服务端已经通过两个 versionSort 方法进行排序 */}
+                    {/* <Form.Item
                         name="sort"
                         label=" 排序序号"
                         tooltip="序号数字越大越靠前"
@@ -263,7 +264,7 @@ export default function VersionModal(props: IProps) {
                         initialValue={1}
                     >
                         <InputNumber min={1} max={20} precision={0} placeholder="请输入排序序号" />
-                    </Form.Item>
+                    </Form.Item> */}
                 </Form>
             </Spin>
         </Modal>
