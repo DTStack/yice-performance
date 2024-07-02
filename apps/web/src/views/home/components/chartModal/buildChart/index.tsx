@@ -152,7 +152,7 @@ export default function BuildChart(props: IProps) {
                     };
                 })}
             />
-            <div id="build-container" className="build-container"></div>;
+            <div id="build-container" className="build-container"></div>
         </>
     );
 }
