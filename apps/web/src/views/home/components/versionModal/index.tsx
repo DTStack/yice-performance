@@ -17,7 +17,7 @@ interface IProps {
     versionList: IVersion[];
     defaultVersionId: number | null | undefined;
     handleVersionChange: Function;
-    onCancel: (needFetch: any) => void;
+    onCancel: (needFetch: boolean) => void;
 }
 
 export default function VersionModal(props: IProps) {
@@ -99,6 +99,11 @@ export default function VersionModal(props: IProps) {
             });
     };
 
+    const handleCancel = (e: any) => {
+        setDevopsShiLiId(undefined);
+        onCancel(typeof e === 'boolean' ? e : false);
+    };
+
     const handleOk = () => {
         form.validateFields().then((values) => {
             setSaving(true);
@@ -113,7 +118,7 @@ export default function VersionModal(props: IProps) {
             })
                 .then(() => {
                     message.success('保存成功！');
-                    onCancel(true);
+                    handleCancel(true);
                 })
                 .finally(() => {
                     setSaving(false);
@@ -134,7 +139,7 @@ export default function VersionModal(props: IProps) {
                         // 删除版本后重新获取任务列表
                         handleVersionChange(undefined);
 
-                        onCancel(true);
+                        handleCancel(true);
                         message.success('操作完成！');
                     })
                     .finally(() => {
@@ -159,7 +164,7 @@ export default function VersionModal(props: IProps) {
                         删除
                     </Button>
                 ) : null}
-                <Button onClick={onCancel}>取消</Button>
+                <Button onClick={handleCancel}>取消</Button>
                 <Button type="primary" loading={loading} onClick={handleOk}>
                     确定
                 </Button>
@@ -168,6 +173,7 @@ export default function VersionModal(props: IProps) {
     };
 
     const devopsShiLiIdDeleted =
+        isEdit &&
         devopsShiLiList.length &&
         devopsShiLiId &&
         !devopsShiLiList.map((item) => item.value).includes(devopsShiLiId);
@@ -180,7 +186,7 @@ export default function VersionModal(props: IProps) {
             open={open}
             forceRender
             destroyOnClose
-            onCancel={onCancel}
+            onCancel={handleCancel}
             footer={footerRender()}
         >
             <Spin spinning={formLoading}>

@@ -8,6 +8,7 @@ test
 docker
 LICENSE
 README.md
+DEPLOY.md
 .turbo
 .env.local
 
