@@ -172,7 +172,7 @@ export class ChartService {
             );
             const buildVersions = ChartService.versionSort(
                 _result?.map((build: BuildDto) => build.version)
-            );
+            ).reverse();
 
             const data = _result?.map((build: BuildDto) => {
                 const {

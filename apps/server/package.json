@@ -31,7 +31,7 @@
         "pm2:test": "pm2 restart ./pm2/config-test.json --env staging"
     },
     "dependencies": {
-        "@nestjs-modules/mailer": "^1.10.3",
+        "@nestjs-modules/mailer": "^2.0.2",
         "@nestjs/axios": "^2.0.0",
         "@nestjs/common": "^9.0.0",
         "@nestjs/config": "^2.2.0",

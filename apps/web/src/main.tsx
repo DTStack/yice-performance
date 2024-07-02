@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
+import 'moment/locale/zh-cn';
 
 import { YICE_ROLE } from './const/role';
 import Routers from './routers';
