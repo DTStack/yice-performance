@@ -196,18 +196,15 @@ export default function VersionModal(props: IProps) {
                                 loading={formLoading}
                                 placeholder="请选择版本"
                                 onChange={getVersion}
-                            >
-                                {versionList.map((version: IVersion) => {
-                                    return (
-                                        <Option
-                                            key={version.versionId}
-                                            value={`${version.versionId}`}
-                                        >
-                                            {version.name}
-                                        </Option>
-                                    );
+                                options={versionList.map((item: IVersion) => {
+                                    return {
+                                        label: `${item.name}${
+                                            item.isFreeze === 1 ? '(已冻结)' : ''
+                                        }`,
+                                        value: `${item.versionId}`,
+                                    };
                                 })}
-                            </Select>
+                            />
                         </Form.Item>
                     ) : null}
                     <Form.Item
@@ -261,7 +258,7 @@ export default function VersionModal(props: IProps) {
                     <Form.Item
                         name="sort"
                         label=" 排序序号"
-                        tooltip="序号越大越靠前"
+                        tooltip="序号数字越大越靠前"
                         rules={[{ required: true }]}
                         initialValue={1}
                     >

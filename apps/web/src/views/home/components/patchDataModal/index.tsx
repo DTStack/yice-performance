@@ -60,9 +60,9 @@ export default function PatchDataModal(props: IProps) {
                         mode="multiple"
                         allowClear
                         placeholder="请选择版本"
-                        options={versionList.map((item) => {
+                        options={versionList.map((item: IVersion) => {
                             return {
-                                label: item.name,
+                                label: `${item.name}${item.isFreeze === 1 ? '(已冻结)' : ''}`,
                                 value: item.versionId,
                             };
                         })}

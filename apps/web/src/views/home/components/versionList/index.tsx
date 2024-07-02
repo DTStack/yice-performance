@@ -196,7 +196,9 @@ export default function Versions() {
                                         placeholder="请选择版本"
                                         options={versionList.map((item: IVersion) => {
                                             return {
-                                                label: item.name,
+                                                label: `${item.name}${
+                                                    item.isFreeze === 1 ? '(已冻结)' : ''
+                                                }`,
                                                 value: `${item.versionId}`,
                                                 isDefault: item.isDefault,
                                             };

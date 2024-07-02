@@ -7,7 +7,7 @@ import { InitContext } from '../../store';
 import { getImgUrl, httpPattern } from '../../utils';
 import API from '../../utils/api';
 import Projects from './components/projects';
-import Versions from './components/versions';
+import Versions from './components/versionList';
 import './style.less';
 
 const { Search } = Input;

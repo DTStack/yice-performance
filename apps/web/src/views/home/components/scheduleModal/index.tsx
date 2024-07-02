@@ -170,15 +170,13 @@ export default function ScheduleModal(props: IProps) {
                             loading={formLoading}
                             placeholder="请选择版本"
                             onChange={getVersion}
-                        >
-                            {versionList.map((version: IVersion) => {
-                                return (
-                                    <Option key={version.versionId} value={`${version.versionId}`}>
-                                        {version.name}
-                                    </Option>
-                                );
+                            options={versionList.map((item: IVersion) => {
+                                return {
+                                    label: `${item.name}${item.isFreeze === 1 ? '(已冻结)' : ''}`,
+                                    value: `${item.versionId}`,
+                                };
                             })}
-                        </Select>
+                        />
                     </Form.Item>
                     <Form.Item name="cron" label="Cron表达式" tooltip={tooltip} required>
                         <Input.Group compact>
