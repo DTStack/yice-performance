@@ -4,6 +4,7 @@ node_modules
 .prettier*
 .eslint*
 .stylelint*
+.dockerignore
 test
 docker
 LICENSE

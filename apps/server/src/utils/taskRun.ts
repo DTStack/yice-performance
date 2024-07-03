@@ -1,7 +1,7 @@
 /**
  * 任务运行相关方法
  */
-import { chromeLauncherOptions, getLhOptions, getLhConfig } from '@/configs/lighthouse.config';
+import { getLhOptions, getLhConfig } from '@/configs/lighthouse.config';
 import { getPuppeteerConfig } from '@/configs/puppeteer.config';
 
 import { sleep } from './sleep';
@@ -10,7 +10,6 @@ const fs = require('fs');
 const moment = require('moment');
 const lighthouse = require('lighthouse');
 const puppeteer = require('puppeteer');
-const chromeLauncher = require('chrome-launcher');
 
 // puppeteer 和 lighthouse 公用该端口
 const PORT = 8041;
@@ -154,22 +153,26 @@ const changeTenant = async (page, taskId) => {
     }
 };
 
-const withLogin = async (runInfo: ITask) => {
+// 检查方法
+const handleLighthouseWithPuppeteer = async (runInfo: ITask, needLogin: boolean) => {
     const { taskId, url } = runInfo;
-    // 创建 puppeteer 无头浏览器
-    const browser = await puppeteer.launch(getPuppeteerConfig(PORT));
-    const page = await browser.newPage();
 
-    let runResult;
+    let browser, page, runResult;
     try {
-        // 登录
-        const result = await toLogin(page, runInfo);
-        if (result !== 'not-uic') {
-            // 选择租户
-            await changeTenant(page, taskId);
-        }
+        // 创建 puppeteer 无头浏览器
+        browser = await puppeteer.launch(getPuppeteerConfig(PORT));
+        page = await browser.newPage();
 
-        console.log(`taskId: ${taskId}, 选择租户成功，开始检测`);
+        // 需要登录 先进行登录，同源的 cookie 可以共享
+        if (needLogin) {
+            const result = await toLogin(page, runInfo);
+            if (result !== 'not-uic') {
+                // 选择租户
+                await changeTenant(page, taskId);
+            }
+
+            console.log(`taskId: ${taskId}, 选择租户成功，开始检测`);
+        }
 
         // 开始检测
         runResult = await lighthouse(
@@ -193,39 +196,15 @@ const withLogin = async (runInfo: ITask) => {
     return runResult;
 };
 
-// 不需要登录的页面检测
-const withOutLogin = async (runInfo: ITask) => {
-    const { taskId, url } = runInfo;
-    let chrome, runResult;
-    try {
-        console.log(`taskId: ${taskId}, 开始检测`);
-
-        // 通过 API 控制 Node 端的 chrome 打开标签页，借助 Lighthouse 检测页面
-        chrome = await chromeLauncher.launch(chromeLauncherOptions);
-        runResult = await lighthouse(
-            url,
-            getLhOptions(chrome.port),
-            getLhConfig({ locale: process.env.LIGHTHOUSE_LOCALE })
-        );
-    } catch (error) {
-        console.log(`taskId: ${taskId}, 检测失败，${error?.toString()}`);
-        throw error;
-    } finally {
-        await chrome.kill();
-    }
-
-    return runResult;
-};
-
 export const taskRun = async (task: ITask, successCallback, failCallback, completeCallback) => {
     const { taskId, start, url, loginUrl } = task;
     try {
         // 依据是否包含 devops 来判断是否需要登录
-        const needLogin = url.includes('devops') || loginUrl;
+        const needLogin = !!(url.includes('devops') || loginUrl);
         console.log(`taskId: ${taskId}, 本次检测${needLogin ? '' : '不'}需要登录，检测地址：`, url);
 
-        // 需要登录与否会决定使用哪个方法
-        const runResult = needLogin ? await withLogin(task) : await withOutLogin(task);
+        // 检查方法
+        const runResult = await handleLighthouseWithPuppeteer(task, needLogin);
 
         console.log(`taskId: ${taskId}, 开始整理数据...`);
 

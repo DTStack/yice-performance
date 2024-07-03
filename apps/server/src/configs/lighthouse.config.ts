@@ -1,10 +1,5 @@
 // https://github.com/GoogleChrome/lighthouse/blob/v9.6.8/docs/configuration.md
 
-const chromeLauncherOptions = {
-    chromeFlags: process.env.USE_HEADLESS === 'yes' ? [] : ['--headless=new', '--no-sandbox'], // --headless 表示不打开窗口
-    logLevel: 'error',
-};
-
 const getLhOptions = (PORT: number) => {
     return {
         port: PORT,
@@ -46,4 +41,4 @@ const getLhConfig = ({ locale }) => {
     };
 };
 
-export { chromeLauncherOptions, getLhOptions, getLhConfig };
+export { getLhOptions, getLhConfig };
