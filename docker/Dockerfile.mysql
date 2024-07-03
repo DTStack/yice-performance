@@ -1,18 +1,17 @@
-FROM biarms/mysql:5.7.30-linux-arm64v8
+ARG BASE_IMAGE=biarms/mysql:5.7.30-linux-arm64v8
+FROM ${BASE_IMAGE}
 
 # 当容器启动时，会执行 /docker-entrypoint-initdb.d/ 下的所有 .sql 文件
 COPY ./mysql/demo-data.sql /docker-entrypoint-initdb.d/
+# 附加的 mysql 配置
+COPY ./mysql/my_custom.cnf /etc/mysql/conf.d/
 
 # 设置 MySQL root 用户的密码
 ENV MYSQL_ROOT_PASSWORD=123456
 ENV MYSQL_DATABASE=yice-performance
 
 # 设置时区
-# RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-# RUN echo 'Asia/Shanghai' >/etc/timezone
+RUN cp /usr/share/zoneinfo/PRC /etc/localtime
 
 # 暴露端口
 EXPOSE 3306
-
-# CMD [""]
-# command: --default-authentication-plugin=mysql_native_password --default-time_zone='+8:00'

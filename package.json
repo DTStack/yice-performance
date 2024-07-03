@@ -8,7 +8,8 @@
     "scripts": {
         "dev": "turbo run dev",
         "build": "turbo run build",
-        "build:docker": "sh docker/build.sh",
+        "docker:build-amd64": "sh docker/build-amd64.sh",
+        "docker:build-arm64v8": "sh docker/build-arm64v8.sh",
         "deploy": "zx scripts/deploy.mjs",
         "deploy:test": "npm run deploy test",
         "static": "bash scripts/static.command",

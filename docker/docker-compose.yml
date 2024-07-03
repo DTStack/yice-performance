@@ -3,7 +3,7 @@ version: '3'
 services:
     server-service:
         container_name: yice-server
-        image: liuxy0551/yice-server:latest
+        image: liuxy0551/yice-server:amd64
         ports:
             - '4000:4000'
         restart: always
@@ -12,7 +12,33 @@ services:
 
     mysql-service:
         container_name: yice-mysql
-        image: liuxy0551/yice-mysql:latest
+        image: liuxy0551/yice-mysql:amd64
         ports:
             - '3306:3306'
         restart: always
+
+
+
+
+
+# ------ 以下为 arm64v8 版本 ------
+
+
+# version: '3'
+
+# services:
+#     server-service:
+#         container_name: yice-server
+#         image: 172.16.84.106/yice/yice-server:arm64v8
+#         ports:
+#             - '4000:4000'
+#         restart: always
+#         depends_on:
+#             - mysql-service
+
+#     mysql-service:
+#         container_name: yice-mysql
+#         image: 172.16.84.106/yice/yice-mysql:arm64v8
+#         ports:
+#             - '3306:3306'
+#         restart: always
