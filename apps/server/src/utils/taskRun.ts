@@ -159,9 +159,11 @@ const handleLighthouseWithPuppeteer = async (runInfo: ITask, needLogin: boolean)
 
     let browser, page, runResult;
     try {
-        // 创建 puppeteer 无头浏览器
         browser = await puppeteer.launch(getPuppeteerConfig(PORT));
         page = await browser.newPage();
+
+        // 设置窗口尺寸，需要和 getPuppeteerConfig 方法的 --window-size 保持一致
+        await page.setViewport({ width: 1920, height: 960 });
 
         // 需要登录 先进行登录，同源的 cookie 可以共享
         if (needLogin) {
