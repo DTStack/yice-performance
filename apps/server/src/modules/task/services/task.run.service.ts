@@ -188,7 +188,7 @@ export class TaskRunService {
                 console.log(`taskId: ${taskId}, 任务不是运行中的状态，故本次检测结果不做记录`);
             }
 
-            console.log(`taskId: ${taskId}, 检测完成，本次检测耗时: ${duration}ms\n`);
+            console.log(`taskId: ${taskId}, 检测完成，本次检测耗时: ${duration}ms`);
         } catch (error) {
             console.log('successCallback error', error);
             this.failCallback(task, error?.toString(), duration);

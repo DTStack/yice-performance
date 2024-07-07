@@ -7,6 +7,7 @@ node_modules
 .dockerignore
 test
 docker
+scripts
 LICENSE
 README.md
 DEPLOY.md

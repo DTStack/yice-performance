@@ -203,7 +203,10 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
     try {
         // 依据是否包含 devops 来判断是否需要登录
         const needLogin = !!(url.includes('devops') || loginUrl);
-        console.log(`taskId: ${taskId}, 本次检测${needLogin ? '' : '不'}需要登录，检测地址：`, url);
+        console.log(
+            `\ntaskId: ${taskId}, 本次检测${needLogin ? '' : '不'}需要登录，检测地址：`,
+            url
+        );
 
         // 检查方法
         const runResult = await handleLighthouseWithPuppeteer(task, needLogin);
