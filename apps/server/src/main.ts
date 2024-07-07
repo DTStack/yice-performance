@@ -4,6 +4,8 @@ import * as compression from 'compression';
 
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { AppModule } from './app.module';
+import moment from 'moment';
+import { formatDate } from './utils';
 const packageJson = require('../package.json');
 
 const APP_PORT = process.env.APP_PORT || 4000;
@@ -33,9 +35,11 @@ async function bootstrap() {
 
     await app.listen(APP_PORT, () => {
         console.log(
-            `app is running in mode ${process.env.NODE_ENV} on http://localhost:${APP_PORT}`
+            `${formatDate()} app is running in mode ${
+                process.env.NODE_ENV
+            } on http://localhost:${APP_PORT}`
         );
-        console.log(`api docs: http://localhost:${APP_PORT}/docs`);
+        console.log(`${formatDate()} api docs: http://localhost:${APP_PORT}/docs`);
     });
 }
 bootstrap();

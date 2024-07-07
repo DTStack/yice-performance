@@ -6,6 +6,7 @@ import { getPuppeteerConfig } from '@/configs/puppeteer.config';
 
 import { sleep } from './sleep';
 import { join } from 'path';
+import { formatDate } from './date';
 const fs = require('fs');
 const moment = require('moment');
 const lighthouse = require('lighthouse');
@@ -99,15 +100,20 @@ const toLogin = async (page, runInfo: ITask) => {
         // 依据是否包含 /login 或 /uic/#/ 来判断登录是否成功，包含则说明登录出错
         if (currentUrl.includes('/login') || currentUrl.includes('/uic/#/')) {
             throw new Error(`taskId: ${taskId}, 登录失败，仍在登录页面`);
+        } else {
+            console.log(formatDate(), ` taskId: ${taskId}, 登录完成`);
         }
     } catch (error) {
         const currentUrl = await page.url();
         if (currentUrl.includes('/portal/#/')) {
             // 通过非用户名密码方式登录，已进入 portal 页面，比如默认登录方式设置为单点登录
-            console.log(`taskId: ${taskId}, 通过非用户名密码方式登录，已进入 portal 页面`);
+            console.log(
+                formatDate(),
+                ` taskId: ${taskId}, 通过非用户名密码方式登录，已进入 portal 页面`
+            );
             return 'not-uic';
         } else {
-            console.log(`taskId: ${taskId}, 登录出错`, error?.toString());
+            console.log(formatDate(), ` taskId: ${taskId}, 登录出错`, error?.toString());
             throw error;
         }
     }
@@ -118,27 +124,28 @@ const changeTenant = async (page, taskId) => {
     try {
         // 等待指定的选择器匹配元素出现在页面中
         await page.waitForSelector('#change_ten_id', waitForSelectorOptions);
-        console.log(`taskId: ${taskId}, 登录成功，开始搜索并将选择租户`);
+        console.log(formatDate(), ` taskId: ${taskId}, 开始搜索并将选择租户`);
+
+        const sleepTime = Number(process.env.RESPONSE_SLEEP ?? 5);
 
         // 租户
         await page.click('.ant-select');
         const tenantInput = await page.$('input#change_ten_id');
+        await sleep(sleepTime / 2);
         await tenantInput.type('demo');
-
-        const sleepTime = Number(process.env.RESPONSE_SLEEP ?? 5);
-        // 搜索到的 demo 租户，点击查询到的第一条租户信息
         await sleep(sleepTime);
 
-        // v5.3.x
+        // 搜索到的 demo 租户，点击查询到的第一条租户信息
+        // 业务中心 antd3.x
         try {
             await page.click('li.ant-select-dropdown-menu-item');
-            console.log(`taskId: ${taskId}, 这是数栈 v5.3.x 及之前版本的租户选择框`);
+            console.log(formatDate(), ` taskId: ${taskId}, 这是数栈 v5.3.x 及之前版本的租户选择框`);
         } catch (_error) {}
 
-        // v6.0.x
+        // 业务中心 antd4.x
         try {
             await page.click('.ant-select-item-option-content');
-            console.log(`taskId: ${taskId}, 这是数栈 v6.0.x 及之后版本的租户选择框`);
+            console.log(formatDate(), ` taskId: ${taskId}, 这是数栈 v6.0.x 及之后版本的租户选择框`);
         } catch (_error) {}
 
         // 确定按钮，等待接口选择租户成功
@@ -147,8 +154,14 @@ const changeTenant = async (page, taskId) => {
         // 等待出现数栈的产品入口
         await page.waitForSelector('div.product-box', waitForSelectorOptions);
         // await sleep(sleepTime);
+
+        console.log(formatDate(), ` taskId: ${taskId}, 选择租户成功，开始检测`);
     } catch (error) {
-        console.log(`taskId: ${taskId}, 选择租户出错`, `选择租户出错，${error?.toString()}`);
+        console.log(
+            formatDate(),
+            ` taskId: ${taskId}, 选择租户出错`,
+            `选择租户出错，${error?.toString()}`
+        );
         throw error;
     }
 };
@@ -172,8 +185,6 @@ const handleLighthouseWithPuppeteer = async (runInfo: ITask, needLogin: boolean)
                 // 选择租户
                 await changeTenant(page, taskId);
             }
-
-            console.log(`taskId: ${taskId}, 选择租户成功，开始检测`);
         }
 
         // 开始检测
@@ -183,7 +194,7 @@ const handleLighthouseWithPuppeteer = async (runInfo: ITask, needLogin: boolean)
             getLhConfig({ locale: process.env.LIGHTHOUSE_LOCALE })
         );
     } catch (error) {
-        console.log(`taskId: ${taskId}, 检测失败`, `${error?.toString()}`);
+        console.log(formatDate(), ` taskId: ${taskId}, 检测失败`, `${error?.toString()}`);
         throw error;
     } finally {
         // 检测结束关闭标签页、无头浏览器
@@ -204,14 +215,16 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         // 依据是否包含 devops 来判断是否需要登录
         const needLogin = !!(url.includes('devops') || loginUrl);
         console.log(
-            `\ntaskId: ${taskId}, 本次检测${needLogin ? '' : '不'}需要登录，检测地址：`,
+            `\n${formatDate()} taskId: ${taskId}, 本次检测${
+                needLogin ? '' : '不'
+            }需要登录，检测地址：`,
             url
         );
 
         // 检查方法
         const runResult = await handleLighthouseWithPuppeteer(task, needLogin);
 
-        console.log(`taskId: ${taskId}, 开始整理数据...`);
+        console.log(formatDate(), ` taskId: ${taskId}, 开始整理数据...`);
 
         // 保存检测结果的报告文件，便于预览
         const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|\#|\?|\&/g, '-');
@@ -234,7 +247,7 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
             const { weight, acronym } = auditRef;
             const { score, numericValue } = audits[auditRef.id] || {};
             if (numericValue === undefined) {
-                console.log(`taskId: ${taskId}, 检测结果出现问题，没有单项检测时长`);
+                console.log(formatDate(), ` taskId: ${taskId}, 检测结果出现问题，没有单项检测时长`);
                 throw new Error(
                     `检测结果出现问题，没有单项检测时长，${JSON.stringify(audits[auditRef.id])}`
                 );

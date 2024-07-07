@@ -10,10 +10,11 @@ import { TASK_STATUS, TASK_TRIGGER_TYPE } from '@/const';
 import { Performance } from '@/modules/performance/entities/performance.entity';
 import { Project } from '@/modules/project/entities/project.entity';
 import { Version } from '@/modules/version/entities/version.entity';
-import { getWhere } from '@/utils';
+import { formatDate, getWhere } from '@/utils';
 import { TaskDto } from '../dto/task.dto';
 import { TaskReqDto } from '../dto/task.req.dto';
 import { Task } from '../entities/task.entity';
+import moment from 'moment';
 const fs = require('fs');
 
 @Injectable()
@@ -234,7 +235,10 @@ export class TaskService {
             try {
                 fs.unlinkSync(filePath);
             } catch (_error) {
-                console.log(`taskId: ${task.taskId}, 检测报告文件删除失败，${filePath}`);
+                console.log(
+                    formatDate(),
+                    ` taskId: ${task.taskId}, 检测报告文件删除失败，${filePath}`
+                );
             }
         });
 

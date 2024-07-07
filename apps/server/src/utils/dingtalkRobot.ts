@@ -1,3 +1,6 @@
+import moment from 'moment';
+import { formatDate } from './date';
+
 /**
  * 钉钉机器人相关方法
  * 消息类型：https://open.dingtalk.com/document/orgapp/robot-message-types-and-data-format
@@ -39,12 +42,13 @@ class DingtalkRobot {
                 at
             );
             console.log(
-                `${
+                formatDate(),
+                `  ${
                     process.env.NODE_ENV === 'staging' ? '【测试服】' : ''
                 }taskId: ${taskId}, ${title}已发送`
             );
         } catch (error) {
-            console.log('发送失败', text);
+            console.log(formatDate(), ' 发送失败', text);
         }
     }
 }

@@ -32,7 +32,7 @@ RUN  rm -rf /etc/apt/sources.list.d/google-chrome.list \
      && apt-get update -y \
      && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-khmeros fonts-kacst fonts-freefont-ttf libxss1 --no-install-recommends
 
-# 安装 nodejs18
+# 安装 nodejs
 RUN apt-get update -y && apt-get install -y curl \
      && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
      && apt-get remove -y curl \
