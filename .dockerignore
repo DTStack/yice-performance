@@ -14,7 +14,8 @@ DEPLOY.md
 .turbo
 .env.local
 
-report/*.html
+# 检测结果
+**/yice-report/*.html
 
 # compiled output
 dist

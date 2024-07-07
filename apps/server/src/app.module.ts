@@ -47,8 +47,8 @@ import { ValidationPipe } from './pipe/validation/validation.pipe';
         }),
         // 托管检测报告的静态资源
         ServeStaticModule.forRoot({
-            serveRoot: '/report',
-            rootPath: join(__dirname, '../', 'report'),
+            serveRoot: '/yice-report',
+            rootPath: join(__dirname, '../', 'yice-report'),
         }),
 
         ScheduleModule.forRoot(),

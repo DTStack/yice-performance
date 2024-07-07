@@ -64,7 +64,7 @@ ENV NODE_ENV=production
 # Dockerfile 中需指定 chromium 路径
 ENV PUPPETEER_EXECUTABLE_PATH='google-chrome-stable'
 
-VOLUME [ "/yice-performance/apps/server/report" ]
+VOLUME [ "/yice-performance/apps/server/yice-report" ]
 
 # 启动应用程序
 CMD ["node", "apps/server/dist/main.js"]

@@ -229,7 +229,7 @@ export class TaskService {
             const filePath = join(
                 __dirname,
                 '../../../../',
-                `./report/${task?.reportPath?.replace('/report/', '')}`
+                `./yice-report/${task?.reportPath?.replace('/yice-report/', '')}`
             );
             try {
                 fs.unlinkSync(filePath);

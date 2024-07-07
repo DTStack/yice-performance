@@ -216,8 +216,8 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         // 保存检测结果的报告文件，便于预览
         const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|\#|\?|\&/g, '-');
         const fileName = `${moment().format('YYYY-MM-DD')}-${taskId}-${urlStr}`;
-        const filePath = join(__dirname, '../../', `./report/${fileName}.html`);
-        const reportPath = `/report/${fileName}.html`;
+        const filePath = join(__dirname, '../../', `./yice-report/${fileName}.html`);
+        const reportPath = `/yice-report/${fileName}.html`;
         fs.writeFileSync(filePath, runResult?.report);
 
         // 结果的首屏图片预览
