@@ -86,12 +86,12 @@ export default function Projects(props: IProps) {
             <ProjectModal
                 open={open}
                 project={editProject}
-                onCancel={() => {
+                onCancel={(shouldFetchProjects?: boolean) => {
                     setOpen(false);
                     setTimeout(() => {
                         setEditProject(undefined);
                     }, 200);
-                    getProjects();
+                    shouldFetchProjects === true && getProjects();
                 }}
             />
         </div>

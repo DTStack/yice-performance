@@ -11,7 +11,7 @@ const Option = Select.Option;
 interface IProps {
     open: boolean;
     project: IProject | undefined;
-    onCancel: () => void;
+    onCancel: any;
 }
 
 export default function ProjectModal(props: IProps) {
@@ -61,7 +61,7 @@ export default function ProjectModal(props: IProps) {
             API.updateProject(params)
                 .then(() => {
                     message.success('保存成功！');
-                    onCancel();
+                    onCancel(true);
                 })
                 .finally(() => {
                     setLoading(false);

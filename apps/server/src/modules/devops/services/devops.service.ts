@@ -11,7 +11,7 @@ export class DevopsService {
     async axiosGet(url: string) {
         try {
             const res: any = await this.httpService.axiosRef.get(url, {
-                headers: { Cookie: 'dtstack=test' },
+                headers: { Cookie: process.env.DEVOPS_COOKIE },
             });
             return res?.data?.data;
         } catch (error) {
