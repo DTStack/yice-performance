@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=mysql:5.7
 FROM ${BASE_IMAGE}
 
-# 当容器启动时，会执行 /docker-entrypoint-initdb.d/ 下的所有 .sql 文件
+# 当容器启动时，会自动执行 /docker-entrypoint-initdb.d/ 下的所有 .sql 文件
 COPY ./mysql/demo-data.sql /docker-entrypoint-initdb.d/
 # 附加的 mysql 配置
 COPY ./mysql/my_custom.cnf /etc/mysql/conf.d/
@@ -15,3 +15,6 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 # 暴露端口
 EXPOSE 3306
+
+
+# `Dockerfile.mysql` 支持构建 `linux/arm64v8` 架构的镜像，执行 `sh docker/build-mysql-arm64v8.sh` 可生成 arm64v8 架构的 mysql 镜像
