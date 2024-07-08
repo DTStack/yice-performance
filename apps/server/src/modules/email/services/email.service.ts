@@ -1,21 +1,25 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
-import { IProjectChartData } from 'typing';
+import { IFileSizeChartData, IProjectChartData } from 'typing';
 
 import { renderChart } from '@/utils/echarts';
-import moment from 'moment';
 import { formatDate } from '@/utils';
 
 @Injectable()
 export class EmailService {
     constructor(private readonly mailerService: MailerService) {}
 
-    async sendMail(project, lastWeekRange, projectChartData: IProjectChartData) {
+    async sendMail(
+        project,
+        lastWeekRange,
+        projectChartData: IProjectChartData,
+        fileSizeChartData: IFileSizeChartData
+    ) {
         const [_, __, startTime, endTime] = lastWeekRange;
         const { projectId, name, emails } = project;
 
         if (emails?.split(',')?.length) {
-            const html = renderChart([{ projectChartData, projectId, name }]);
+            const html = renderChart([{ projectId, name, projectChartData, fileSizeChartData }]);
             try {
                 const result = await this.mailerService.sendMail({
                     to: emails?.split(','),

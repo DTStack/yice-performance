@@ -67,9 +67,16 @@ declare module 'typing' {
         versionNameList: string[];
         maxLength: number;
     }
+    /** 子产品构建产物大小分析接口结果 */
+    export interface IFileSizeChartData {
+        fileSizeVersions: string[];
+        fileSizeList: string[];
+    }
+
     export interface IProjectChartDataList {
         projectId: number;
         name: string;
         projectChartData: IProjectChartData;
+        fileSizeChartData: IFileSizeChartData;
     }
 }

@@ -27,3 +27,10 @@ export const lastWeekRange: any = [
     formatTime(todayStart().subtract(7, 'days'), false, 'MM-DD'),
     formatTime(todayStart().subtract(1, 'days'), true, 'MM-DD'),
 ];
+// 近 30 天
+export const lastMonthRange: any = [
+    formatTime(todayStart().subtract(30, 'days')),
+    formatTime(todayStart().subtract(1, 'days'), true),
+    formatTime(todayStart().subtract(30, 'days'), false, 'MM-DD'),
+    formatTime(todayStart().subtract(1, 'days'), true, 'MM-DD'),
+];

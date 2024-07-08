@@ -6,7 +6,7 @@
         <meta charset="utf-8" />
         <title>易测性能检测平台 - 数据周报</title>
     </head>
-    <body style="width: 370px; margin: 0;">
+    <body style="width: 370px; margin: 0">
         <div style="width: 370px; background-color: #f2f7fa; padding: 15px 0">
             <div style="width: 340px; margin: 0 auto">
                 <!-- 背景图 -->
@@ -33,7 +33,7 @@
                             line-height: 24px;
                         "
                     >
-                        这里是一份『易测』提供的性能测试评分周报，分享给你。
+                        这里是一份『易测』提供的性能测试评分周报，分享给你。当你发现数据异常变化时，请前往『易测』查看详细数据和报告。
                     </div>
                     <div
                         style="
@@ -43,7 +43,7 @@
                             line-height: 24px;
                         "
                     >
-                        下方的折线图是过去七天子产品的性能评分趋势图，当你发现分数异常变化时，请前往『易测』查看详细数据和报告。
+                        折线图是过去七天子产品的性能评分趋势图，柱状图是过去一个月的构建产物大小分析图。
                     </div>
                 </div>
 
@@ -51,10 +51,11 @@
                 <!-- 此条注释删除 下方 性能评分趋势图 div 内容压缩 (https://coding.tools/cn/html-minifier) 后 复制给 renderChartItem 方法 -->
 
                 <!-- 性能评分趋势图 -->
-                <div style="border-radius: 6px; background-color: #fff; margin-top: 15px;">
+                <div style="border-radius: 6px; background-color: #fff; margin-top: 15px">
                     <div style="padding: 20px 20px 0; font-weight: 600">${name} 近七天</div>
                     <!-- 性能评分趋势折线图 -->
-                    <img style="width: 320px; padding: 20px 10px" src="${base64}" />
+                    <img style="width: 320px; padding: 20px 10px 0" src="${projectChartBase64}" />
+                    <img style="width: 320px; padding: 20px 10px" src="${fileSizeChartBase64}" />
                     <div
                         style="
                             padding: 0 20px 10px;

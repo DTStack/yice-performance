@@ -12,7 +12,7 @@ import { Task } from '@/modules/task/entities/task.entity';
 import { Version } from '@/modules/version/entities/version.entity';
 import { VersionService } from '@/modules/version/services/version.service';
 import { Repository } from 'typeorm';
-import { IProjectChartData } from 'typing';
+import { IFileSizeChartData, IProjectChartData } from 'typing';
 import { formatDate, getWhere } from '@/utils';
 
 import { projectChartReqDto } from '../dto/chart.req.dto';
@@ -98,7 +98,7 @@ export class ChartService {
     }
 
     // 构建产物大小
-    async fileSizeChart(query: projectChartReqDto): Promise<object> {
+    async fileSizeChart(query: projectChartReqDto): Promise<IFileSizeChartData> {
         try {
             const { projectId, startTime, endTime } = query;
             const whereParams = { isDelete: 0, projectId };

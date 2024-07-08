@@ -4,7 +4,7 @@ import { ApiOperation } from '@nestjs/swagger';
 
 import { ChartService } from '@/modules/chart/services/chart.service';
 import { ProjectService } from '@/modules/project/services/project.service';
-import { formatDate, lastWeekRange } from '@/utils';
+import { formatDate, lastMonthRange, lastWeekRange } from '@/utils';
 import { EmailService } from '../services/email.service';
 import moment from 'moment';
 
@@ -68,17 +68,24 @@ export class EmailController {
 
     async generatePromise(project) {
         const [startTime, endTime] = lastWeekRange;
+        const [startMonthTime, endMonthTime] = lastMonthRange;
         const projectChartData = await this.chartService.projectChart({
             projectId: project.projectId,
             startTime,
             endTime,
+        });
+        const fileSizeChartData = await this.chartService.fileSizeChart({
+            projectId: project.projectId,
+            startTime: startMonthTime,
+            endTime: endMonthTime,
         });
 
         if (projectChartData?.versionNameList?.length) {
             const result = await this.emailService.sendMail(
                 project,
                 lastWeekRange,
-                projectChartData
+                projectChartData,
+                fileSizeChartData
             );
             return result;
         } else {
