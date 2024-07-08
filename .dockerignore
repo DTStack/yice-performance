@@ -32,7 +32,4 @@ node_modules
 .idea
 .vscode
 
-# 检测结果
-/static
-
 yice-performance*.tar.gz
