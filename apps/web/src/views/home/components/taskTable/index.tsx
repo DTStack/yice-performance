@@ -9,7 +9,7 @@ import {
     PictureOutlined,
     SyncOutlined,
 } from '@ant-design/icons';
-import { Button, message, Modal, Popconfirm, Popover, Table, Tag, Tooltip } from 'antd';
+import { Button, message, Modal, Popconfirm, Popover, Switch, Table, Tag, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import copy from 'copy-to-clipboard';
 import moment from 'moment';
@@ -38,6 +38,8 @@ interface ISorter {
     order: string | undefined;
 }
 
+let autoRefreshTimer: NodeJS.Timer | undefined = undefined;
+
 export default function TaskTable(props: IPros) {
     const {
         project,
@@ -63,12 +65,35 @@ export default function TaskTable(props: IPros) {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [taskInfo, setTaskInfo] = useState<any>({});
     const [resultModalOpen, setResultModalOpen] = useState<boolean>(false);
+    const [autoRefresh, setAutoRefresh] = useState<boolean>(false);
 
     const yiceRole = localStorage.getItem('yice-role');
 
     useEffect(() => {
         fetchData();
     }, [runTime]);
+
+    useEffect(() => {
+        if (autoRefresh) {
+            handleAutoRefreshData();
+            autoRefreshTimer = setInterval(handleAutoRefreshData, 10_000);
+        } else {
+            autoRefreshTimer && clearInterval(autoRefreshTimer);
+            autoRefreshTimer = undefined;
+        }
+    }, [autoRefresh]);
+
+    useEffect(() => {
+        if (autoRefresh) {
+            autoRefreshTimer && clearInterval(autoRefreshTimer);
+            autoRefreshTimer = undefined;
+            autoRefreshTimer = setInterval(handleAutoRefreshData, 10_000);
+        }
+    }, [projectId, versionId]);
+
+    const handleAutoRefreshData = () => {
+        !versionListLoading && !loading && fetchData();
+    };
 
     /**
      * 获取任务列表的数据 taskList
@@ -155,6 +180,11 @@ export default function TaskTable(props: IPros) {
     const getScoreDiv = (score: number) => {
         const scoreColor = getScoreColor(score);
         return <div className={`score ${scoreColor}`}>{score}</div>;
+    };
+
+    // 自动刷新
+    const handleAutoRefresh = (checked: boolean) => {
+        setAutoRefresh(checked);
     };
 
     const columns: ColumnsType<any> = [
@@ -308,7 +338,14 @@ export default function TaskTable(props: IPros) {
             title: () => {
                 return (
                     <div className="action-title">
-                        <span>操作</span>
+                        <span className="title">操作</span>
+                        <Tooltip title="每 10 秒自动刷新">
+                            <Switch
+                                loading={versionListLoading || loading}
+                                checked={autoRefresh}
+                                onChange={handleAutoRefresh}
+                            />
+                        </Tooltip>
                         <SyncOutlined
                             spin={versionListLoading || loading}
                             onClick={() => {
