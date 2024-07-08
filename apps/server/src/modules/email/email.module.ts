@@ -2,7 +2,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerModule } from '@nestjs-modules/mailer';
-
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Build } from '../build/entities/build.entity';
 import { ChartService } from '../chart/services/chart.service';
 import { Project } from '../project/entities/project.entity';
@@ -18,20 +18,26 @@ const emailFrom = 'yice_performance@163.com';
 @Module({
     imports: [
         TypeOrmModule.forFeature([Project, Version, Task, Build]),
-        MailerModule.forRoot({
-            transport: {
-                host: 'smtp.163.com',
-                port: 25,
-                ignoreTLS: true,
-                secure: false,
-                auth: {
-                    user: emailFrom,
-                    // 163 邮箱的授权码
-                    pass: '',
-                },
-            },
-            defaults: {
-                from: emailFrom,
+        MailerModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => {
+                return {
+                    transport: {
+                        host: 'smtp.163.com',
+                        port: 25,
+                        ignoreTLS: true,
+                        secure: false,
+                        auth: {
+                            user: emailFrom,
+                            // 163 邮箱的授权码
+                            pass: config.get('EMAIL_PASS'),
+                        },
+                    },
+                    defaults: {
+                        from: emailFrom,
+                    },
+                };
             },
         }),
     ],
