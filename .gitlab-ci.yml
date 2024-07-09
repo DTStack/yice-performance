@@ -1,67 +1,55 @@
 # https://docs.gitlab.cn/jh/ci/quick_start/
 
 before_script:
-  - echo $CI_COMMIT_REF_NAME
-  - whoami
-  - pnpm i --reporter=silent
+    - echo $CI_COMMIT_REF_NAME
+    - whoami
+    - pnpm i --reporter=silent
 
 stages:
-  - prettier
-  - eslint
-  - stylelint
-  - test
-  - build
-  - website-build
+    - prettier
+    - eslint
+    - stylelint
+    - test
+    - build
 
-# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
+# 创建 MR 时执行；master 分支有 push 时执行
 prettier:
-  stage: prettier
-  script:
-    - pnpm prettier;
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
+    stage: prettier
+    script:
+        - pnpm prettier;
+    rules:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
 
-# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
+# 创建 MR 时执行；master 分支有 push 时执行
 eslint:
-  stage: eslint
-  script:
-    - pnpm eslint;
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
+    stage: eslint
+    script:
+        - pnpm eslint;
+    rules:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
 
-# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
+# 创建 MR 时执行；master 分支有 push 时执行
 stylelint:
-  stage: stylelint
-  script:
-    - pnpm stylelint;
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
+    stage: stylelint
+    script:
+        - pnpm stylelint;
+    rules:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
 
-# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
+# 创建 MR 时执行；master 分支有 push 时执行
 test:
-  stage: test
-  needs: [prettier, eslint, stylelint]
-  script:
-    - pnpm test;
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
+    stage: test
+    needs: [prettier, eslint, stylelint]
+    script:
+        - pnpm test;
+    rules:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
 
-# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
+# 创建 MR 时执行；master 分支有 push 时执行
 build:
-  stage: build
-  needs: [test]
-  script:
-    - pnpm build;
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
-
-# 在 master 分支执行；创建 MR 时目标分支为 master 分支则执行
-website-build:
-  stage: website-build
-  needs: [test]
-  script:
-    - cd website
-    - pnpm install --frozen-lockfile
-    - pnpm build
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
+    stage: build
+    needs: [test]
+    script:
+        - pnpm build;
+    rules:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/

@@ -20,7 +20,8 @@
         "eslint": "npx eslint \"{apps,test}/**/*.ts\" \"{apps,test}/**/*.tsx\"",
         "eslint:fix": "npx eslint \"{apps,test}/**/*.ts\" \"{apps,test}/**/*.tsx\" --fix",
         "stylelint": "npx stylelint '**/*.less' '**/*.css'",
-        "stylelint:fix": "npx stylelint '**/*.less' '**/*.css' --fix"
+        "stylelint:fix": "npx stylelint '**/*.less' '**/*.css' --fix",
+        "test": "cd apps/server && npm run test"
     },
     "dependencies": {
         "echarts": "^5.5.0",
