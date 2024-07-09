@@ -4,11 +4,10 @@ import { ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
 import 'moment/locale/zh-cn';
 
+import { version } from '../package.json';
 import { YICE_ROLE } from './const/role';
 import Routers from './routers';
 import './main.less';
-
-import { version } from '../package.json';
 
 const yiceRole = localStorage.getItem('yice-role');
 !yiceRole && localStorage.setItem('yice-role', YICE_ROLE.USER);

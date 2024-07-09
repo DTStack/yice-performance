@@ -1,8 +1,9 @@
 // 邮件
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import { Build } from '../build/entities/build.entity';
 import { ChartService } from '../chart/services/chart.service';
 import { Project } from '../project/entities/project.entity';

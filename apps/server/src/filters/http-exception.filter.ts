@@ -6,6 +6,7 @@ import {
     HttpStatus,
     Logger,
 } from '@nestjs/common';
+
 import { formatDate } from '@/utils';
 
 @Catch()

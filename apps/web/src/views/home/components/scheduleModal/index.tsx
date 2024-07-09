@@ -6,8 +6,6 @@ import { YICE_ROLE } from '../../../../const/role';
 import API from '../../../../utils/api';
 import './style.less';
 
-const Option = Select.Option;
-
 interface IProps {
     open: boolean;
     project: IProject | undefined;
