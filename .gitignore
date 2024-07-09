@@ -31,4 +31,6 @@ node_modules
 yice-performance*.tar.gz
 
 .turbo
-*.local
+.env.*
+
+*.log

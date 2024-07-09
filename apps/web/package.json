@@ -5,8 +5,9 @@
     "scripts": {
         "dev": "NODE_ENV=development vite --port 7001",
         "build": "tsc && NODE_ENV=production vite build",
-        "build:test": "tsc && NODE_ENV=staging vite build",
-        "preview": "vite preview"
+        "build-test": "tsc && NODE_ENV=staging vite build",
+        "preview": "vite preview",
+        "check-types": "tsc --skipLibCheck"
     },
     "dependencies": {
         "@ant-design/icons": "^5.0.1",
