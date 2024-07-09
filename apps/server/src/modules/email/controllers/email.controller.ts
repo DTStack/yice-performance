@@ -6,7 +6,6 @@ import { ChartService } from '@/modules/chart/services/chart.service';
 import { ProjectService } from '@/modules/project/services/project.service';
 import { formatDate, lastMonthRange, lastWeekRange } from '@/utils';
 import { EmailService } from '../services/email.service';
-import moment from 'moment';
 
 @Controller('email')
 export class EmailController {

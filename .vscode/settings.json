@@ -19,9 +19,6 @@
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "[scss]": {
-        "editor.defaultFormatter": "stylelint.vscode-stylelint"
-    },
     "stylelint.validate": ["css", "less", "postcss", "scss"],
     "stylelint.snippet": ["css", "less", "postcss", "scss"],
     "stylelint.stylelintPath": "node_modules/.pnpm/stylelint@14.11.0/node_modules/stylelint",

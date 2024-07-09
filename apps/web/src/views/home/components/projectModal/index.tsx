@@ -17,6 +17,7 @@ interface IProps {
 export default function ProjectModal(props: IProps) {
     const { open, project, onCancel } = props;
     const [form] = Form.useForm();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [emailsIsTrue, setEmailsIsTrue] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [sending, setSending] = useState<boolean>(false);

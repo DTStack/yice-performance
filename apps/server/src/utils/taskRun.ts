@@ -1,12 +1,12 @@
 /**
  * 任务运行相关方法
  */
-import { getLhOptions, getLhConfig } from '@/configs/lighthouse.config';
-import { getPuppeteerConfig } from '@/configs/puppeteer.config';
-
-import { sleep } from './sleep';
 import { join } from 'path';
+
+import { getLhConfig, getLhOptions } from '@/configs/lighthouse.config';
+import { getPuppeteerConfig } from '@/configs/puppeteer.config';
 import { formatDate } from './date';
+import { sleep } from './sleep';
 const fs = require('fs');
 const moment = require('moment');
 const lighthouse = require('lighthouse');

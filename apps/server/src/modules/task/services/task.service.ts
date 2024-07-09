@@ -3,8 +3,8 @@
  */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { join } from 'path';
+import { Repository } from 'typeorm';
 
 import { TASK_STATUS, TASK_TRIGGER_TYPE } from '@/const';
 import { Performance } from '@/modules/performance/entities/performance.entity';
@@ -14,7 +14,6 @@ import { formatDate, getWhere } from '@/utils';
 import { TaskDto } from '../dto/task.dto';
 import { TaskReqDto } from '../dto/task.req.dto';
 import { Task } from '../entities/task.entity';
-import moment from 'moment';
 const fs = require('fs');
 
 @Injectable()

@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { IFileSizeChartData, IProjectChartData } from 'typing';
 
-import { renderChart } from '@/utils/echarts';
 import { formatDate } from '@/utils';
+import { renderChart } from '@/utils/echarts';
 
 @Injectable()
 export class EmailService {

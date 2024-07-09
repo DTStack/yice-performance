@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Form, Input, InputNumber, message, Modal, Select, Spin } from 'antd';
+import { Button, Form, Input, message, Modal, Select, Spin } from 'antd';
 import { IProject, IVersion } from 'typing';
 
 import { YICE_ROLE } from '../../../../const/role';
 import { httpPattern } from '../../../../utils';
 import API from '../../../../utils/api';
 import './style.less';
-
-const Option = Select.Option;
 
 interface IProps {
     open: boolean;

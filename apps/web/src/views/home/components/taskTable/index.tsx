@@ -38,7 +38,7 @@ interface ISorter {
     order: string | undefined;
 }
 
-let autoRefreshTimer: NodeJS.Timer | undefined = undefined;
+let autoRefreshTimer: NodeJS.Timer | undefined;
 
 export default function TaskTable(props: IPros) {
     const {

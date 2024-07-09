@@ -4,7 +4,6 @@ import * as compression from 'compression';
 
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { AppModule } from './app.module';
-import moment from 'moment';
 import { formatDate } from './utils';
 const packageJson = require('../package.json');
 
