@@ -1,21 +1,20 @@
-## 部署文档
+## 主机部署文档
 
 ### 数据库
 
 - 数据库：MYSQL 5.7
 
-通过 docker 容器使用 mysql-5.7，数据库连接信息维护在 `.env` 文件，相关配置项以 `DB_` 开头。
-
-
-### 基础依赖
-- pnpm：v6.32.20
-- node：v14.20.0
-- pm2：v5.2.0
-
+&emsp;&emsp;通过 docker 容器使用 mysql-5.7，数据库连接信息维护在 `.env` 文件，相关配置项以 `DB_` 开头。执行建表语句及示例数据: `docker/mysql/demo-data.sql`。如果不需要示例数据时，单独的建表语句: `/src/mysql/base-table.sql`。
 
 ### 部署步骤
 
 github：https://github.com/DTStack/yice-performance
+
+
+
+
+
+
 
 > 在服务器上仅需启动 node 服务即可，静态页面由 node 服务托管
 
