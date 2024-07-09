@@ -3,7 +3,7 @@
  */
 import { join } from 'path';
 
-import { getLhConfig,getLhOptions } from '@/configs/lighthouse.config';
+import { getLhConfig, getLhOptions } from '@/configs/lighthouse.config';
 import { getPuppeteerConfig } from '@/configs/puppeteer.config';
 import { formatDate } from './date';
 import { sleep } from './sleep';

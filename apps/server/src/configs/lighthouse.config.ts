@@ -41,4 +41,4 @@ const getLhConfig = ({ locale }) => {
     };
 };
 
-export { getLhConfig,getLhOptions };
+export { getLhConfig, getLhOptions };
