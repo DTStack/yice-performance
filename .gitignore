@@ -2,15 +2,6 @@
 dist
 node_modules
 
-# Logs
-logs
-*.log
-npm-debug.log*
-pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-
 # OS
 .DS_Store
 
@@ -35,6 +26,9 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # 检测结果
-static/**/*.html
+**/yice-report/*.html
 
 yice-performance*.tar.gz
+
+.turbo
+*.local

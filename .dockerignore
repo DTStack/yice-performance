@@ -1,0 +1,35 @@
+node_modules
+.git
+.git*
+.prettier*
+.eslint*
+.stylelint*
+.dockerignore
+test
+docker
+scripts
+LICENSE
+README.md
+DEPLOY.md
+.turbo
+.env.local
+
+# 检测结果
+**/yice-report/*.html
+
+# compiled output
+dist
+node_modules
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDE
+.idea
+.vscode
+
+yice-performance*.tar.gz

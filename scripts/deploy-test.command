@@ -1,4 +1,4 @@
-echo -e '1、website 资源开始打包'
+echo -e '1、web 资源开始打包'
 pnpm build:web-test
 
 
@@ -8,7 +8,7 @@ pnpm build
 
 # gtar 是给 macos 使用的，和 tar 区别不大，可以通过 brew install gnu-tar 安装
 echo -e '3、本地资源开始压缩'
-gtar -czf yice-performance-test.tar.gz dist pm2/config-test.json static/README.md website/dist scripts/start-test.sh package.json pnpm-lock.yaml
+gtar -czf yice-performance-test.tar.gz dist pm2/config-test.json static/README.md web/dist scripts/start-test.sh package.json pnpm-lock.yaml
 
 
 echo -e '\n4、压缩包开始上传到远程服务器'
