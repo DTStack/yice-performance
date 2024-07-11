@@ -111,6 +111,13 @@ export class TaskController {
         return await this.taskRunService.tryAgain(taskId);
     }
 
+    @ApiOperation({ summary: '批量更新 reportPath - 仅用于 v1 to v2 的兼容' })
+    @HttpCode(HttpStatus.OK)
+    @Post('batchUpdateTaskReportPath')
+    async batchUpdateTaskReportPath() {
+        return await this.taskService.batchUpdateTaskReportPath();
+    }
+
     @ApiOperation({ summary: '尝试运行任务' })
     @HttpCode(HttpStatus.OK)
     @Post('tryRunTask')

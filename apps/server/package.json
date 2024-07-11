@@ -8,7 +8,7 @@
     "scripts": {
         "dev": "NODE_ENV=development nest start --watch",
         "build": "NODE_ENV=production nest build",
-        "build:test": "NODE_ENV=staging nest build",
+        "build-test": "NODE_ENV=staging nest build",
         "start": "NODE_ENV=production nest start",
         "start:debug": "nest start --debug --watch",
         "start:prod": "node dist/main",
@@ -17,12 +17,7 @@
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
         "test:e2e": "jest --config ./test/jest-e2e.json",
-        "deploy": "zx scripts/deploy.mjs",
-        "deploy:test": "npm run deploy test",
-        "static": "bash scripts/static.command",
-        "static:test": "bash scripts/static-test.command",
-        "pm2": "pm2 restart ./pm2/config.json --env production",
-        "pm2:test": "pm2 restart ./pm2/config-test.json --env staging"
+        "check-types": "tsc --skipLibCheck"
     },
     "dependencies": {
         "@nestjs-modules/mailer": "^2.0.2",

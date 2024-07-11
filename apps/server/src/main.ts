@@ -41,4 +41,5 @@ async function bootstrap() {
         console.log(`${formatDate()} api docs: http://localhost:${APP_PORT}/docs`);
     });
 }
+
 bootstrap();

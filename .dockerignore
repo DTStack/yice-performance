@@ -12,10 +12,11 @@ LICENSE
 README.md
 DEPLOY.md
 .turbo
-.env.local
+.env.*
 
 # 检测结果
 **/yice-report/*.html
+**/yice-report/**/*.html
 
 # compiled output
 dist
