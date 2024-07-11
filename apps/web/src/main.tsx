@@ -10,7 +10,7 @@ import Routers from './routers';
 import './main.less';
 
 const yiceRole = localStorage.getItem('yice-role');
-!yiceRole && localStorage.setItem('yice-role', YICE_ROLE.USER);
+!yiceRole && localStorage.setItem('yice-role', YICE_ROLE.ADMIN);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <ConfigProvider locale={zhCN}>
