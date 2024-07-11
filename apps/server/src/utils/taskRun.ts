@@ -228,10 +228,18 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
 
         // 保存检测结果的报告文件，便于预览
         const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|\#|\?|\&/g, '-');
-        const fileName = `${moment().format('YYYY-MM-DD')}-${taskId}-${urlStr}`;
-        const filePath = join(__dirname, '../../', `./yice-report/${fileName}.html`);
-        const reportPath = `/yice-report/${fileName}.html`;
-        fs.writeFileSync(filePath, runResult?.report);
+
+        // 创建当天的文件夹用于存放报告文件
+        const dirPath = join(__dirname, '../../', `./yice-report/${moment().format('YYYY-MM-DD')}`);
+        fs.mkdirSync(dirPath, { recursive: true }, (err) => {
+            if (err) {
+                throw new Error(err?.toString());
+            }
+        });
+
+        const fileName = `${taskId}-${urlStr}`;
+        const reportPath = `/yice-report/${dirPath}/${fileName}.html`;
+        fs.writeFileSync(`${dirPath}/${fileName}.html`, runResult?.report);
 
         // 结果的首屏图片预览
         const previewImg = runResult?.lhr?.audits?.['final-screenshot']?.details?.data;

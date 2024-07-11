@@ -27,6 +27,7 @@ node_modules
 
 # 检测结果
 **/yice-report/*.html
+**/yice-report/**/*.html
 
 yice-performance*.tar.gz
 

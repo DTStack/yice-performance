@@ -138,6 +138,25 @@ export class TaskService {
         return result;
     }
 
+    // 批量更新 reportPath - 仅用于 v1 to v2 的兼容
+    async batchUpdateTaskReportPath() {
+        const result = await this.taskRepository.find({ where: getWhere() });
+
+        const list = [];
+        result.forEach((item) => {
+            if (item.reportPath) {
+                const arr = item.reportPath.split('-');
+                const reportPath = `${arr.slice(0, 4).join('-')}/${arr
+                    .slice(4, arr.length)
+                    .join('-')}`;
+                list.push(this.taskRepository.update(item.taskId, { ...item, reportPath }));
+            }
+        });
+        Promise.all(list);
+
+        return result;
+    }
+
     // 批量操作 - 取消
     async batchCancelTask(taskIds: number[]) {
         const result = await this.taskRepository
