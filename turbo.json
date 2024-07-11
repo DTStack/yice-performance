@@ -1,0 +1,21 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "tasks": {
+        "dev": {
+            "persistent": true,
+            "cache": false
+        },
+        "check-types": {
+            "persistent": true,
+            "cache": false
+        },
+        "build": {
+            "outputs": [".apps/server/dist/**", "!.apps/server/cache/**"],
+            "cache": false
+        },
+        "build-test": {
+            "outputs": [".apps/server/dist/**", "!.apps/server/cache/**"],
+            "cache": false
+        }
+    }
+}

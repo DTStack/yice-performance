@@ -1,5 +1,5 @@
 /**
- * 备用
+ * 备用，实际使用的是 json 文件
  */
 module.exports = {
     name: 'yice',

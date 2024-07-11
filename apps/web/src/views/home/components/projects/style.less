@@ -1,0 +1,38 @@
+.project-box {
+    width: 200px;
+    height: calc(100vh - 160px - 24px - 16px);
+    background-color: #FFF;
+    border-radius: 2px;
+    box-shadow: 0 0 6px 0 #EEE;
+    overflow: auto;
+    .ant-menu-item {
+        height: 56px !important;
+        margin: 0 !important;
+        &::after {
+            left: 0;
+            right: inherit !important;
+        }
+        &:hover {
+            .edit-icon {
+                visibility: visible;
+            }
+        }
+        &:active {
+            background-color: #FFF;
+        }
+        img {
+            width: 20px;
+            height: 20px;
+        }
+        .name {
+            margin: 0 10px;
+        }
+        .edit-icon {
+            font-size: 16px;
+            padding: 4px;
+            position: absolute;
+            right: 24px;
+            visibility: hidden;
+        }
+    }
+}
