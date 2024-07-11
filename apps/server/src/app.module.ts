@@ -23,7 +23,6 @@ import { ValidationPipe } from './pipe/validation/validation.pipe';
         ConfigModule.forRoot({
             isGlobal: true,
             envFilePath: [
-                join(__dirname, '../../../', '.env.prod'),
                 join(__dirname, '../../../', '.env.local'),
                 join(__dirname, '../../../', '.env'),
             ],

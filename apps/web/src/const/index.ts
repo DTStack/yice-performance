@@ -37,9 +37,9 @@ export const IS_USEFUL_TEXT = [
 
 /**
  * 得分的颜色
- * 慢 red #FF3333 0 ~ 49
- * 平均值 orange #FFAA33 50 ~ 79
- * 快 green #00CC66 80 ~ 100
+ * 分数较低 red #FF3333
+ * 分数中等 orange #FFAA33
+ * 分数较高 green #00CC66
  */
 const scoreColor = {
     orangeMin: 50,

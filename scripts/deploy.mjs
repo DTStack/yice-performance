@@ -22,9 +22,7 @@ $.verbose = false;
     $.verbose = true;
     // 本地应该使用 `.env.prod` 文件
     echo(
-        await $`gtar -czf yice-performance${testStr}.tar.gz apps/server/dist pm2/config${testStr}.* apps/server/yice-report/README.md apps/web/dist scripts package.json apps/server/package.json apps/web/package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json .env .env.local ${
-            isTest ? '' : '.env.prod'
-        }`
+        await $`gtar -czf yice-performance${testStr}.tar.gz apps/server/dist pm2/config${testStr}.* apps/server/yice-report/README.md apps/web/dist scripts package.json apps/server/package.json apps/web/package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json .env .env.local`
     );
     $.verbose = false;
     doneLog();
@@ -41,7 +39,7 @@ $.verbose = false;
     infoLog('4. 开始在远程服务器解压、安装依赖并重启服务...');
     $.verbose = true;
     echo(
-        await $`ssh root@${yiceServerIP} "cd /opt/dtstack/yice-performance${testStr}/; tar -xzf yice-performance${testStr}.tar.gz; rm -rf yice-performance${testStr}.tar.gz; find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +; cp scripts/start${testStr}.sh ./; ls -lahS; ./start${testStr}.sh; du -h --max-depth=1 ./apps/server/yice-report"`
+        await $`ssh root@${yiceServerIP} "cd /opt/dtstack/yice-performance${testStr}/; tar -xzf yice-performance${testStr}.tar.gz; rm -rf yice-performance${testStr}.tar.gz; cp scripts/start${testStr}.sh ./; ls -lahS; ./start${testStr}.sh; du -h --max-depth=1 ./apps/server/yice-report;"`
     );
     $.verbose = false;
     doneLog();
