@@ -238,7 +238,7 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         });
 
         const fileName = `${taskId}-${urlStr}`;
-        const reportPath = `/yice-report/${dirPath}/${fileName}.html`;
+        const reportPath = `/yice-report/${moment().format('YYYY-MM-DD')}/${fileName}.html`;
         fs.writeFileSync(`${dirPath}/${fileName}.html`, runResult?.report);
 
         // 结果的首屏图片预览
