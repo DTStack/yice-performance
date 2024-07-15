@@ -189,18 +189,8 @@ export default function ChartModal(props: IProps) {
 
     const tabItems = [
         { label: '性能评分趋势图', key: 'project', children: renderProjectChart() },
-        {
-            label: '构建产物大小分析图',
-            key: 'file-size',
-            disabled: true,
-            children: renderFileSizeChart(),
-        },
-        {
-            label: '版本构建性能图',
-            key: 'version-build',
-            disabled: true,
-            children: renderBuildChart(),
-        },
+        { label: '构建产物大小分析图', key: 'file-size', children: renderFileSizeChart() },
+        { label: '版本构建性能图', key: 'version-build', children: renderBuildChart() },
     ];
 
     const tabBarExtraContent = () => {
