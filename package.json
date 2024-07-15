@@ -14,8 +14,6 @@
         "deploy": "zx scripts/deploy.mjs",
         "deploy-test": "npm run deploy test",
         "fileSize": "node ./scripts/report-fileSize.js",
-        "pm2": "pm2 restart ./pm2/config.json --env production",
-        "pm2:test": "pm2 restart ./pm2/config-test.json --env staging",
         "prettier": "npx prettier \"**/*.ts\" \"**/*.tsx\" \"**/*.js\" \"**/*.json\" --check",
         "prettier:fix": "npx prettier \"**/*.ts\" \"**/*.tsx\" \"**/*.js\" \"**/*.json\" --write",
         "eslint": "npx eslint \"{apps,test}/**/*.ts\" \"{apps,test}/**/*.tsx\"",

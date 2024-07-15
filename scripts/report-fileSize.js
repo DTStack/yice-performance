@@ -11,11 +11,10 @@ inquirer
             loop: false,
         },
         {
-            type: 'list',
+            type: 'confirm',
             name: 'isProd',
-            message: 'Server is prod',
-            choices: ['yes', 'no'],
-            default: 'yes',
+            message: 'Server is production? Default is yes',
+            default: true,
             loop: false,
         },
     ])
@@ -26,7 +25,7 @@ function execFunc(res) {
 
     const cmd = `ssh root@${yiceServerIP} "cd /opt/dtstack/yice-performance${
         isProd ? '' : '-test'
-    }/; du -h --max-depth=1 ./apps/server/yice-report"`;
+    }/; du -h --max-depth=1 ./"`;
 
     console.info(`Executing: ${cmd} \n`);
 

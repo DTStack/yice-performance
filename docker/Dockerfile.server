@@ -27,7 +27,7 @@ RUN apt-get update -y \
      && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-khmeros fonts-kacst fonts-freefont-ttf libxss1 --no-install-recommends \
      && rm -rf /var/lib/apt/lists/* \
      && apt-get remove -y wget gnupg
-# deb [arch=amd6 配置可能会在 /etc/apt/sources.list.d/google.list 和 /etc/apt/sources.list.d/google-chrome.list 中重复，再尝试一次
+# deb [arch=amd64 配置可能会在 /etc/apt/sources.list.d/google.list 和 /etc/apt/sources.list.d/google-chrome.list 中重复，再尝试一次
 RUN  rm -rf /etc/apt/sources.list.d/google-chrome.list \
      && apt-get update -y \
      && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-khmeros fonts-kacst fonts-freefont-ttf libxss1 --no-install-recommends
@@ -38,7 +38,7 @@ RUN apt-get update -y && apt-get install -y curl \
      && apt-get remove -y curl \
      && apt-get install -y nodejs \
      && npm config set registry https://registry.npmmirror.com/ \
-     && npm install pnpm@6.35.1 -g
+     && npm install pnpm@6.35.1 pm2 -g
 
 # 设置工作目录
 WORKDIR /yice-performance
@@ -46,26 +46,21 @@ WORKDIR /yice-performance
 # 拷贝代码安装依赖
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY apps/server/package.json ./apps/server/
-COPY apps/web/package.json ./apps/web/
-RUN pnpm install
+RUN pnpm install --production
 
-# 复制项目文件
-COPY apps/ ./apps/
+# 拷贝打包产物和配置文件
+COPY apps/server/dist ./apps/server/dist
+COPY apps/web/dist ./apps/web/dist
+COPY pm2 ./pm2
 COPY .env ./
-# 减少 node_modules 的磁盘占用
-RUN pnpm build \
-     && find . -name "node_modules" -type d -prune -exec rm -rf '{}' + \
-     && pnpm install --production
-
-# 暴露端口
-EXPOSE 4000
 
 # 定义环境变量
 ENV NODE_ENV=production
 # Dockerfile 中需指定 chromium 路径
 ENV PUPPETEER_EXECUTABLE_PATH='google-chrome-stable'
 
-VOLUME [ "/yice-performance/apps/server/yice-report" ]
+EXPOSE 4000
+VOLUME ["/yice-performance/apps/server/yice-report", "/yice-performance/pm2/logs"]
 
 # 启动应用程序
-CMD ["node", "apps/server/dist/main.js"]
+CMD ["pm2", "restart", "./pm2/config.json", "--env", "production", "--no-daemon"]
