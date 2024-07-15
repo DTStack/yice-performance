@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+    mysql-service:
+        container_name: yice-mysql
+        image: registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-server:latest
+        ports:
+            - '3306:3306'
+        restart: always
+        networks:
+            - yice-network
+
+    server-service:
+        container_name: yice-server
+        image: registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-mysql:latest
+        ports:
+            - '4000:4000'
+        restart: always
+        depends_on:
+            - mysql-service
+        networks:
+            - yice-network
+
+networks:
+  yice-network:
+    driver: bridge

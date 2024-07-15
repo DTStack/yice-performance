@@ -1,3 +1,3 @@
 # pnpm -v
-pnpm install
+pnpm install --production
 pnpm pm2

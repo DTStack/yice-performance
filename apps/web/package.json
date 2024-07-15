@@ -1,0 +1,34 @@
+{
+    "name": "yice-performance-web",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "NODE_ENV=development vite --port 7001",
+        "build": "tsc && NODE_ENV=production vite build",
+        "build-test": "tsc && NODE_ENV=staging vite build",
+        "preview": "vite preview",
+        "check-types": "tsc --skipLibCheck"
+    },
+    "dependencies": {
+        "@ant-design/icons": "^5.0.1",
+        "antd": "4.24.8",
+        "axios": "^1.3.4",
+        "copy-to-clipboard": "^3.3.3",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^6.8.2"
+    },
+    "devDependencies": {
+        "@types/react": "^18.0.27",
+        "@types/react-dom": "^18.0.10",
+        "@vitejs/plugin-react": "^3.1.0",
+        "less": "^4.1.3",
+        "vite": "^4.1.0",
+        "vite-plugin-compression": "^0.5.1"
+    },
+    "resolutions": {
+        "antd>moment": "2.29.4",
+        "rc-calendar>moment": "2.29.4",
+        "rc-time-picker>moment": "2.29.4"
+    }
+}

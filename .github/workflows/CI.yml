@@ -1,48 +1,42 @@
 name: CI
 
 on:
-  push:
-    branches: "*"
-  pull_request:
-    branches: ['master']
+    push:
+        branches: 'master'
+    pull_request:
+        branches: '*'
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    setup:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
 
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14
+            - name: Setup node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 14
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 6.32.20
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 6.35.1
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
 
-      - name: Run Prettier
-        run: pnpm prettier
+            - name: Run Prettier
+              run: pnpm prettier
 
-      - name: Run Eslint
-        run: pnpm eslint
+            - name: Run Eslint
+              run: pnpm eslint
 
-      - name: Run Stylelint
-        run: pnpm stylelint
+            - name: Run Stylelint
+              run: pnpm stylelint
 
-      - name: Run test
-        run: pnpm test
+            - name: Run test
+              run: pnpm test
 
-      - name: Run build
-        run: pnpm build
-
-      - name: Run website build
-        run: |
-          cd website
-          pnpm install --frozen-lockfile
-          pnpm build
+            - name: Run build
+              run: pnpm build
