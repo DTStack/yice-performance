@@ -4,7 +4,7 @@ import { ApiOperation } from '@nestjs/swagger';
 
 import { ChartService } from '@/modules/chart/services/chart.service';
 import { ProjectService } from '@/modules/project/services/project.service';
-import { formatDate, lastMonthRange, lastWeekRange } from '@/utils';
+import { lastMonthRange, lastWeekRange } from '@/utils';
 import { EmailService } from '../services/email.service';
 
 @Controller('email')
@@ -36,13 +36,13 @@ export class EmailController {
                     try {
                         await this.sendProject({ projectId, emails });
                     } catch (error) {}
-                    console.log(formatDate(), ` ${name}, 发送【单个子产品】的数据周报到指定邮箱`);
+                    console.log(`${name}, 发送【单个子产品】的数据周报到指定邮箱`);
                 }
             });
     }
     async handleSendAll() {
         if (process.env.DEFAULT_EMAIL) {
-            console.log(formatDate(), ' 发送【所有子产品】的数据周报到指定邮箱');
+            console.log('发送【所有子产品】的数据周报到指定邮箱');
             await this.sendAll({ emails: process.env.DEFAULT_EMAIL });
         }
     }
@@ -59,7 +59,7 @@ export class EmailController {
                 const result = await this.generatePromise(project);
                 return result;
             } catch (error) {
-                console.log(formatDate(), ' 邮件数据处理失败', error);
+                console.log('邮件数据处理失败', error);
                 throw new HttpException('没有历史检测数据', HttpStatus.OK);
             }
         }

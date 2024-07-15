@@ -174,15 +174,11 @@ export class TaskRunService {
                         .printSql()
                         .execute();
 
-                    console.log(formatDate(), ` taskId: ${taskId}, 数据整理完成，已落库`);
+                    console.log(`taskId: ${taskId}, 数据整理完成，已落库`);
                 } catch (error) {
                     status = TASK_STATUS.FAIL;
                     failReason = error;
-                    console.log(
-                        formatDate(),
-                        ` taskId: ${taskId}, 性能数据落库失败`,
-                        error?.toString()
-                    );
+                    console.log(`taskId: ${taskId}, 性能数据落库失败`, error?.toString());
                 }
                 await this.taskService.update(taskId, {
                     score,
@@ -193,15 +189,12 @@ export class TaskRunService {
                     failReason,
                 });
             } else {
-                console.log(
-                    formatDate(),
-                    ` taskId: ${taskId}, 任务不是运行中的状态，故本次检测结果不做记录`
-                );
+                console.log(`taskId: ${taskId}, 任务不是运行中的状态，故本次检测结果不做记录`);
             }
 
-            console.log(formatDate(), ` taskId: ${taskId}, 检测完成，本次检测耗时: ${duration}ms`);
+            console.log(`taskId: ${taskId}, 检测完成，本次检测耗时: ${duration}ms`);
         } catch (error) {
-            console.log(formatDate(), ' successCallback error', error);
+            console.log('successCallback error', error);
             this.failCallback(task, error?.toString(), duration);
         }
     }
@@ -216,7 +209,7 @@ export class TaskRunService {
             });
             await DingtalkRobot.failure(task);
         } catch (error) {
-            console.log(formatDate(), ' failCallback error', error);
+            console.log('failCallback error', error);
         }
     }
 
@@ -337,7 +330,7 @@ export class TaskRunService {
                     failReason,
                     duration,
                 });
-                console.log(formatDate(), ` taskId: ${task.taskId}, ${failReason}！`);
+                console.log(`taskId: ${task.taskId}, ${failReason}！`);
                 this.scheduleControl();
 
                 const { projectId } = await this.versionRepository.findOne({
