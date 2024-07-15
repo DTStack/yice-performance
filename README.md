@@ -27,7 +27,7 @@ cd yice-performance
 
 ### 服务启动
 
-- 安装服务依赖：`pnpm i`
+- 安装服务依赖：`pnpm install`
 - 运行 node 服务和前端页面：`pnpm dev`
 
 > 服务配置项 `.env` 文件中的属性按实际填写即可，建议本地新建一个 `.env.local` 文件，配置一些较隐私的内容，这个文件不会被 git 感知且配置项的优先级大于 `.env` 文件。

@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# 构建
+pnpm install
+pnpm build
+
 cd docker
 
 # amd64

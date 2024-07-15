@@ -39,7 +39,7 @@ $.verbose = false;
     infoLog('4. 开始在远程服务器解压、安装依赖并重启服务...');
     $.verbose = true;
     echo(
-        await $`ssh root@${yiceServerIP} "cd /opt/dtstack/yice-performance${testStr}/; tar -xzf yice-performance${testStr}.tar.gz; rm -rf yice-performance${testStr}.tar.gz; cp scripts/start${testStr}.sh ./; ls -lahS; ./start${testStr}.sh; du -h --max-depth=1 ./apps/server/yice-report;"`
+        await $`ssh root@${yiceServerIP} "cd /opt/dtstack/yice-performance${testStr}/; tar -xzf yice-performance${testStr}.tar.gz; rm -rf yice-performance${testStr}.tar.gz; cp scripts/start${testStr}.sh ./; ls -lahS; ./start${testStr}.sh; du -h --max-depth=1 ./;"`
     );
     $.verbose = false;
     doneLog();

@@ -1,10 +1,7 @@
 {
-    "name": "yice-performance",
+    "name": "yice-performance-server",
     "version": "1.0.0",
-    "description": "",
-    "author": "",
     "private": true,
-    "license": "UNLICENSED",
     "scripts": {
         "dev": "NODE_ENV=development nest start --watch",
         "build": "NODE_ENV=production nest build",
