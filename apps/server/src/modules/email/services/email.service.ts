@@ -36,22 +36,23 @@ export class EmailService {
     }
 
     // 定时发送所有子产品的数据周报到指定邮箱
-    async sendMailAllProject(emails, projectChartDataList = [], lastWeekRange) {
+    async sendMailAllProject(emails, chartDataList = [], lastWeekRange) {
         const [_, __, startTime, endTime] = lastWeekRange;
 
         if (emails?.split(',')?.length) {
-            const html = renderChart(projectChartDataList);
+            const html = renderChart(chartDataList);
             try {
                 const result = await this.mailerService.sendMail({
                     to: emails?.split(','),
                     subject: `【数栈子产品】易测数据周报（${startTime}~${endTime}）`, // 标题
                     html,
                 });
-                console.log(formatDate(), ' 发送所有子产品的数据周报成功', result);
+
+                console.log(formatDate(), ' 发送【所有子产品】的数据周报成功', result);
                 return result;
             } catch (error) {
-                console.log(formatDate(), ' 尝试发送所有子产品的数据周报失败', error);
-                throw new HttpException('尝试发送所有子产品的数据周报失败', HttpStatus.OK);
+                console.log(formatDate(), ' 尝试发送【所有子产品】的数据周报失败', error);
+                throw new HttpException('尝试发送【所有子产品】的数据周报失败', HttpStatus.OK);
             }
         }
     }
