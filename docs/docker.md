@@ -14,17 +14,17 @@ docker network create yice-network
 
 ``` shell
 docker run -p 3306:3306 -d --name yice-mysql --network=yice-network -v /opt/dtstack/yice-performance/yice-mysql/conf:/etc/mysql/conf.d -v /opt/dtstack/yice-performance/yice-mysql/log:/var/log/mysql -v /opt/dtstack/yice-performance/yice-mysql/data:/var/lib/mysql registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-mysql:latest
-docker run -p 4000:4000 -d --name yice-server --network=yice-network -v /opt/dtstack/yice-performance/yice-report:/yice-performance/apps/server/yice-report registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-server:latest
+docker run -p 4000:4000 -d --name yice-server --network=yice-network -v /opt/dtstack/yice-performance/pm2-logs:/yice-performance/pm2/logs -v /opt/dtstack/yice-performance/yice-report:/yice-performance/apps/server/yice-report registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-server:latest
 ```
 
 > - `-p` 表示端口映射，`-p 宿主机 port:容器 port`，这里暴漏端口是为了外部可以通过 GUI 工具查看数据
 > - `-d` 表示后台运行并返回容器 id
 > - `--name` 表示给容器指定的名称
 > - `-v /opt/dtstack/yice-performance/yice-mysql:/etc/mysql/conf.d` 等挂载路径表示将容器中的配置项、数据、日志都挂载到主机的 `/opt/dtstack/yice-performance/yice-mysql` 下
-> - `-v /opt/dtstack/yice-performance/yice-report:/yice-performance/apps/server/yice-report` 表示将容器中的检测报告挂载到宿主机
+> - `-v /opt/dtstack/yice-performance/pm2-logs:/yice-performance/pm2/logs` 等挂载路径表示将容器中的 pm2 日志和检测报告挂载到宿主机
 > - 挂载的目的是为了在删除容器时数据不丢失，且尽量保持容器存储层不发生写操作。
 
-容器运行后，应当添加一个 `.env.local` 配置文件，内容在当前文档开头，然后通过下方命令重启容器：
+容器运行后，应当添加一个 `.env.local` 配置文件，内容在当前文档开头，pm2 会自动重启服务：
 
 ``` shell
 cd /opt/dtstack/yice-performance
@@ -32,8 +32,10 @@ cd /opt/dtstack/yice-performance
 
 ``` shell
 docker cp .env.local yice-server:/yice-performance/
-docker start yice-server
-docker logs --tail 100 -f yice-server
+```
+
+``` shell
+tail 200 -f /opt/dtstack/yice-performance/pm2-logs/pm2-out.log
 ```
 
 &emsp;&emsp;执行上述命令后可以在浏览器中访问 `http://localhost:4000` 查看效果。
@@ -96,7 +98,7 @@ docker cp /home/app/yice-performance/.env yice-server:/yice-performance/.env
 ```
 
 ``` shell
-docker start yice-server
+docker restart yice-server
 ```
 
 

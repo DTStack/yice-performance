@@ -46,14 +46,16 @@ export default function FileSizeChart(props: IProps) {
             },
             toolbox: {
                 feature: {
-                    saveAsImage: { show: true },
+                    saveAsImage: {
+                        title: '保存为图片',
+                    },
                 },
             },
             xAxis: {
                 type: 'value',
                 name: '构建产物大小(MB)',
                 nameTextStyle: {
-                    padding: [0, 0, 0, -80],
+                    padding: [0, 0, 0, -100],
                 },
                 axisLine: {
                     show: true,

@@ -3,7 +3,7 @@
 before_script:
     - echo $CI_COMMIT_REF_NAME
     - whoami
-    - pnpm i --reporter=silent
+    - pnpm install --reporter=silent
 
 stages:
     - prettier

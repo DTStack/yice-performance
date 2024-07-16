@@ -43,19 +43,27 @@ export class BuildService {
             throw new HttpException('repository, branch 不符合规则，此次数据不录入', HttpStatus.OK);
         }
 
-        const version = branch.split('_')?.filter((item) => item.includes('.x'))?.[0];
+        try {
+            const version = branch.split('_')?.filter((item) => item.includes('.x'))?.[0];
 
-        const { projectId } = await this.projectRepository.findOneBy(getWhere({ appName }));
+            const { projectId } = await this.projectRepository.findOneBy(getWhere({ appName }));
 
-        const build = this.buildRepository.create({
-            projectId,
-            repository,
-            branch,
-            version,
-            duration,
-            fileSize,
-        });
-        const result = await this.buildRepository.save(build);
-        return result;
+            const build = this.buildRepository.create({
+                projectId,
+                repository,
+                branch,
+                version,
+                duration,
+                fileSize,
+            });
+            const result = await this.buildRepository.save(build);
+            return result;
+        } catch (error) {
+            console.log(
+                `\n构建数据未保存, appName: ${appName}, repository: ${repository}, branch: ${branch}, duration: ${duration}, fileSize: ${fileSize}`,
+                error
+            );
+            throw new HttpException('构建数据未保存', HttpStatus.OK);
+        }
     }
 }
