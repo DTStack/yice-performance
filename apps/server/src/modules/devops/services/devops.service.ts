@@ -15,6 +15,7 @@ export class DevopsService {
             });
             return res?.data?.data;
         } catch (error) {
+            console.log(`请求 devops 接口失败, DEVOPS_COOKIE: ${process.env.DEVOPS_COOKIE}`);
             throw new HttpException('请求 devops 接口失败', HttpStatus.OK);
         }
     }
@@ -86,6 +87,7 @@ export class DevopsService {
             const history = await this.getHistory(histories?.[0]?.id);
             return history;
         } catch (error) {
+            console.log(`请求 devops 接口失败, DEVOPS_COOKIE: ${process.env.DEVOPS_COOKIE}`);
             throw new HttpException('请求 devops 接口失败', HttpStatus.OK);
         }
     }
@@ -96,6 +98,7 @@ export class DevopsService {
             const result = await this.axiosGet(`http://devops.dtstack.cn/api/v1/projects`);
             return result;
         } catch (error) {
+            console.log(`请求 devops 接口失败, DEVOPS_COOKIE: ${process.env.DEVOPS_COOKIE}`);
             throw new HttpException('请求 devops 接口失败', HttpStatus.OK);
         }
     }
