@@ -58,7 +58,7 @@ export class EmailController {
 
         if (emails?.split(',')?.length) {
             try {
-                const result = await this.generatePromise(project);
+                const result = await this.generatePromise({ ...project, emails });
                 return result;
             } catch (error) {
                 console.log(`\nprojectId: ${projectId}, ${project?.name}, 邮件数据处理失败`, error);
