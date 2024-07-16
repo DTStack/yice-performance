@@ -98,7 +98,7 @@ docker cp /home/app/yice-performance/.env yice-server:/yice-performance/.env
 ```
 
 ``` shell
-docker start yice-server
+docker restart yice-server
 ```
 
 
