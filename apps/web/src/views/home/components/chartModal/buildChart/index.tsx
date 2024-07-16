@@ -72,7 +72,9 @@ export default function BuildChart(props: IProps) {
             },
             toolbox: {
                 feature: {
-                    saveAsImage: { show: true },
+                    saveAsImage: {
+                        title: '保存为图片',
+                    },
                 },
             },
             legend: {

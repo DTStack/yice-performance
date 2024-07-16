@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { IFileSizeChartData, IProjectChartData } from 'typing';
 
+import { lastWeekRange } from '@/utils';
 import { renderChart } from '@/utils/echarts';
 
 @Injectable()
@@ -10,7 +11,6 @@ export class EmailService {
 
     async sendMail(
         project,
-        lastWeekRange,
         projectChartData: IProjectChartData,
         fileSizeChartData: IFileSizeChartData
     ) {
@@ -41,7 +41,7 @@ export class EmailService {
     }
 
     // 定时发送所有子产品的数据周报到指定邮箱
-    async sendMailAllProject(emails, chartDataList = [], lastWeekRange) {
+    async sendMailAllProject(emails, chartDataList = []) {
         const [_, __, startTime, endTime] = lastWeekRange;
 
         if (emails?.split(',')?.length) {

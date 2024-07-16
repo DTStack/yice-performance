@@ -84,7 +84,6 @@ export class EmailController {
         if (projectChartData?.versionNameList?.length) {
             const result = await this.emailService.sendMail(
                 project,
-                lastWeekRange,
                 projectChartData,
                 fileSizeChartData
             );
@@ -140,11 +139,7 @@ export class EmailController {
             }
 
             if (chartDataList.length) {
-                const result = await this.emailService.sendMailAllProject(
-                    emails,
-                    chartDataList,
-                    lastWeekRange
-                );
+                const result = await this.emailService.sendMailAllProject(emails, chartDataList);
                 return result;
             }
         } catch (error) {

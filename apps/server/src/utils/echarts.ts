@@ -81,16 +81,11 @@ export const getFileSizeChartOptions = (fileSizeChartData: IFileSizeChartData) =
             bottom: '3%',
             containLabel: true,
         },
-        toolbox: {
-            feature: {
-                saveAsImage: { show: true },
-            },
-        },
         xAxis: {
             type: 'value',
             name: '构建产物大小(MB)',
             nameTextStyle: {
-                padding: [0, 0, 0, -80],
+                padding: [0, 0, 0, -100],
             },
             axisLine: {
                 show: true,
@@ -125,7 +120,7 @@ export const getFileSizeChartOptions = (fileSizeChartData: IFileSizeChartData) =
 export const renderChart = (arr: IProjectChartDataList[] = []) => {
     const config = {
         width: 475,
-        height: 200,
+        height: 240,
         // width: 950,
         // height: 400,
     };
@@ -168,7 +163,7 @@ const renderHtml = (list) => {
 const renderChartItem = (list = []) => {
     let html = '';
     list.forEach(({ projectId, name, projectChartBase64, fileSizeChartBase64 }) => {
-        html += `<div style="border-radius:6px;background-color:#fff;margin-top:15px;"><div style="padding:20px 20px 0;font-weight:600">${name} 近七天</div><img style="width:320px;padding:20px 10px 0" src="${projectChartBase64}"/><img style="width:320px;padding:20px 10px" src="${fileSizeChartBase64}"/><div style="padding:0 20px 10px;font-size:12px;text-indent:2em;line-height:24px;text-align:right"><a href="http://yice.dtstack.cn/redirect?projectId=${projectId}&type=chart" style="color:#1d78ff">查看更多数据（电脑端）</a></div></div>`;
+        html += `<div style="border-radius:6px;background-color:#fff;margin-top:15px;"><div style="padding:20px 20px 0;font-weight:600">${name} 近七天</div><img style="width:320px;padding:20px 10px 0" src="${projectChartBase64}"/><img style="width:320px;padding:0 10px 20px" src="${fileSizeChartBase64}"/><div style="padding:0 20px 10px;font-size:12px;text-indent:2em;line-height:24px;text-align:right"><a href="http://yice.dtstack.cn/redirect?projectId=${projectId}&type=chart" style="color:#1d78ff">查看更多数据（电脑端）</a></div></div>`;
     });
     return html;
 };
