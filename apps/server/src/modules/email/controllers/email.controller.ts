@@ -36,13 +36,15 @@ export class EmailController {
                     try {
                         await this.sendProject({ projectId, emails });
                     } catch (error) {}
-                    console.log(`${name}, 发送【单个子产品】的数据周报到指定邮箱`);
+                    console.log(
+                        `\nprojectId: ${projectId}, ${name}, 发送【单个子产品】的数据周报到指定邮箱`
+                    );
                 }
             });
     }
     async handleSendAll() {
         if (process.env.DEFAULT_EMAIL) {
-            console.log('发送【所有子产品】的数据周报到指定邮箱');
+            console.log('\n发送【所有子产品】的数据周报到指定邮箱');
             await this.sendAll({ emails: process.env.DEFAULT_EMAIL });
         }
     }
@@ -59,7 +61,7 @@ export class EmailController {
                 const result = await this.generatePromise(project);
                 return result;
             } catch (error) {
-                console.log('邮件数据处理失败', error);
+                console.log(`\nprojectId: ${projectId}, ${project?.name}, 邮件数据处理失败`, error);
                 throw new HttpException('没有历史检测数据', HttpStatus.OK);
             }
         }
