@@ -14,4 +14,5 @@ export function getImgUrl(fileName: string, url?: string) {
  * 以 http(s) 开头的检测地址
  */
 export const httpPattern =
+    // eslint-disable-next-line no-useless-escape
     /^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/;
