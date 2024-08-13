@@ -26,7 +26,7 @@ export default function ProjectChart(props: IProps) {
     const { data } = props;
     const { taskList, versionNameList, maxLength } = data || {};
     // echarts 顶部选择展示的版本
-    const [legendSelectedMap, setLegendSelectedMap] = useState({});
+    const [legendSelectedMap, setLegendSelectedMap] = useState<any>({});
 
     useEffect(() => {
         if (versionNameList?.length) {

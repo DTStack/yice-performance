@@ -23,6 +23,7 @@ export class TaskDto {
     readonly createAt?: Date;
 
     @IsOptional()
+    // eslint-disable-next-line camelcase
     @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: '检测地址无效' })
     @MaxLength(2048, { message: '检测地址最大长度为2048' })
     @ApiPropertyOptional({ description: '检测地址' })

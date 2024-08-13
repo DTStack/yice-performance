@@ -217,6 +217,7 @@ export const taskRun = async (task: ITask, successCallback, failCallback, comple
         console.log(`taskId: ${taskId}, 开始整理数据...`);
 
         // 保存检测结果的报告文件，便于预览
+        // eslint-disable-next-line no-useless-escape
         const urlStr = url.replace(/http(s?):\/\//g, '').replace(/\/|\#|\?|\&/g, '-');
 
         // 创建当天的文件夹用于存放报告文件

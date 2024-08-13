@@ -14,14 +14,17 @@
         "deploy": "zx scripts/deploy.mjs",
         "deploy-test": "npm run deploy test",
         "fileSize": "node ./scripts/report-fileSize.js",
-        "prettier": "npx prettier \"**/*.ts\" \"**/*.tsx\" \"**/*.js\" \"**/*.json\" --check",
-        "prettier:fix": "npx prettier \"**/*.ts\" \"**/*.tsx\" \"**/*.js\" \"**/*.json\" --write",
-        "eslint": "npx eslint \"{apps,test}/**/*.ts\" \"{apps,test}/**/*.tsx\"",
-        "eslint:fix": "npx eslint \"{apps,test}/**/*.ts\" \"{apps,test}/**/*.tsx\" --fix",
+        "prettier": "npx prettier '**/*.ts' '**/*.tsx' '**/*.js' '**/*.json' --check",
+        "prettier:fix": "npx prettier '**/*.ts' '**/*.tsx' '**/*.js' '**/*.json' --write",
+        "eslint": "npx eslint '**/*.ts' '**/*.tsx'",
+        "eslint:fix": "npx eslint '**/*.ts' '**/*.tsx' --fix",
         "stylelint": "npx stylelint '**/*.less' '**/*.css'",
         "stylelint:fix": "npx stylelint '**/*.less' '**/*.css' --fix",
+        "lint": "turbo run prettier eslint stylelint",
+        "lint:fix": "npm run prettier:fix && npm run eslint:fix && npm run stylelint:fix",
+        "check-types": "turbo run check-types --only",
         "test": "cd apps/server && npm run test",
-        "check-types": "tsc --skipLibCheck"
+        "ci": "turbo run prettier eslint stylelint check-types test build"
     },
     "dependencies": {
         "echarts": "^5.5.0",
@@ -39,7 +42,7 @@
         "stylelint": "14.11.0",
         "ts-loader": "^9.2.3",
         "tsconfig-paths": "4.1.1",
-        "turbo": "^2.0.3",
+        "turbo": "2.0.7",
         "typescript": "4.7.4",
         "webpack": "^5.0.0",
         "zx": "^8.1.4"
@@ -49,7 +52,7 @@
             "path": "./node_modules/cz-conventional-changelog"
         }
     },
-    "packageManager": "pnpm@6.32.17",
+    "packageManager": "pnpm@6.35.1",
     "engines": {
         "node": ">=14"
     }
