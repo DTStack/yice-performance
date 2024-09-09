@@ -15,8 +15,8 @@ export const getProjectChartOptions = (projectChartData: IProjectChartData) => {
     const legendSelectedMap = {};
     if (versionNameList?.length) {
         for (let i = 0; i < versionNameList.length; i++) {
-            // 默认选择前三个
-            legendSelectedMap[versionNameList[i]] = i < 3;
+            // 默认选择前两个
+            legendSelectedMap[versionNameList[i]] = i < 2;
         }
     }
 

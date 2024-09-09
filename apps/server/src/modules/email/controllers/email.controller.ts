@@ -34,17 +34,17 @@ export class EmailController {
                 const { projectId, name, emails } = project;
                 if (emails?.split(',').length) {
                     try {
+                        console.log(
+                            `\nprojectId: ${projectId}, ${name}, 开始发送【单个子产品】的数据周报到指定邮箱`
+                        );
                         await this.sendProject({ projectId, emails });
                     } catch (error) {}
-                    console.log(
-                        `\nprojectId: ${projectId}, ${name}, 发送【单个子产品】的数据周报到指定邮箱`
-                    );
                 }
             });
     }
     async handleSendAll() {
         if (process.env.DEFAULT_EMAIL) {
-            console.log('\n发送【所有子产品】的数据周报到指定邮箱');
+            console.log('\n开始发送【所有子产品】的数据周报到指定邮箱');
             await this.sendAll({ emails: process.env.DEFAULT_EMAIL });
         }
     }
@@ -143,10 +143,7 @@ export class EmailController {
                 return result;
             }
         } catch (error) {
-            throw new HttpException(
-                `尝试发送【所有子产品】的数据周报失败, ${error}`,
-                HttpStatus.OK
-            );
+            throw new HttpException(`发送【所有子产品】的数据周报失败, ${error}`, HttpStatus.OK);
         }
     }
 }

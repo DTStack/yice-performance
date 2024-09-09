@@ -32,10 +32,10 @@ export class EmailService {
                 return result;
             } catch (error) {
                 console.log(
-                    `\nprojectId: ${projectId}, ${name}, 尝试发送【单个子产品】的数据周报失败`,
+                    `\nprojectId: ${projectId}, ${name}, 发送【单个子产品】的数据周报失败`,
                     error
                 );
-                throw new HttpException('尝试发送单个子产品的数据周报失败', HttpStatus.OK);
+                throw new HttpException('发送单个子产品的数据周报失败', HttpStatus.OK);
             }
         }
     }
@@ -49,15 +49,15 @@ export class EmailService {
             try {
                 const result = await this.mailerService.sendMail({
                     to: emails?.split(','),
-                    subject: `【数栈子产品】易测数据周报（${startTime}~${endTime}）`, // 标题
+                    subject: `【所有子产品】易测数据周报（${startTime}~${endTime}）`, // 标题
                     html,
                 });
 
                 console.log('\n发送【所有子产品】的数据周报成功', result);
                 return result;
             } catch (error) {
-                console.log('\n尝试发送【所有子产品】的数据周报失败', error);
-                throw new HttpException('尝试发送【所有子产品】的数据周报失败', HttpStatus.OK);
+                console.log('\n发送【所有子产品】的数据周报失败', error);
+                throw new HttpException('发送【所有子产品】的数据周报失败', HttpStatus.OK);
             }
         }
     }

@@ -32,8 +32,8 @@ export default function ProjectChart(props: IProps) {
         if (versionNameList?.length) {
             const _map = { ...legendSelectedMap };
             for (let i = 0; i < versionNameList.length; i++) {
-                // 默认选择前三个
-                _map[versionNameList[i]] = i < 3;
+                // 默认选择前两个
+                _map[versionNameList[i]] = i < 2;
             }
             setLegendSelectedMap(_map);
         }

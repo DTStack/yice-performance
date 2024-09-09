@@ -12,7 +12,7 @@ interface IProps {
     versionList: IVersion[];
     defaultVersionId: number | null | undefined;
     setRunTime: (runTime: number) => void;
-    onCancel: () => void;
+    onCancel: (needFetch: boolean) => void;
 }
 
 export default function ScheduleModal(props: IProps) {
@@ -20,6 +20,7 @@ export default function ScheduleModal(props: IProps) {
     const [form] = Form.useForm();
     const [formLoading, setFormLoading] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
+    const [_isFreeze, setIsFreeze] = useState<boolean>(false);
     const [runLoading, setRunLoading] = useState<boolean>(false);
 
     const yiceRole = localStorage.getItem('yice-role');
@@ -37,6 +38,7 @@ export default function ScheduleModal(props: IProps) {
         API.getVersion({ versionId })
             .then((res) => {
                 const { cron, isFreeze, note } = res.data || {};
+                setIsFreeze(isFreeze);
                 setTimeout(() => {
                     form.setFieldsValue({ cron, isFreeze, note });
                 }, 200);
@@ -57,7 +59,7 @@ export default function ScheduleModal(props: IProps) {
             })
             .finally(() => {
                 setRunLoading(false);
-                onCancel();
+                onCancel(false);
             });
     };
 
@@ -69,7 +71,7 @@ export default function ScheduleModal(props: IProps) {
             API.updateScheduleConf({ projectId: project?.projectId, versionId, ...values })
                 .then(() => {
                     message.success('保存成功！');
-                    onCancel();
+                    onCancel(_isFreeze !== values.isFreeze);
                 })
                 .finally(() => {
                     setSaving(false);
@@ -121,7 +123,7 @@ export default function ScheduleModal(props: IProps) {
                 </Button>
 
                 <div>
-                    <Button onClick={onCancel}>取消</Button>
+                    <Button onClick={() => onCancel(false)}>取消</Button>
                     <Button type="primary" loading={saving || formLoading} onClick={handleOk}>
                         保存
                     </Button>
@@ -154,7 +156,7 @@ export default function ScheduleModal(props: IProps) {
             forceRender
             destroyOnClose
             footer={renderButtons()}
-            onCancel={onCancel}
+            onCancel={() => onCancel(false)}
         >
             <Spin spinning={formLoading}>
                 <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} name="Form">
