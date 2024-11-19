@@ -43,7 +43,7 @@ export const IS_USEFUL_TEXT = [
  */
 const scoreColor = {
     orangeMin: 50,
-    greenMin: 80,
+    greenMin: 90,
 };
 
 export const getScoreColor = (score: number) => {
