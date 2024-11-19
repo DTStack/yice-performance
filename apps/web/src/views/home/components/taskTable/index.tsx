@@ -339,10 +339,10 @@ export default function TaskTable(props: IPros) {
                 return (
                     <div className="action-title">
                         <span className="title">操作</span>
-                        <Tooltip title="每 10 秒自动刷新">
+                        <Tooltip title="每 10 秒自动刷新" placement="bottom">
                             <Switch
-                                checkedChildren="自动刷新"
-                                unCheckedChildren="自动刷新"
+                                // checkedChildren="自动刷新"
+                                // unCheckedChildren="自动刷新"
                                 loading={versionListLoading || loading}
                                 checked={autoRefresh}
                                 onChange={handleAutoRefresh}

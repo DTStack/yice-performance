@@ -1,5 +1,16 @@
 FROM ubuntu:22.04
 
+RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ jammy main restricted universe multiverse \n\
+     deb http://mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse \n\
+     deb-src http://mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse \n\
+     deb http://mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse \n\
+     deb-src http://mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse \n\
+     deb http://mirrors.aliyun.com/ubuntu/ jammy-proposed main restricted universe multiverse \n\
+     deb-src http://mirrors.aliyun.com/ubuntu/ jammy-proposed main restricted universe multiverse \n\
+     deb http://mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse \n\
+     deb-src http://mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse \n'\
+     > /etc/apt/sources.list
+
 # 设置时区
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \

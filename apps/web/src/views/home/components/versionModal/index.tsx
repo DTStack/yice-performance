@@ -28,7 +28,14 @@ export default function VersionModal(props: IProps) {
     const [deleting, setDeleting] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
     const [devopsShiLiId, setDevopsShiLiId] = useState<number | undefined>(undefined);
-    const [devopsShiLiList, setDevopsShiLiList] = useState<any[]>([]);
+    const [envList, setEnvList] = useState<any[]>([]);
+    const [envGroupList, setEnvGroupList] = useState<any[]>([]);
+
+    // hostList 的 value 需要和 hostUrlList 的 value 同步修改
+    const hostList = [
+        { label: '7.0.x', value: 100_000 },
+        { label: '6.3.x', value: 100_001 },
+    ];
 
     const yiceRole = localStorage.getItem('yice-role');
 
@@ -57,30 +64,37 @@ export default function VersionModal(props: IProps) {
             });
     };
 
-    // 获取项目下的 devops 实例列表
+    // 获取项目下的环境列表
     const getShiLis = () => {
         setShiliFetching(true);
         API.getShiLis({ devopsProjectIds })
             .then((res) => {
-                setDevopsShiLiList(
+                const devopsEnvList =
                     res.data?.map((item: any) => {
                         return {
                             label: item.label,
                             value: item.id,
                         };
-                    }) || []
-                );
+                    }) || [];
+                setEnvList(hostList.concat(devopsEnvList));
+                setEnvGroupList([
+                    { label: '主机环境', options: hostList },
+                    {
+                        label: 'devops 环境',
+                        options: devopsEnvList,
+                    },
+                ]);
             })
             .finally(() => {
                 setShiliFetching(false);
             });
     };
 
-    // 选择了某个 devops 实例
+    // 选择了某个环境
     const handleSelect = (value: any) => {
         setFormLoading(true);
         setDevopsShiLiId(value);
-        const { label: name } = devopsShiLiList.find((item) => item.value === value) || {};
+        const { label: name } = envList.find((item) => item.value === value) || {};
         API.getDevopsUrl({ shiliId: value })
             .then(({ data = {} }) => {
                 const { portalfront: url, loginUrl, username, password } = data;
@@ -172,11 +186,11 @@ export default function VersionModal(props: IProps) {
 
     const devopsShiLiIdDeleted =
         isEdit &&
-        devopsShiLiList.length &&
+        envList.length &&
         devopsShiLiId &&
-        !devopsShiLiList.map((item) => item.value).includes(devopsShiLiId);
+        !envList.map((item) => item.value).includes(devopsShiLiId);
     const validateStatus = devopsShiLiIdDeleted ? 'error' : '';
-    const help = devopsShiLiIdDeleted ? '当前绑定的 devops 实例已被删除' : '';
+    const help = devopsShiLiIdDeleted ? '当前绑定环境已被删除' : '';
 
     return (
         <Modal
@@ -213,14 +227,14 @@ export default function VersionModal(props: IProps) {
                     ) : null}
                     <Form.Item
                         name="devopsShiLiId"
-                        label="绑定实例"
+                        label="绑定环境"
                         validateStatus={validateStatus}
                         help={help}
                     >
                         <Select
                             allowClear
-                            placeholder="请选择绑定的 devops 实例"
-                            options={devopsShiLiList}
+                            placeholder="请选择绑定的环境"
+                            options={envGroupList}
                             loading={shiliFetching}
                             onSelect={handleSelect}
                         />

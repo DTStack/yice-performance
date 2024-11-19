@@ -4,7 +4,7 @@ import { ApiOperation } from '@nestjs/swagger';
 
 import { ChartService } from '@/modules/chart/services/chart.service';
 import { ProjectService } from '@/modules/project/services/project.service';
-import { lastMonthRange, lastWeekRange } from '@/utils';
+import { getLastMonthRange, getLastWeekRange } from '@/utils';
 import { EmailService } from '../services/email.service';
 
 @Controller('email')
@@ -34,17 +34,17 @@ export class EmailController {
                 const { projectId, name, emails } = project;
                 if (emails?.split(',').length) {
                     try {
+                        console.log(
+                            `\nprojectId: ${projectId}, ${name}, 开始发送【单个子产品】的数据周报到指定邮箱`
+                        );
                         await this.sendProject({ projectId, emails });
                     } catch (error) {}
-                    console.log(
-                        `\nprojectId: ${projectId}, ${name}, 发送【单个子产品】的数据周报到指定邮箱`
-                    );
                 }
             });
     }
     async handleSendAll() {
         if (process.env.DEFAULT_EMAIL) {
-            console.log('\n发送【所有子产品】的数据周报到指定邮箱');
+            console.log('\n开始发送【所有子产品】的数据周报到指定邮箱');
             await this.sendAll({ emails: process.env.DEFAULT_EMAIL });
         }
     }
@@ -68,8 +68,8 @@ export class EmailController {
     }
 
     async generatePromise(project) {
-        const [startTime, endTime] = lastWeekRange;
-        const [startMonthTime, endMonthTime] = lastMonthRange;
+        const [startTime, endTime] = getLastWeekRange();
+        const [startMonthTime, endMonthTime] = getLastMonthRange();
         const projectChartData = await this.chartService.projectChart({
             projectId: project.projectId,
             startTime,
@@ -102,8 +102,8 @@ export class EmailController {
                 throw new Error('DEFAULT_EMAIL 未配置邮箱');
             }
 
-            const [startTime, endTime] = lastWeekRange;
-            const [startMonthTime, endMonthTime] = lastMonthRange;
+            const [startTime, endTime] = getLastWeekRange();
+            const [startMonthTime, endMonthTime] = getLastMonthRange();
             let projectList = await this.projectService.findAll();
             projectList = projectList.filter((project) => project.name !== '汇总');
 
@@ -143,10 +143,7 @@ export class EmailController {
                 return result;
             }
         } catch (error) {
-            throw new HttpException(
-                `尝试发送【所有子产品】的数据周报失败, ${error}`,
-                HttpStatus.OK
-            );
+            throw new HttpException(`发送【所有子产品】的数据周报失败, ${error}`, HttpStatus.OK);
         }
     }
 }

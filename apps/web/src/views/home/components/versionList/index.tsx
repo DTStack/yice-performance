@@ -304,7 +304,11 @@ export default function Versions() {
                 versionList={versionList}
                 defaultVersionId={versionId ?? versionList[0]?.versionId}
                 setRunTime={setRunTime}
-                onCancel={() => setScheduleOpen(false)}
+                onCancel={(needFetch: boolean) => {
+                    setScheduleOpen(false);
+                    // 冻结/解除冻结 后需要刷新版本列表
+                    needFetch && getVersions(!versionList.length);
+                }}
             />
         </>
     );

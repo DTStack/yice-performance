@@ -1,25 +1,30 @@
-version: '3'
+version: '3.3'
 
 services:
-    mysql-service:
-        container_name: yice-mysql
-        image: registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-server:latest
-        ports:
-            - '3306:3306'
-        restart: always
-        networks:
-            - yice-network
+  yice-mysql:
+    image: registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-mysql:latest
+    container_name: yice-mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - yice-network
+    volumes:
+      - /opt/dtstack/yice-performance/yice-mysql/conf:/etc/mysql/conf.d
+      - /opt/dtstack/yice-performance/yice-mysql/log:/var/log/mysql
+      - /opt/dtstack/yice-performance/yice-mysql/data:/var/lib/mysql
+    restart: unless-stopped
 
-    server-service:
-        container_name: yice-server
-        image: registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-mysql:latest
-        ports:
-            - '4000:4000'
-        restart: always
-        depends_on:
-            - mysql-service
-        networks:
-            - yice-network
+  yice-server:
+    image: registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-server:latest
+    container_name: yice-server
+    ports:
+      - "4000:4000"
+    networks:
+      - yice-network
+    volumes:
+      - /opt/dtstack/yice-performance/pm2-logs:/yice-performance/pm2/logs
+      - /opt/dtstack/yice-performance/yice-report:/yice-performance/apps/server/yice-report
+    restart: unless-stopped
 
 networks:
   yice-network:

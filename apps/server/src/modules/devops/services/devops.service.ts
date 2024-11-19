@@ -82,10 +82,38 @@ export class DevopsService {
     // 5、获取实例下的详情 url, 相当于同时做了 2, 3, 4
     async getDevopsUrl(shiliId: number) {
         try {
-            const stages = await this.getStages(shiliId);
-            const histories = await this.getHistories({ shiliId, stageId: stages?.[0]?.id });
-            const history = await this.getHistory(histories?.[0]?.id);
-            return history;
+            // 主机环境
+            if (shiliId > 99_999) {
+                // 主机环境，写死地址
+                // hostList 的 value 需要和 hostUrlList 的 value 同步修改
+                const hostUrlList = [
+                    {
+                        label: '7.0.x',
+                        value: 100_000,
+                        url: 'http://70x.dtstack.cn',
+                        loginUrl: 'http://70x.dtstack.cn/uic/#/',
+                    },
+                    {
+                        label: '6.3.x',
+                        value: 100_001,
+                        url: 'http://63x.dtstack.cn',
+                        loginUrl: 'http://63x.dtstack.cn/uic/#/',
+                    },
+                ];
+                const portalfront = hostUrlList.find((item) => item.value === shiliId)?.url;
+                return {
+                    portalfront,
+                    loginUrl: `${portalfront}/uic/#/`,
+                    username: process.env.DEVOPS_USERNAME,
+                    password: process.env.DEVOPS_PASSWORD,
+                };
+            } else {
+                // devops 环境
+                const stages = await this.getStages(shiliId);
+                const histories = await this.getHistories({ shiliId, stageId: stages?.[0]?.id });
+                const history = await this.getHistory(histories?.[0]?.id);
+                return history;
+            }
         } catch (error) {
             console.log(`请求 devops 接口失败, DEVOPS_COOKIE: ${process.env.DEVOPS_COOKIE}`);
             throw new HttpException('请求 devops 接口失败', HttpStatus.OK);
