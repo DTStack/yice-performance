@@ -125,6 +125,7 @@ const changeTenant = async (page, taskId) => {
         const sleepTime = Number(process.env.RESPONSE_SLEEP ?? 5);
 
         // 租户
+        await sleep(sleepTime / 2);
         await page.click('.ant-select');
         const tenantInput = await page.$('input#change_ten_id');
         await sleep(sleepTime / 2);

@@ -174,7 +174,7 @@ export class TaskRunService {
                         .printSql()
                         .execute();
 
-                    console.log(`taskId: ${taskId}, 数据整理完成，已落库`);
+                    console.log(`taskId: ${taskId}, 数据整理完成，已落库。本次检测完成`);
                 } catch (error) {
                     status = TASK_STATUS.FAIL;
                     failReason = error;

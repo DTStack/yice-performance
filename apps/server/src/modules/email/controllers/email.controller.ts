@@ -4,7 +4,7 @@ import { ApiOperation } from '@nestjs/swagger';
 
 import { ChartService } from '@/modules/chart/services/chart.service';
 import { ProjectService } from '@/modules/project/services/project.service';
-import { lastMonthRange, lastWeekRange } from '@/utils';
+import { getLastMonthRange, getLastWeekRange } from '@/utils';
 import { EmailService } from '../services/email.service';
 
 @Controller('email')
@@ -68,8 +68,8 @@ export class EmailController {
     }
 
     async generatePromise(project) {
-        const [startTime, endTime] = lastWeekRange;
-        const [startMonthTime, endMonthTime] = lastMonthRange;
+        const [startTime, endTime] = getLastWeekRange();
+        const [startMonthTime, endMonthTime] = getLastMonthRange();
         const projectChartData = await this.chartService.projectChart({
             projectId: project.projectId,
             startTime,
@@ -102,8 +102,8 @@ export class EmailController {
                 throw new Error('DEFAULT_EMAIL 未配置邮箱');
             }
 
-            const [startTime, endTime] = lastWeekRange;
-            const [startMonthTime, endMonthTime] = lastMonthRange;
+            const [startTime, endTime] = getLastWeekRange();
+            const [startMonthTime, endMonthTime] = getLastMonthRange();
             let projectList = await this.projectService.findAll();
             projectList = projectList.filter((project) => project.name !== '汇总');
 
