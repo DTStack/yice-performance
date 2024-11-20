@@ -43,41 +43,20 @@ tail 200 -f /opt/dtstack/yice-performance/pm2-logs/pm2-out.log
 
 ### docker-compose
 
-&emsp;&emsp;当你使用 `docker-compose` 时，[docker-compose.yml](../docker/docker-compose.yml) 如下：
-
-``` yaml
-version: '3'
-
-services:
-    mysql-service:
-        container_name: yice-mysql
-        image: registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-server:latest
-        ports:
-            - '3306:3306'
-        restart: always
-        networks:
-            - yice-network
-
-    server-service:
-        container_name: yice-server
-        image: registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-mysql:latest
-        ports:
-            - '4000:4000'
-        restart: always
-        depends_on:
-            - mysql-service
-        networks:
-            - yice-network
-
-networks:
-  yice-network:
-    driver: bridge
-```
+&emsp;&emsp;当你使用 `docker-compose` 时，注意 [docker-compose.yml](../docker/docker-compose.yml) 文件的内容。
 
 &emsp;&emsp;通过 docker-compose 启动程序：
 
 ``` shell
 docker-compose -f docker/docker-compose.yml -p yice-performance up -d
+```
+
+&emsp;&emsp;更新镜像和容器：
+
+``` shell
+docker-compose pull
+docker-compose -p yice-performance up -d --force-recreate
+docker image prune
 ```
 
 &emsp;&emsp;执行上述命令后可以在浏览器中访问 `http://localhost:4000` 查看效果。
@@ -88,39 +67,9 @@ docker-compose -f docker/docker-compose.yml -p yice-performance up -d
 &emsp;&emsp;如果 `.env` 文件有需要修改的，可以通过新建一个 `.env.local` 文件来覆盖默认的配置项，将文件修改后复制到容器。
 
 ``` shell
-docker cp yice-server:/yice-performance/.env /home/app/yice-performance/.env
-```
-``` shell
 vim /home/app/yice-performance/.env
 ```
 ``` shell
 docker cp /home/app/yice-performance/.env yice-server:/yice-performance/.env
-```
-
-``` shell
 docker restart yice-server
-```
-
-
-### 常见问题
-
-#### 1、yice-server 容器无法启动
-
-&emsp;&emsp;可能是 `docker` 版本较低，建议升级到 docker v24 及以上，升级前应当备份。
-
-``` shell
-yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-```
-
-```
-node[1]: ../src/node_platform.cc:61:std::unique_ptr<long unsigned int> node::WorkerThreadsTaskRunner::DelayedTaskScheduler::Start(): Assertion `(0) == (uv_thread_create(t.get(), start_thread, this))' failed.
- 1: 0xb090e0 node::Abort() [node]
- 2: 0xb0915e  [node]
- 3: 0xb7512e  [node]
- 4: 0xb751f6 node::NodePlatform::NodePlatform(int, v8::TracingController*) [node]
- 5: 0xacbf74 node::InitializeOncePerProcess(int, char**, node::InitializationSettingsFlags, node::ProcessFlags::Flags) [node]
- 6: 0xaccb59 node::Start(int, char**) [node]
- 7: 0x7f2ffac64d90  [/lib/x86_64-linux-gnu/libc.so.6]
- 8: 0x7f2ffac64e40 __libc_start_main [/lib/x86_64-linux-gnu/libc.so.6]
- 9: 0xa408ec  [node]
 ```

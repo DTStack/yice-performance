@@ -45,7 +45,7 @@ RUN  rm -rf /etc/apt/sources.list.d/google-chrome.list \
 
 # 安装 nodejs
 RUN apt-get update -y && apt-get install -y curl \
-     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+     && curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
      && apt-get remove -y curl \
      && apt-get install -y nodejs \
      && npm config set registry https://registry.npmmirror.com/ \
