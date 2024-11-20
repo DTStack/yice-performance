@@ -17,6 +17,9 @@ services:
   yice-server:
     image: registry.cn-hangzhou.aliyuncs.com/liuxy0551/yice-server:latest
     container_name: yice-server
+    extra_hosts:
+      - "63x.dtstack.cn:172.16.115.61"
+      - "70x.dtstack.cn:172.16.115.124"
     ports:
       - "4000:4000"
     networks:
