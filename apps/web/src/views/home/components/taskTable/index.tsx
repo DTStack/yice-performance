@@ -92,7 +92,7 @@ export default function TaskTable(props: IPros) {
     }, [projectId, versionId]);
 
     const handleAutoRefreshData = () => {
-        !versionListLoading && !loading && fetchData();
+        setRunTime(new Date().getTime());
     };
 
     /**
@@ -108,6 +108,8 @@ export default function TaskTable(props: IPros) {
      */
     const fetchData = () => {
         if (!projectId && !versionId) return;
+        if (versionListLoading || loading) return;
+
         setLoading(true);
         const params = {
             projectId,
