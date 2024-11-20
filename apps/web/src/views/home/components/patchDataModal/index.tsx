@@ -39,6 +39,12 @@ export default function PatchDataModal(props: IProps) {
         });
     };
 
+    // 输入框的回车事件
+    const handleInputEnter = (e: any) => {
+        // 中文输入法输入时回车，keyCode 是 229；光标在输入框直接回车，keyCode 是 13
+        !loading && e.keyCode === 13 && handleOk();
+    };
+
     return (
         <Modal
             width={500}
@@ -74,7 +80,13 @@ export default function PatchDataModal(props: IProps) {
                     rules={[{ required: true }]}
                     initialValue={5}
                 >
-                    <InputNumber min={1} max={20} precision={0} placeholder="请输入补数据次数" />
+                    <InputNumber
+                        min={1}
+                        max={20}
+                        precision={0}
+                        placeholder="请输入补数据次数"
+                        onPressEnter={handleInputEnter}
+                    />
                 </Form.Item>
                 <Form.Item
                     name="includeIsFreeze"

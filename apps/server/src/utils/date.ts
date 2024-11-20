@@ -21,16 +21,20 @@ export const formatTime = (mo, isEnd?: boolean, output = 'YYYY-MM-DD HH:mm:ss') 
 };
 
 // 近七天
-export const lastWeekRange: any = [
-    formatTime(todayStart().subtract(6, 'days')),
-    formatTime(todayStart().subtract(0, 'days'), true),
-    formatTime(todayStart().subtract(6, 'days'), false, 'MM-DD'),
-    formatTime(todayStart().subtract(0, 'days'), true, 'MM-DD'),
-];
+export const getLastWeekRange = () => {
+    return [
+        formatTime(todayStart().subtract(6, 'days')),
+        formatTime(todayStart().subtract(0, 'days'), true),
+        formatTime(todayStart().subtract(6, 'days'), false, 'MM-DD'),
+        formatTime(todayStart().subtract(0, 'days'), true, 'MM-DD'),
+    ];
+};
 // 近 30 天
-export const lastMonthRange: any = [
-    formatTime(todayStart().subtract(29, 'days')),
-    formatTime(todayStart().subtract(0, 'days'), true),
-    formatTime(todayStart().subtract(29, 'days'), false, 'MM-DD'),
-    formatTime(todayStart().subtract(0, 'days'), true, 'MM-DD'),
-];
+export const getLastMonthRange = () => {
+    return [
+        formatTime(todayStart().subtract(29, 'days')),
+        formatTime(todayStart().subtract(0, 'days'), true),
+        formatTime(todayStart().subtract(29, 'days'), false, 'MM-DD'),
+        formatTime(todayStart().subtract(0, 'days'), true, 'MM-DD'),
+    ];
+};

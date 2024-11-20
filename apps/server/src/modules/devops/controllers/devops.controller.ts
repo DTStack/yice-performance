@@ -51,7 +51,7 @@ export class DevopsController {
     @HttpCode(HttpStatus.OK)
     @Get('getDevopsUrl')
     async getDevopsUrl(@Query() query: getStagesReqDto) {
-        return await this.devopsService.getDevopsUrl(query?.shiliId);
+        return await this.devopsService.getDevopsUrl(+query?.shiliId);
     }
 
     @ApiOperation({ summary: '获取 devops 项目列表' })

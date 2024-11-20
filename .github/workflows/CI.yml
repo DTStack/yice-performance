@@ -19,7 +19,7 @@ jobs:
                   node-version: 14
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2
+              uses: pnpm/action-setup@v4
               with:
                   version: 6.35.1
 
@@ -37,6 +37,9 @@ jobs:
 
             - name: Run test
               run: pnpm test
+
+            - name: Run check-types
+              run: pnpm check-types
 
             - name: Run build
               run: pnpm build

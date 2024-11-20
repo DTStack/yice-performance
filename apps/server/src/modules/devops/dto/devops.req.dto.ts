@@ -7,7 +7,7 @@ export class getShiLisReqDto {
 
 export class getStagesReqDto {
     @ApiPropertyOptional({ required: false, description: 'devops实例id' })
-    shiliId: number;
+    shiliId: string;
 }
 
 export class getHistoriesReqDto {

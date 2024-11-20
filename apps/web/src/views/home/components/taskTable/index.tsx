@@ -92,7 +92,7 @@ export default function TaskTable(props: IPros) {
     }, [projectId, versionId]);
 
     const handleAutoRefreshData = () => {
-        !versionListLoading && !loading && fetchData();
+        setRunTime(new Date().getTime());
     };
 
     /**
@@ -108,6 +108,8 @@ export default function TaskTable(props: IPros) {
      */
     const fetchData = () => {
         if (!projectId && !versionId) return;
+        if (versionListLoading || loading) return;
+
         setLoading(true);
         const params = {
             projectId,
@@ -339,10 +341,10 @@ export default function TaskTable(props: IPros) {
                 return (
                     <div className="action-title">
                         <span className="title">操作</span>
-                        <Tooltip title="每 10 秒自动刷新">
+                        <Tooltip title="每 10 秒自动刷新" placement="bottom">
                             <Switch
-                                checkedChildren="自动刷新"
-                                unCheckedChildren="自动刷新"
+                                // checkedChildren="自动刷新"
+                                // unCheckedChildren="自动刷新"
                                 loading={versionListLoading || loading}
                                 checked={autoRefresh}
                                 onChange={handleAutoRefresh}

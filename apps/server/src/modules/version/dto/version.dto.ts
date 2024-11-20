@@ -16,6 +16,7 @@ export class VersionDto {
     @MaxLength(64, { message: '版本名称最大长度为64' })
     readonly name: string;
 
+    // eslint-disable-next-line camelcase
     @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: '检测地址无效' })
     @IsNotEmpty({ message: '检测地址不能为空' })
     @ApiPropertyOptional({ description: '检测地址' })

@@ -26,14 +26,14 @@ export default function ProjectChart(props: IProps) {
     const { data } = props;
     const { taskList, versionNameList, maxLength } = data || {};
     // echarts 顶部选择展示的版本
-    const [legendSelectedMap, setLegendSelectedMap] = useState({});
+    const [legendSelectedMap, setLegendSelectedMap] = useState<any>({});
 
     useEffect(() => {
         if (versionNameList?.length) {
             const _map = { ...legendSelectedMap };
             for (let i = 0; i < versionNameList.length; i++) {
-                // 默认选择前三个
-                _map[versionNameList[i]] = i < 3;
+                // 默认选择前两个
+                _map[versionNameList[i]] = i < 2;
             }
             setLegendSelectedMap(_map);
         }

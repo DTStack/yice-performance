@@ -3,12 +3,14 @@
 before_script:
     - echo $CI_COMMIT_REF_NAME
     - whoami
+    - npm config set registry https://registry.npmmirror.com/
     - pnpm install --reporter=silent
 
 stages:
     - prettier
     - eslint
     - stylelint
+    - check-types
     - test
     - build
 
@@ -37,9 +39,18 @@ stylelint:
         - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
 
 # 创建 MR 时执行；master 分支有 push 时执行
+check-types:
+    stage: check-types
+    needs: [prettier, eslint, stylelint]
+    script:
+        - pnpm check-types;
+    rules:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /master/
+
+# 创建 MR 时执行；master 分支有 push 时执行
 test:
     stage: test
-    needs: [prettier, eslint, stylelint]
+    needs: [check-types]
     script:
         - pnpm test;
     rules:

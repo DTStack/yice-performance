@@ -62,6 +62,26 @@ cd yice-performance
 > 易测检测系统和我司内部的 devops 系统深度绑定，用于检测我司需要登录的一些页面，但不影响评分功能的实现参考。
 
 
+## 常见问题
+
+### 1. yice-server 容器无法启动
+
+&emsp;&emsp;可能是 `docker` 版本较低，建议升级到 docker v24 及以上，升级前应当备份。
+
+### 2. gcc 版本过低
+
+&emsp;&emsp;主机部署时建议使用 Ubuntu。
+&emsp;&emsp;主机模式部署时 CentOS7 上启动服务时报错：Error: /lib64/libstdc++.so.6: version 'CXXABI_1.3.9' not found，这是因为 CentOS7 的 gcc 版本过低，需要升级到 gcc-4.8.5 以上，执行下方命令可以看到没有 CXXABI_1.3.9。
+
+``` shell
+strings /lib64/libstdc++.so.6 | grep CXXABI
+```
+
+### 3. MacOS M 系列 arm 芯片本地安装 canvas 时失败
+
+&emsp;&emsp; node@14.21.3 pnpm@6.35.1 代理开增强模式，可以正常安装依赖并启动。出现报错时，可以考虑使用这个依赖版本组合。
+
+
 ## 趋势
 
 [![Stargazers over time](https://starchart.cc/dtstack/yice-performance.svg)](https://starchart.cc/dtstack/yice-performance)
