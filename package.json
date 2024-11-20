@@ -54,6 +54,6 @@
     },
     "packageManager": "pnpm@6.35.1",
     "engines": {
-        "node": ">=14"
+        "node": "=14"
     }
 }
